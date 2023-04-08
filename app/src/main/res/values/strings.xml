@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">SecureWifi</string>
+    <string name="wifi_scan_results">Результаты сканирования</string>
+    <string name="get_wifi_scan_results">Сканировать точки доступа поблизости</string>
+    <string name="connect_to_wifi">Подключиться к Wi-Fi</string>
+    <string name="starting_scan">Начинаем сканирование…</string>
+    <string name="attempting_to_connect">Производятся попытки подключения к %1$s Паролей перебрано: %2$d</string>
+    <string name="password_was_hacked">Пароль был подобран!\nСеть: %1$s, \nПароль: %2$s\nПароль угадан за следующее количество попыток: %3$d</string>
+    <string name="couldnt_find_password">Не получилось подобрать пароль к сети %1$s за количество попыток: %2$d</string>
+    <string name="disconnect_from_wifi">Отключиться от Wi-fi</string>
+    <string name="check_password_security">Проверить защищенность паролей сетей Wi-Fi поблизости</string>
+    <string name="start">Начать</string>
+    <string name="list_of_wifi_nearby">Wi-Fi поблизости</string>
+    <string name="check_of_passwords_safety">Подбор паролей</string>
+    <string name="security_check_results">Результаты проверки</string>
+    <string name="scan_failure">Произошла ошибка при сканировании</string>
+    <string name="stop">Остановить</string>
+    <string name="notification_title">SecureWifi</string>
+    <string name="notification_message">Производятся попытки подключения…</string>
+</resources>

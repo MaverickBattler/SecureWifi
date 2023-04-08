@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/connectFragment"
+        android:icon="@drawable/wifi_password"
+        android:title="@string/check_of_passwords_safety" />
+    <item
+        android:id="@+id/scanFragment"
+        android:icon="@drawable/wifi_scan"
+        android:title="@string/list_of_wifi_nearby" />
+    <item
+        android:id="@+id/resultsFragment"
+        android:icon="@drawable/result_list"
+        android:title="@string/security_check_results" />
+</menu>
