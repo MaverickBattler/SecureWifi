@@ -1,10 +1,11 @@
-package com.practice.securewifi
+package com.practice.securewifi.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.practice.securewifi.R
 
 class ResultsFragment : Fragment() {
 

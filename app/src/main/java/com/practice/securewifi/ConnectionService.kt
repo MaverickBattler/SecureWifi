@@ -1,18 +1,13 @@
 package com.practice.securewifi
 
-import android.Manifest
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.wifi.WifiConfiguration
 import android.os.Build
 import android.os.IBinder
-import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
-import kotlinx.coroutines.delay
+import com.practice.securewifi.view.ConnectFragment
 
 class ConnectionService : Service() {
     @RequiresApi(Build.VERSION_CODES.O)

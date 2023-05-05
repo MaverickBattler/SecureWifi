@@ -1,4 +1,4 @@
-package com.practice.securewifi
+package com.practice.securewifi.view
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -11,6 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.practice.securewifi.R
 
 class MainActivity : AppCompatActivity() {
 

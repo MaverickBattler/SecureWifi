@@ -6,22 +6,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_scan"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        tools:listitem="@layout/wifi_scan_result_item"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <TextView
-            android:id="@+id/scan_results_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:paddingTop="40dp"
-            android:paddingBottom="10dp"
-            android:text="@string/wifi_scan_results"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-    </ScrollView>
+    <TextView
+        android:id="@+id/scan_results_textview"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="10dp"
+        android:text="@string/wifi_scan_results"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/start_scan_button"
