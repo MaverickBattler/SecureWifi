@@ -1,4 +1,4 @@
-package com.practice.securewifi.domain
+package com.practice.securewifi.domain.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

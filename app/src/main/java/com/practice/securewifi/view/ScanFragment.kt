@@ -18,7 +18,7 @@ import com.practice.securewifi.R
 import com.practice.securewifi.util.WifiManagerProvider
 import com.practice.securewifi.adapter.ScanResultAdapter
 import com.practice.securewifi.databinding.FragmentScanBinding
-import com.practice.securewifi.domain.WifiScanResult
+import com.practice.securewifi.domain.display.WifiScanResult
 
 class ScanFragment : Fragment() {
 

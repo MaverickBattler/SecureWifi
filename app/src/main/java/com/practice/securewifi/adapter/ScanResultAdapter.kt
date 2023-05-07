@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practice.securewifi.R
 import com.practice.securewifi.diffutil.ScanResultDiffItemCallback
 import com.practice.securewifi.databinding.WifiScanResultItemBinding
-import com.practice.securewifi.domain.WifiScanResult
+import com.practice.securewifi.domain.display.WifiScanResult
 
 class ScanResultAdapter :
     ListAdapter<WifiScanResult, ScanResultAdapter.ScanResultViewHolder>(ScanResultDiffItemCallback()) {

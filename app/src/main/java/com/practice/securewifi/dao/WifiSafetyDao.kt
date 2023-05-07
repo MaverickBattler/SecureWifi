@@ -1,8 +1,8 @@
 package com.practice.securewifi.dao
 
 import androidx.room.*
-import com.practice.securewifi.domain.WifiCheckResult
-import com.practice.securewifi.domain.relations.WifiPasswordsCrossRef
+import com.practice.securewifi.domain.entity.WifiCheckResult
+import com.practice.securewifi.domain.entity.WifiPasswordsCrossRef
 
 @Dao
 interface WifiSafetyDao {
@@ -17,4 +17,10 @@ interface WifiSafetyDao {
 
     @Query("SELECT password FROM tried_passwords WHERE ssid = :ssid")
     suspend fun getTriedPasswordsForWifi(ssid: String): List<String>
+
+    @Query("SELECT * FROM wifi_check_result")
+    suspend fun getAllWifiCheckResults(): List<WifiCheckResult>
+
+    @Query("SELECT COUNT(password) FROM tried_passwords WHERE ssid = :ssid")
+    suspend fun getTriedPasswordsCountForWifi(ssid: String): Int
 }

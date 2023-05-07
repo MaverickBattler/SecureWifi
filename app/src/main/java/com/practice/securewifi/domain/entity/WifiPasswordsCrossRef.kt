@@ -1,4 +1,4 @@
-package com.practice.securewifi.domain.relations
+package com.practice.securewifi.domain.entity
 
 import androidx.room.Entity
 

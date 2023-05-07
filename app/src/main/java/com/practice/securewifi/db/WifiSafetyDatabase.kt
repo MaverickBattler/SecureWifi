@@ -5,8 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.practice.securewifi.dao.WifiSafetyDao
-import com.practice.securewifi.domain.WifiCheckResult
-import com.practice.securewifi.domain.relations.WifiPasswordsCrossRef
+import com.practice.securewifi.domain.entity.WifiCheckResult
+import com.practice.securewifi.domain.entity.WifiPasswordsCrossRef
 
 @Database(
     entities = [WifiCheckResult::class, WifiPasswordsCrossRef::class],

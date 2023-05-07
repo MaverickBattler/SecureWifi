@@ -25,8 +25,8 @@ import com.practice.securewifi.dao.WifiSafetyDao
 import com.practice.securewifi.util.WifiManagerProvider
 import com.practice.securewifi.databinding.FragmentConnectBinding
 import com.practice.securewifi.db.WifiSafetyDatabase
-import com.practice.securewifi.domain.WifiCheckResult
-import com.practice.securewifi.domain.relations.WifiPasswordsCrossRef
+import com.practice.securewifi.domain.entity.WifiCheckResult
+import com.practice.securewifi.domain.entity.WifiPasswordsCrossRef
 import kotlinx.coroutines.*
 
 class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyListener {
@@ -175,7 +175,6 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
 
 
                     for (networkPass in networkPasswords) {
-
                         passwordCount++
 
                         // If this password has already been checked for this wifi skip it
@@ -234,7 +233,7 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
                         withContext(Dispatchers.Main) {
                             // Show the correct password
                             textView.text = getString(
-                                R.string.password_was_hacked,
+                                R.string.password_hacking_results,
                                 networkSSID,
                                 correctPassword,
                                 passwordCountNeeded
