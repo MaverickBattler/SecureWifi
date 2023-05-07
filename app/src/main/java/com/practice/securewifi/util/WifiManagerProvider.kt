@@ -1,4 +1,4 @@
-package com.practice.securewifi
+package com.practice.securewifi.util
 
 import android.content.Context
 import android.net.wifi.WifiManager

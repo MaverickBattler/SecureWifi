@@ -19,10 +19,14 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.practice.securewifi.ConnectivityActionReceiver
+import com.practice.securewifi.receiver.ConnectivityActionReceiver
 import com.practice.securewifi.R
-import com.practice.securewifi.WifiManagerProvider
+import com.practice.securewifi.dao.WifiSafetyDao
+import com.practice.securewifi.util.WifiManagerProvider
 import com.practice.securewifi.databinding.FragmentConnectBinding
+import com.practice.securewifi.db.WifiSafetyDatabase
+import com.practice.securewifi.domain.WifiCheckResult
+import com.practice.securewifi.domain.relations.WifiPasswordsCrossRef
 import kotlinx.coroutines.*
 
 class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyListener {
@@ -34,6 +38,8 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
     private lateinit var wifiManager: WifiManager
 
     private lateinit var wifiScanReceiver: BroadcastReceiver
+
+    private lateinit var dao: WifiSafetyDao
 
     private var connection: Job = Job()
 
@@ -54,6 +60,8 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
         requireActivity().registerReceiver(broadcastReceiver, intentFilter)
 
         wifiManager = WifiManagerProvider.getWifiManager(requireActivity())
+
+        dao = WifiSafetyDatabase.getInstance(requireActivity().application).wifiSafetyDao
 
         connection.cancel()
 
@@ -144,19 +152,35 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
             ) {
                 val textView: TextView = binding.securityCheckTextview
 
-                println(wifiSSIDs)
                 foundPassword = false
                 for (networkSSID in wifiSSIDs) {
+                    // If password was found during this search
                     if (foundPassword) break
+
+                    val wifi = dao.getWifiCheckResult(networkSSID)
+                    // If this network hasn't ever been a subject to hacking, save it
+                    if (wifi == null) {
+                        dao.insertWifiCheckResult(WifiCheckResult(networkSSID, null))
+                    } else if (wifi.correctPassword != null) {
+                        // If this particular network has already been hacked
+                        continue
+                    }
+                    val triedPasswords = dao.getTriedPasswordsForWifi(networkSSID)
+
                     val conf = WifiConfiguration()
                     conf.SSID = "\"" + networkSSID + "\"" // String should contain ssid in quotes
 
                     val networkPasswords = getPasswordsList(networkSSID)
                     var passwordCount = 0
+
+
                     for (networkPass in networkPasswords) {
-                        println("Trying password: $networkPass for $networkSSID")
 
                         passwordCount++
+
+                        // If this password has already been checked for this wifi skip it
+                        if (triedPasswords.contains(networkPass)) continue
+
                         withContext(Dispatchers.Main) {
                             textView.text = getString(
                                 R.string.attempting_to_connect,
@@ -185,17 +209,30 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
                             }
                         }
                         delay(interval)
+
+                        dao.insertWifiPasswordsCrossRef(
+                            WifiPasswordsCrossRef(
+                                networkSSID,
+                                networkPass
+                            )
+                        )
+
                         if (foundPassword) {
                             correctPassword = networkPass
                             passwordCountNeeded = passwordCount
+                            dao.insertWifiCheckResult(
+                                WifiCheckResult(
+                                    networkSSID,
+                                    correctPassword
+                                )
+                            )
                             break
                         }
 
                     }
                     if (foundPassword) {
                         withContext(Dispatchers.Main) {
-                            // Log the correct password
-                            println("Correct password for $networkSSID is $correctPassword")
+                            // Show the correct password
                             textView.text = getString(
                                 R.string.password_was_hacked,
                                 networkSSID,

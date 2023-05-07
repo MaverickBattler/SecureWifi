@@ -1,4 +1,4 @@
-package com.practice.securewifi
+package com.practice.securewifi.service
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
+import com.practice.securewifi.R
 import com.practice.securewifi.view.ConnectFragment
 
 class ConnectionService : Service() {

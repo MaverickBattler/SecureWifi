@@ -1,4 +1,4 @@
-package com.practice.securewifi
+package com.practice.securewifi.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 import com.practice.securewifi.domain.WifiScanResult

@@ -1,7 +1,11 @@
 package com.practice.securewifi.domain
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "wifi_check_result")
 data class WifiCheckResult(
-    val SSID: String,
-    val wasHacked: Boolean,
-    val passwordsAmount: Int
+    @PrimaryKey
+    val ssid: String,
+    val correctPassword: String?
 )

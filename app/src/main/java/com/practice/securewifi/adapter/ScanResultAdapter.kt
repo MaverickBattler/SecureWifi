@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.practice.securewifi.R
-import com.practice.securewifi.ScanResultDiffItemCallback
+import com.practice.securewifi.diffutil.ScanResultDiffItemCallback
 import com.practice.securewifi.databinding.WifiScanResultItemBinding
 import com.practice.securewifi.domain.WifiScanResult
 

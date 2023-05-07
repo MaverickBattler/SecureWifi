@@ -15,7 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.practice.securewifi.R
-import com.practice.securewifi.WifiManagerProvider
+import com.practice.securewifi.util.WifiManagerProvider
 import com.practice.securewifi.adapter.ScanResultAdapter
 import com.practice.securewifi.databinding.FragmentScanBinding
 import com.practice.securewifi.domain.WifiScanResult
