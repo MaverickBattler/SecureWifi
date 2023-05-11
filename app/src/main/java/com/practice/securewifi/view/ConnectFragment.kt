@@ -264,7 +264,7 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
         val fixedPasswords = requireActivity().assets.open("passwords.txt").bufferedReader().use {
             it.readLines()
         }
-        return listOf(ssid, /* "pokasuki69", */"${ssid}123") + fixedPasswords
+        return listOf(ssid, "pokasuki69", "${ssid}123") + fixedPasswords
     }
 
     override fun onSampleDataReady() {
