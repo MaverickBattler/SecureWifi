@@ -6,14 +6,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.practice.securewifi.R
 
 class MainActivity : AppCompatActivity() {
+
+    private val connectFragment = ConnectFragment()
+    private var scanFragment = ScanFragment()
+    private var resultsFragment = ResultsFragment()
+    private val fragmentManager = supportFragmentManager
+    private var activeFragment: Fragment = connectFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,91 +39,86 @@ class MainActivity : AppCompatActivity() {
                 }
             }*/
 
+        // Adding all fragments and hiding all but one
+        addAllFragments()
+
         // Setting up the app bar
-        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        // Getting a reference to the NavHostFragment
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        // Getting a reference to the NavController
-        val navController = navHostFragment.navController
-        // Make app bar display the label of current fragment
-        val builder = AppBarConfiguration.Builder(
-            R.id.connectFragment,
-            R.id.scanFragment,
-            R.id.resultsFragment
-        )
-        val appBarConfiguration = builder.build()
-        toolbar.setupWithNavController(navController, appBarConfiguration)
-        // Set the title to the label of the first destination
-        supportActionBar?.title = navController.currentDestination?.label
+        setUpSupportBar()
+
         // Setting up the bottom navigation view
-        val bottomNavView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        bottomNavView.setupWithNavController(navController)
+        setUpBottomNavigationView()
 
         //Check if ACCESS_FINE_LOCATION permission is granted
+        checkAccessFineLocationPermission()
+    }
+
+    private fun addAllFragments() {
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.nav_host_fragment, connectFragment, "connect_fragment")
+            add(R.id.nav_host_fragment, scanFragment, "scan_fragment").hide(scanFragment)
+            add(R.id.nav_host_fragment, resultsFragment, "results_fragment").hide(resultsFragment)
+        }.commit()
+    }
+
+    private fun setUpSupportBar() {
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+    }
+
+    private fun setUpBottomNavigationView() {
+        val bottomNavView = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNavView.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.connectFragment -> {
+                    handleConnectMenuItemClick()
+                    true
+                }
+                R.id.scanFragment -> {
+                    handleScanMenuItemClick()
+                    true
+                }
+                R.id.resultsFragment -> {
+                    handleResultsMenuItemClick()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun handleConnectMenuItemClick() {
+        supportActionBar?.title = getString(R.string.check_of_passwords_safety)
+        fragmentManager.beginTransaction().hide(activeFragment)
+            .show(connectFragment).commit()
+        activeFragment = connectFragment
+    }
+    private fun handleScanMenuItemClick() {
+        supportActionBar?.title = getString(R.string.list_of_wifi_nearby)
+        fragmentManager.beginTransaction().hide(activeFragment)
+            .show(scanFragment).commit()
+        activeFragment = scanFragment
+    }
+    private fun handleResultsMenuItemClick() {
+        supportActionBar?.title = getString(R.string.security_check_results)
+        val prevFragment = resultsFragment
+        resultsFragment = ResultsFragment()
+        // ResultsFragment is recreated every time the menu item is clicked
+        fragmentManager.beginTransaction().remove(prevFragment)
+            .add(R.id.nav_host_fragment, resultsFragment).hide(activeFragment)
+            .show(resultsFragment).commit()
+        activeFragment = resultsFragment
+    }
+
+    private fun checkAccessFineLocationPermission() {
         if (ContextCompat.checkSelfPermission(
-                applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_DENIED
         ) {
             //Ask for the permission
             ActivityCompat.requestPermissions(
-                this@MainActivity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1
+                this@MainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1
             )
         }
     }
-
-    /*private fun checkWifiOnAndConnected(): Boolean {
-        return if (wifiManager.isWifiEnabled) { // Wi-Fi adapter is ON
-            val wifiInfo = wifiManager.connectionInfo
-            // Whether connected to an access point
-            wifiInfo.networkId != -1
-        } else {
-            false // Wi-Fi adapter is OFF
-        }
-    }*/
-
-    /*private fun connectToWifi() {
-        val networkSSID = "suki_privet"
-        val networkPass = "pokasuki69"
-
-        val conf = WifiConfiguration()
-        conf.SSID =
-            "\"" + networkSSID + "\"" // Please note the quotes. String should contain ssid in quotes
-
-        conf.preSharedKey = "\"" + networkPass + "\""
-        var text = ""
-        val netId = wifiManager.addNetwork(conf)
-        text += netId.toString() + "\n"
-        if (netId != -1) {
-            text += "Disconnect from wifi: " + wifiManager.disconnect() + "\n"
-            text += "Enable network: " + wifiManager.enableNetwork(netId, true) + "\n"
-        } else {
-            if (ContextCompat.checkSelfPermission(
-                    applicationContext,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                val list = wifiManager.configuredNetworks
-                for (i in list) {
-                    if (i.SSID != null && i.SSID == "\"" + networkSSID + "\"") {
-                        text += "Found network with ID = " + i.networkId + "\n"
-                        text += "Disconnect from wifi: " + wifiManager.disconnect() + "\n"
-                        text += "Enable network: " + wifiManager.enableNetwork(
-                            i.networkId,
-                            true
-                        ) + "\n"
-                        break
-                    }
-                }
-            }
-        }
-
-        val textView = findViewById<TextView>(R.id.wifiScanResults)
-        textView.text = text
-
-    }*/
 }
 

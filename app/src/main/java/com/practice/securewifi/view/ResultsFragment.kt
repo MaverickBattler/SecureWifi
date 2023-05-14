@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.adapter.CheckResultAdapter
 import com.practice.securewifi.dao.WifiSafetyDao
 import com.practice.securewifi.databinding.FragmentResultsBinding
 import com.practice.securewifi.db.WifiSafetyDatabase
 import com.practice.securewifi.domain.display.DisplayWifiCheckResult
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -37,7 +37,7 @@ class ResultsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val adapter = CheckResultAdapter()
         binding.recyclerviewResults.adapter = adapter
-        GlobalScope.launch(Dispatchers.IO) {
+        requireActivity().lifecycleScope.launch(Dispatchers.IO) {
             val wifiList = dao.getAllWifiCheckResults()
             val wifiListToDisplay = wifiList.map {
                 DisplayWifiCheckResult(

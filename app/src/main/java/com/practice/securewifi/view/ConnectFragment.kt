@@ -19,6 +19,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.R
 import com.practice.securewifi.dao.WifiSafetyDao
 import com.practice.securewifi.databinding.FragmentConnectBinding
@@ -150,7 +151,7 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
         var correctPassword = ""
         var passwordCountNeeded = 0
 
-        connection = GlobalScope.launch {
+        connection = requireActivity().lifecycleScope.launch {
             if (ContextCompat.checkSelfPermission(
                     requireActivity().applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
@@ -293,8 +294,4 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
         foundPassword = true
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        connection.cancel()
-    }
 }
