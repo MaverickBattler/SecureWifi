@@ -25,21 +25,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/start_security_check_button"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
         android:layout_margin="20dp"
-        android:text="@string/start"
         android:textAllCaps="false"
         android:textSize="20sp"
+        android:paddingStart="28dp"
+        android:paddingEnd="22dp"
+        android:drawableLeft="@drawable/play"
+        android:drawableTint="@color/white"
         android:background="@drawable/rounded_button"
         app:layout_constraintVertical_bias="0.6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlHardcoded" />
 
     <ProgressBar
         android:id="@+id/attempting_connects_progressbar"

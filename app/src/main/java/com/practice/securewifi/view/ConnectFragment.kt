@@ -19,15 +19,16 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.practice.securewifi.receiver.ConnectivityActionReceiver
 import com.practice.securewifi.R
 import com.practice.securewifi.dao.WifiSafetyDao
-import com.practice.securewifi.util.WifiManagerProvider
 import com.practice.securewifi.databinding.FragmentConnectBinding
 import com.practice.securewifi.db.WifiSafetyDatabase
 import com.practice.securewifi.domain.entity.WifiCheckResult
 import com.practice.securewifi.domain.entity.WifiPasswordsCrossRef
+import com.practice.securewifi.receiver.ConnectivityActionReceiver
+import com.practice.securewifi.util.WifiManagerProvider
 import kotlinx.coroutines.*
+
 
 class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyListener {
 
@@ -75,6 +76,7 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
         buttonConnect.setOnClickListener {
             if (!connection.isActive) {
 
+                buttonConnect.isClickable = false
                 //val intent = Intent(requireActivity(), ConnectionService::class.java)
                 //requireActivity().startForegroundService(intent)
 
@@ -84,15 +86,18 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
                 } else {
                     wifiManager.isWifiEnabled = true
                 }
-                buttonConnect.text = getString(R.string.stop)
+
+                setButtonImg(R.drawable.stop)
                 progressBar.visibility = View.VISIBLE
 
                 startConnecting()
             } else {
+
                 connection.cancel()
-                buttonConnect.text = getString(R.string.start)
+                setButtonImg(R.drawable.play)
+
                 startSecurityCheckTextView.text = getString(R.string.check_password_security)
-                progressBar.visibility = View.INVISIBLE
+                progressBar.visibility = View.GONE
             }
         }
         super.onViewCreated(view, savedInstanceState)
@@ -150,6 +155,9 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
                     requireActivity().applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
+
+                binding.startSecurityCheckButton.isClickable = true
+
                 val textView: TextView = binding.securityCheckTextview
 
                 foundPassword = false
@@ -247,17 +255,20 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
                     }
                 }
             }
+            withContext(Dispatchers.Main) {
+                setButtonImg(R.drawable.play)
+                binding.attemptingConnectsProgressbar.visibility = View.GONE
+            }
             connection.cancel()
-            binding.startSecurityCheckButton.text = getString(R.string.start)
-            binding.attemptingConnectsProgressbar.visibility = View.INVISIBLE
         }
     }
 
     private fun scanFailure() {
         binding.securityCheckTextview.text = getString(R.string.scan_failure)
         connection.cancel()
-        binding.startSecurityCheckButton.text = getString(R.string.start)
-        binding.attemptingConnectsProgressbar.visibility = View.INVISIBLE
+        setButtonImg(R.drawable.play)
+        binding.attemptingConnectsProgressbar.visibility = View.GONE
+        binding.startSecurityCheckButton.isClickable = true
     }
 
     private fun getPasswordsList(ssid: String): List<String> {
@@ -265,6 +276,17 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
             it.readLines()
         }
         return listOf(ssid, "pokasuki69", "${ssid}123") + fixedPasswords
+    }
+
+    private fun setButtonImg(imgId: Int) {
+        val img = ContextCompat.getDrawable(requireActivity(), imgId)
+        binding.startSecurityCheckButton.setCompoundDrawablesWithIntrinsicBounds(
+            img,
+            null,
+            null,
+            null
+        )
+
     }
 
     override fun onSampleDataReady() {

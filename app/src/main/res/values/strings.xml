@@ -9,12 +9,10 @@
     <string name="couldnt_find_password">По результатам быстрой проверки уязвимостей в паролях беспроводных точек доступа поблизости не обнаружено.</string>
     <string name="disconnect_from_wifi">Отключиться от Wi-fi</string>
     <string name="check_password_security">Проверить защищенность паролей сетей Wi-Fi поблизости</string>
-    <string name="start">Начать</string>
     <string name="list_of_wifi_nearby">Wi-Fi поблизости</string>
     <string name="check_of_passwords_safety">Подбор паролей</string>
     <string name="security_check_results">Результаты проверки</string>
     <string name="scan_failure">Произошла ошибка при сканировании. Подождите немного и попробуйте снова</string>
-    <string name="stop">Остановить</string>
     <string name="notification_title">SecureWifi</string>
     <string name="notification_message">Производятся попытки подключения…</string>
     <string name="signal_level">%1$d/10</string>

@@ -9,12 +9,10 @@
     <string name="couldnt_find_password">No vulnerabilities in Wi-Fi passwords were found in a quick scan.</string>
     <string name="disconnect_from_wifi">Disconnect from Wi-Fi</string>
     <string name="check_password_security">Check the security of passwords of nearby networks</string>
-    <string name="start">Start</string>
     <string name="list_of_wifi_nearby">Wi-Fi nearby</string>
     <string name="check_of_passwords_safety">Brute-force</string>
     <string name="security_check_results">Results</string>
     <string name="scan_failure">An error occurred during the scan. Please try again later</string>
-    <string name="stop">Stop</string>
     <string name="notification_title">SecureWifi</string>
     <string name="notification_message">Attempting to connect to networks nearby…</string>
     <string name="signal_level">%1$d/10</string>
