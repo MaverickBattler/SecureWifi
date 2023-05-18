@@ -9,26 +9,24 @@ On the Connect to Nearby Wi-Fi Points screen, the user can see a button that ini
 
 Screenshots with an example of work on this screen:
 
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/ebf75679-1447-47be-8169-2e0d5e60c9f2)
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/db410b81-3729-4d8b-81f9-2780b3a859b6)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/9d7ba059-6580-460c-aa22-c80b1976169c)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/31e0c421-fc22-422b-82ad-cc7098f8cbdc)
 
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/c3393537-fb92-43cf-be01-2ac83f14f0f9)
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/fa5c8cdf-a7aa-4395-9855-ae3dd602c8ea)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/c23b3739-f99f-42b3-8f66-2b909f21bde8)
 
 ### 2.	Wi-Fi scanning screen.
 On the Wi-Fi scanning screen, there is one button that can be pressed to scan. Upon receipt of the scan results, they are shown in the list. For each Wi-Fi point, its SSID (name), capabilities such as WPS, and signal strength are displayed. In the future, it is planned to make it possible to click on the elements of the list, after which there will be a transition to a separate screen with full information about this access point, obtained as a result of scanning. It is also planned to make the signal level display more understandable visually.
 
 Screenshots with an example of work on this screen:
 
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/566eb795-2445-482c-a2ea-6f2808cb25d8)
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/fa45901f-3ec3-4114-9984-4d83ede58da2)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/f5d9d892-1abb-443c-aca2-f5c11f8145b6)
 
 ### 3.	Screen with the results of the Wi-Fi security check.
 The Wi-Fi security test results screen retrieves the Wi-Fi point security test data from the database that was collected from the tests on the first screen. In particular, for each point, its SSID (name), the fact that the correct password was found, and the number of passwords tried for this point are displayed. In the future, it is planned to add the ability to open a separate screen by clicking on an element of the list, which will show all information about the security testing of a given Wi-Fi point, including the correct password, if it was guessed, as well as a list of all passwords tried for this point.
 
 Screenshots with an example of work on this screen:
 
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/93e961a0-9ebe-4c75-8e4f-ff7673377676)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/f35d99de-f5bd-42ee-84d2-6451fe33cf8f)
 
 ## Requirements to run the application
 For the application to work properly, the user must allow the application to access the device's precise location data, which is necessary to scan nearby wireless access points. At the moment, for the correct operation of the application, if the check is carried out near the wireless access point with the correct password that was remembered by the device, the user is recommended to forget the password for this point manually in the application Wi-Fi settings. In the current version, the application will definitely work for Android versions up to 8.1 (API level 27). No functionality has been tested for newer versions.
