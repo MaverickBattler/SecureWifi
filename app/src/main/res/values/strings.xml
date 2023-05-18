@@ -4,7 +4,7 @@
     <string name="get_wifi_scan_results">Сканировать точки доступа поблизости</string>
     <string name="connect_to_wifi">Подключиться к Wi-Fi</string>
     <string name="starting_scan">Начинаем сканирование…</string>
-    <string name="attempting_to_connect">Производятся попытки подключения к %1$s \nПаролей перебрано: %2$d/%3$d \nСкорость подбора: %4$d/мин</string>
+    <string name="attempting_to_connect">Подключение к %1$s (%2$d/%3$d) \nПароль: %4$s (%5$d/%6$d) \nСкорость подбора: %7$d/мин \n</string>
     <string name="password_hacking_results">Пароль был подобран!\nСеть: %1$s \nПароль: %2$s\nПароль угадан за следующее количество попыток: %3$d</string>
     <string name="couldnt_find_password">По результатам быстрой проверки уязвимостей в паролях беспроводных точек доступа поблизости не обнаружено.</string>
     <string name="disconnect_from_wifi">Отключиться от Wi-fi</string>

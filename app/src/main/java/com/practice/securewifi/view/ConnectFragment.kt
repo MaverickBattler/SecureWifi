@@ -162,7 +162,9 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
                 val textView: TextView = binding.securityCheckTextview
 
                 foundPassword = false
+                var networkCount = 0
                 for (networkSSID in wifiSSIDs) {
+                    networkCount++
                     // If password was found during this search
                     if (foundPassword) break
 
@@ -193,9 +195,12 @@ class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyList
                             textView.text = getString(
                                 R.string.attempting_to_connect,
                                 networkSSID,
+                                networkCount, // count of networks already checked
+                                wifiSSIDs.size, // count of networks need to be checked
+                                networkPass, // password currently being tried
                                 passwordCount, // count of passwords already tried
                                 networkPasswords.size, // password count for wifi
-                                60 / (interval / 1000) // passwords a minute
+                                60 / (interval / 1000), // passwords a minute
                             )
                         }
 
