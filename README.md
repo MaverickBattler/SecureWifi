@@ -1,38 +1,32 @@
 # SecureWifi
-Дипломная работа магистра на тему "Мобильное приложение для автоматизированного тестирования безопасности беспроводных точек доступа".
-## Функциональность
-Приложение предназначено для проверки сложности паролей беспроводных точек доступа путем последовательного подключения к ним со сгенерированным для каждой точки набором паролей. Приложение также сохраняет статистику о попытках подключения. Помимо этого, приложение позволяет сканированать точки Wi-Fi поблизости, получать информацию об их возможностях.
-Приложение разделено на 3 экрана, каждый из которых отвечает за свою функциональность.
+Master's thesis on "Mobile Application for Automated Security Testing of Wireless Access Points".
+## Functionality
+The application is designed to check the complexity of passwords of wireless access points by sequentially connecting to them with a set of passwords generated for each point. The application also saves statistics about connection attempts. In addition, the application allows you to scan nearby Wi-Fi points and get information about their capabilities. 
+The application is divided into 3 screens, each of which is responsible for its functionality.
 
-### 1.	Экран подключения к точкам Wi-Fi поблизости.
-На экране подключения к точкам Wi-Fi поблизости пользователю представлена кнопка, по нажатию которой начинается проверка безопасности паролей точек Wi-Fi поблизости. Проверка безопасности включает в себя сканирование точек Wi-Fi поблизости, фильтрацию полученных результатов, генерацию набора паролей для каждой из точек, а после этого подключение к каждой из точек со сгенерированным набором паролей. Во время подключения пользователю выводится информация о том, к какой точке устройство пытается подключиться, сколько паролей уже было попробовано, сколько еще осталось попробовать, а также скорость подбора.
-Во время попыток подключения данные об них сохраняются в памяти приложения, поэтому к одной и той же точке один и тот же пароль не будет попробован дважды. Точка также будет пропускаться, если для нее уже был найден верный пароль.
-На данный момент пароли, которые генерируются для каждой точки Wi-Fi, состоят из фиксированного набора паролей, среди которых одни из самых популярных паролей для Wi-Fi, а также из набора, состоящего из паролей, сгенерированных специально для этой точки по имеющейся о ней информации. На данный момент это пароли, полученные путем манипуляций с названием точки доступа.
+### 1.	Screen for connecting to nearby Wi-Fi hotspots.
+On the Connect to Nearby Wi-Fi Points screen, the user can see a button that initiates a password security check for nearby Wi-Fi points. The security check includes scanning nearby Wi-Fi points, filtering the results, generating a set of passwords for each of the points, and then connecting to each of the points with the generated set of passwords. During the connection, the user can see the information about which point the device is trying to connect to, how many passwords have already been tried, how many are left to try and the speed of trying passwords. During connection attempts, data about them is stored in the application's memory, so the same password will not be tried twice to the same point. The point will also be skipped if a valid password has already been found for it. At the moment, the passwords that are generated for each Wi-Fi point consist of a fixed set of passwords, including some of the most popular Wi-Fi passwords, as well as a set consisting of passwords generated specifically for this point according to the information about it. At the moment, these are passwords obtained by manipulating the name of the access point.
 
-Скриншоты с примером работы на данном экране:
+Screenshots with an example of work on this screen:
 
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/ebf75679-1447-47be-8169-2e0d5e60c9f2)
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/db410b81-3729-4d8b-81f9-2780b3a859b6)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/9d7ba059-6580-460c-aa22-c80b1976169c)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/31e0c421-fc22-422b-82ad-cc7098f8cbdc)
 
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/c3393537-fb92-43cf-be01-2ac83f14f0f9)
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/fa5c8cdf-a7aa-4395-9855-ae3dd602c8ea)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/c23b3739-f99f-42b3-8f66-2b909f21bde8)
 
-### 2.	Экран сканирования Wi-Fi поблизости.
-На экране сканирования Wi-Fi поблизости есть одна кнопка, по нажатию на которую производится сканирование. По факту получения результатов сканирования они показываются в списке. Для каждой точки Wi-Fi выводятся ее SSID (название), возможности, например, WPS, и уровень сигнала. В дальнейшем планируется сделать возможность нажатия на элементы списка, после которого будет производится переход на отдельный экран с полной информацией о данной точке доступа, полученной в результате сканирования. Также планируется сделать более понятным визуально отображение уровня сигнала.
+### 2.	Wi-Fi scanning screen.
+On the Wi-Fi scanning screen, there is one button that can be pressed to scan. Upon receipt of the scan results, they are shown in the list. For each Wi-Fi point, its SSID (name), capabilities such as WPS, and signal strength are displayed. In the future, it is planned to make it possible to click on the elements of the list, after which there will be a transition to a separate screen with full information about this access point, obtained as a result of scanning. It is also planned to make the signal level display more understandable visually.
 
-Скриншоты с примером работы на данном экране:
+Screenshots with an example of work on this screen:
 
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/566eb795-2445-482c-a2ea-6f2808cb25d8)
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/fa45901f-3ec3-4114-9984-4d83ede58da2)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/f5d9d892-1abb-443c-aca2-f5c11f8145b6)
 
-### 3.	Экран с результатами проверки безопасности Wi-Fi.
-На экране с результатами проверки безопасности Wi-Fi производится получение данных о проверке безопасности точек Wi-Fi из базы данных, которые были собраны в ходе проверок на первом экране. В частности, для каждой точки выводятся ее SSID (название), факт нахождения правильного пароля и количество паролей, испробованных для данной точки. В дальнейшем планируется добавить возможность открытия отдельного экрана по нажатию на элемент списка, в котором будет показана вся информация о тестировании безопасности данной точки Wi-Fi, в том числе правильный пароль, если он был подобран, а также список всех испробованных для данной точки паролей.
+### 3.	Screen with the results of the Wi-Fi security check.
+The Wi-Fi security test results screen retrieves the Wi-Fi point security test data from the database that was collected from the tests on the first screen. In particular, for each point, its SSID (name), the fact that the correct password was found, and the number of passwords tried for this point are displayed. In the future, it is planned to add the ability to open a separate screen by clicking on an element of the list, which will show all information about the security testing of a given Wi-Fi point, including the correct password, if it was guessed, as well as a list of all passwords tried for this point.
 
-Скриншоты с примером работы на данном экране:
+Screenshots with an example of work on this screen:
 
-![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/93e961a0-9ebe-4c75-8e4f-ff7673377676)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/f35d99de-f5bd-42ee-84d2-6451fe33cf8f)
 
-## Необходимости для запуска
-Для правильной работы приложения пользователь должен разрешить приложению доступ к данным о местоположении устройства, что необходимо для сканирования беспроводных точек доступа поблизости.
-На данный момент для корректной работы приложения в случае, если проверка проводится рядом с точкой с верным паролем, запомненным устройством, пользователю рекомендуется забыть пароль для данной точки вручную в настройках приложения.
-В текущей версии приложение будет точно работать для версий Android до 8.1 (API level 27). Для более новых версий тестирования функциональности не производилось.
+## Requirements to run the application
+For the application to work properly, the user must allow the application to access the device's precise location data, which is necessary to scan nearby wireless access points. At the moment, for the correct operation of the application, if the check is carried out near the wireless access point with the correct password that was remembered by the device, the user is recommended to forget the password for this point manually in the application Wi-Fi settings. In the current version, the application will definitely work for Android versions up to 8.1 (API level 27). No functionality has been tested for newer versions.
