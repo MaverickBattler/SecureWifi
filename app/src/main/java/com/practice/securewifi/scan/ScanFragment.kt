@@ -1,4 +1,4 @@
-package com.practice.securewifi.view
+package com.practice.securewifi.scan
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -16,9 +16,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.practice.securewifi.R
 import com.practice.securewifi.util.WifiManagerProvider
-import com.practice.securewifi.adapter.ScanResultAdapter
 import com.practice.securewifi.databinding.FragmentScanBinding
-import com.practice.securewifi.domain.display.WifiScanResult
 
 class ScanFragment : Fragment() {
 

@@ -1,4 +1,4 @@
-package com.practice.securewifi.domain.display
+package com.practice.securewifi.scan
 
 data class WifiScanResult(
     val ssid: String,

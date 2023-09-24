@@ -1,4 +1,4 @@
-package com.practice.securewifi.view
+package com.practice.securewifi.check_results
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.practice.securewifi.adapter.CheckResultAdapter
-import com.practice.securewifi.dao.WifiSafetyDao
+import com.practice.securewifi.result_storage.dao.WifiSafetyDao
 import com.practice.securewifi.databinding.FragmentResultsBinding
-import com.practice.securewifi.db.WifiSafetyDatabase
-import com.practice.securewifi.domain.display.DisplayWifiCheckResult
+import com.practice.securewifi.result_storage.database.WifiSafetyDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

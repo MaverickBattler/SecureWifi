@@ -1,12 +1,12 @@
-package com.practice.securewifi.db
+package com.practice.securewifi.result_storage.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.practice.securewifi.dao.WifiSafetyDao
-import com.practice.securewifi.domain.entity.WifiCheckResult
-import com.practice.securewifi.domain.entity.WifiPasswordsCrossRef
+import com.practice.securewifi.result_storage.dao.WifiSafetyDao
+import com.practice.securewifi.result_storage.entity.WifiCheckResult
+import com.practice.securewifi.result_storage.entity.WifiPasswordsCrossRef
 
 @Database(
     entities = [WifiCheckResult::class, WifiPasswordsCrossRef::class],

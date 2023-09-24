@@ -1,14 +1,17 @@
-package com.practice.securewifi.service
+package com.practice.securewifi.connect
 
+import android.Manifest
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.wifi.WifiConfiguration
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import com.practice.securewifi.R
-import com.practice.securewifi.view.ConnectFragment
 
 class ConnectionService : Service() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -36,7 +39,7 @@ class ConnectionService : Service() {
         startForeground(23, notification)
 
         /*if (ContextCompat.checkSelfPermission(
-                requireActivity().applicationContext,
+                applicationContext,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
@@ -59,14 +62,14 @@ class ConnectionService : Service() {
             val networkPasswords = getPasswordsList(networkSSID)
             for (networkPass in networkPasswords) {
                 //text += "Trying password: $networkPass" + "\n"
-                *//*requireActivity().runOnUiThread {
+                /*requireActivity().runOnUiThread {
                     Toast.makeText(
                         requireActivity(),
                         "Starting to connect with password: $networkPass " + System.currentTimeMillis() % 10000,
                         Toast.LENGTH_SHORT
                     ).show()
 
-                }*//*
+                }*/
 
                 conf.preSharedKey = "\"" + networkPass + "\""
                 // only works for API < 29

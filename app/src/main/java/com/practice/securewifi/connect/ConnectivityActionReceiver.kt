@@ -1,4 +1,4 @@
-package com.practice.securewifi.receiver
+package com.practice.securewifi.connect
 
 import android.content.BroadcastReceiver
 import android.content.Context

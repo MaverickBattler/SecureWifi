@@ -1,4 +1,4 @@
-package com.practice.securewifi.view
+package com.practice.securewifi.connect
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -21,12 +21,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.R
-import com.practice.securewifi.dao.WifiSafetyDao
+import com.practice.securewifi.result_storage.dao.WifiSafetyDao
 import com.practice.securewifi.databinding.FragmentConnectBinding
-import com.practice.securewifi.db.WifiSafetyDatabase
-import com.practice.securewifi.domain.entity.WifiCheckResult
-import com.practice.securewifi.domain.entity.WifiPasswordsCrossRef
-import com.practice.securewifi.receiver.ConnectivityActionReceiver
+import com.practice.securewifi.result_storage.database.WifiSafetyDatabase
+import com.practice.securewifi.result_storage.entity.WifiCheckResult
+import com.practice.securewifi.result_storage.entity.WifiPasswordsCrossRef
 import com.practice.securewifi.util.WifiManagerProvider
 import kotlinx.coroutines.*
 

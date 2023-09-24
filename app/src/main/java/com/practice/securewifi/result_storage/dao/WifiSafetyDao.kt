@@ -1,8 +1,8 @@
-package com.practice.securewifi.dao
+package com.practice.securewifi.result_storage.dao
 
 import androidx.room.*
-import com.practice.securewifi.domain.entity.WifiCheckResult
-import com.practice.securewifi.domain.entity.WifiPasswordsCrossRef
+import com.practice.securewifi.result_storage.entity.WifiCheckResult
+import com.practice.securewifi.result_storage.entity.WifiPasswordsCrossRef
 
 @Dao
 interface WifiSafetyDao {

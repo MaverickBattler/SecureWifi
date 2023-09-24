@@ -1,4 +1,4 @@
-package com.practice.securewifi.adapter
+package com.practice.securewifi.check_results
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.practice.securewifi.R
 import com.practice.securewifi.databinding.WifiCheckResultItemBinding
-import com.practice.securewifi.diffutil.CheckResultDiffItemCallback
-import com.practice.securewifi.domain.display.DisplayWifiCheckResult
 
 class CheckResultAdapter :
     ListAdapter<DisplayWifiCheckResult, CheckResultAdapter.CheckResultViewHolder>(

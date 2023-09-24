@@ -1,4 +1,4 @@
-package com.practice.securewifi.domain.entity
+package com.practice.securewifi.result_storage.entity
 
 import androidx.room.Entity
 

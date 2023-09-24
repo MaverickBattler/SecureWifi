@@ -1,4 +1,4 @@
-package com.practice.securewifi.adapter
+package com.practice.securewifi.scan
 
 import android.net.wifi.WifiManager
 import android.view.LayoutInflater
@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.practice.securewifi.R
-import com.practice.securewifi.diffutil.ScanResultDiffItemCallback
 import com.practice.securewifi.databinding.WifiScanResultItemBinding
-import com.practice.securewifi.domain.display.WifiScanResult
 
 class ScanResultAdapter :
     ListAdapter<WifiScanResult, ScanResultAdapter.ScanResultViewHolder>(ScanResultDiffItemCallback()) {
