@@ -13,6 +13,7 @@
     <string name="check_of_passwords_safety">Подбор паролей</string>
     <string name="security_check_results">Результаты проверки</string>
     <string name="scan_failure">Произошла ошибка при сканировании. Подождите немного и попробуйте снова</string>
+    <string name="connection_start_failure">Произошла ошибка при начале попыток подключения. Подождите немного и попробуйте снова</string>
     <string name="notification_title">SecureWifi</string>
     <string name="notification_message">Производятся попытки подключения…</string>
     <string name="signal_level">%1$d/10</string>

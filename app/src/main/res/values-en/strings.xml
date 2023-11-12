@@ -12,6 +12,7 @@
     <string name="list_of_wifi_nearby">Wi-Fi nearby</string>
     <string name="check_of_passwords_safety">Connection</string>
     <string name="security_check_results">Results</string>
+    <string name="connection_start_failure">An error occurred when trying to start connection attempts. Please try again later</string>
     <string name="scan_failure">An error occurred during the scan. Please try again later</string>
     <string name="notification_title">SecureWifi</string>
     <string name="notification_message">Attempting to connect to networks nearby…</string>

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.practice.securewifi.R
 import com.practice.securewifi.databinding.WifiCheckResultItemBinding
+import com.practice.securewifi.util.Colors
 
 class CheckResultAdapter :
     ListAdapter<DisplayWifiCheckResult, CheckResultAdapter.CheckResultViewHolder>(
@@ -40,23 +41,22 @@ class CheckResultAdapter :
             val passwordGuessedTextView = binding.passwordGuessedTextview
             val passwordCheckCountTextView = binding.passwordsCheckedCountTextview
             wifiSsidTextView.text = item.ssid
-            val textViewContext = passwordGuessedTextView.context
+            val context = binding.root.context
             if (item.correctPassword != null) {
                 passwordGuessedTextView.text =
-                    textViewContext.getString(R.string.password_was_hacked)
+                    context.getString(R.string.password_was_hacked)
                 wifiSsidTextView.setTextColor(
                     ContextCompat.getColor(
-                        textViewContext, R.color.success_green
+                        context, R.color.success_green
                     )
                 )
             } else {
                 passwordGuessedTextView.text =
-                    textViewContext.getString(R.string.password_was_not_hacked)
-                wifiSsidTextView.setTextColor(
-                    ContextCompat.getColor(
-                        textViewContext, R.color.dark_gray
-                    )
-                )
+                    context.getString(R.string.password_was_not_hacked)
+                val colorFromTheme = Colors.getThemeColorFromAttr(R.attr.textColorMain, context)
+                colorFromTheme?.let { color ->
+                    wifiSsidTextView.setTextColor(color)
+                }
             }
             passwordCheckCountTextView.text = item.triedPasswordsCount.toString()
         }

@@ -43,6 +43,9 @@ ext {
 }
 
 dependencies {
+    // Timber
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
 

@@ -1,301 +1,121 @@
 package com.practice.securewifi.connect
 
 import android.Manifest
-import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.net.wifi.WifiConfiguration
-import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.R
-import com.practice.securewifi.result_storage.dao.WifiSafetyDao
 import com.practice.securewifi.databinding.FragmentConnectBinding
-import com.practice.securewifi.result_storage.database.WifiSafetyDatabase
-import com.practice.securewifi.result_storage.entity.WifiCheckResult
-import com.practice.securewifi.result_storage.entity.WifiPasswordsCrossRef
-import com.practice.securewifi.util.WifiManagerProvider
-import kotlinx.coroutines.*
+import timber.log.Timber
 
 
-class ConnectFragment : Fragment(), ConnectivityActionReceiver.OnSampleReadyListener {
-
-    private val interval = 3000L
-
-    private var foundPassword = false
-
-    private lateinit var wifiManager: WifiManager
-
-    private lateinit var wifiScanReceiver: BroadcastReceiver
-
-    private lateinit var dao: WifiSafetyDao
-
-    private var connection: Job = Job()
+class ConnectFragment : Fragment(), UpdateListener {
 
     private var _binding: FragmentConnectBinding? = null
 
     private val binding get() = _binding!!
 
-    //val uiScope = CoroutineScope(Dispatchers.Main + connection)
+    private var service: ConnectionService? = null
 
-    //@RequiresApi(Build.VERSION_CODES.O)
+    private var serviceBound = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentConnectBinding.inflate(inflater, container, false)
-        val broadcastReceiver = ConnectivityActionReceiver(this)
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
-        requireActivity().registerReceiver(broadcastReceiver, intentFilter)
-
-        wifiManager = WifiManagerProvider.getWifiManager(requireActivity())
-
-        dao = WifiSafetyDatabase.getInstance(requireActivity().application).wifiSafetyDao
-
-        connection.cancel()
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val buttonConnect: Button = binding.startSecurityCheckButton
-        val progressBar: ProgressBar = binding.attemptingConnectsProgressbar
-        val startSecurityCheckTextView = binding.securityCheckTextview
+        val buttonConnect: SecurityCheckButton = binding.securityCheckButton
+        val securityCheckTextView = binding.securityCheckTextview
+        askForWifiEnabled()
+        val mConnection: ServiceConnection = object : ServiceConnection {
+
+            override fun onServiceConnected(className: ComponentName?, binder: IBinder?) {
+                val localBinder = binder as ConnectionService.LocalBinder
+                service = localBinder.service
+                service?.addListener(this@ConnectFragment)
+                serviceBound = true
+            }
+
+            override fun onServiceDisconnected(className: ComponentName?) {
+                serviceBound = false
+            }
+        }
+        buttonConnect.setState(SecurityCheckButton.State.INITIAL)
         buttonConnect.setOnClickListener {
-            if (!connection.isActive) {
-
-                buttonConnect.isClickable = false
-                //val intent = Intent(requireActivity(), ConnectionService::class.java)
-                //requireActivity().startForegroundService(intent)
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
-                    startActivityForResult(panelIntent, 0)
-                } else {
-                    wifiManager.isWifiEnabled = true
-                }
-
-                setButtonImg(R.drawable.stop)
-                progressBar.visibility = View.VISIBLE
-
-                startConnecting()
+            //Check if ACCESS_FINE_LOCATION permission is granted
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity().applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                //Ask for the permission
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1
+                )
             } else {
+                buttonConnect.setState(SecurityCheckButton.State.PREPARATION)
 
-                connection.cancel()
-                setButtonImg(R.drawable.play)
-
-                startSecurityCheckTextView.text = getString(R.string.check_password_security)
-                progressBar.visibility = View.GONE
+                val intent = Intent(requireActivity(), ConnectionService::class.java)
+                requireActivity().startService(intent)
+                if (!requireActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE)) {
+                    securityCheckTextView.text = getString(R.string.connection_start_failure)
+                } else {
+                    buttonConnect.setState(SecurityCheckButton.State.PROGRESS)
+                }
             }
         }
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun startConnecting() {
-        wifiScanReceiver = object : BroadcastReceiver() {
+    override fun onDestroy() {
+        serviceBound = false
+        super.onDestroy()
+    }
 
-            override fun onReceive(context: Context, intent: Intent) {
-                val success = intent.getBooleanExtra(
-                    WifiManager.EXTRA_RESULTS_UPDATED, false
-                )
-                if (success) {
-                    scanSuccess()
-                } else {
-                    scanFailure()
-                }
-                requireActivity().unregisterReceiver(wifiScanReceiver)
+    private fun askForWifiEnabled() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // At this point it might be a good idea to ask the user to enable his wi-fi
+            val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
+            ActivityCompat.startActivityForResult(requireActivity(), panelIntent, 0, null)
+        }
+    }
+
+    override fun onUpdate(command: Command) {
+        when (command) {
+            is Command.StopConnections -> {
+                Timber.i("abcdea StopConnections")
+                binding.securityCheckButton.setState(SecurityCheckButton.State.INITIAL)
+            }
+            is Command.PrepareForConnections -> {
+                Timber.i("abcdea PrepareForConnections")
+                binding.securityCheckButton.setState(SecurityCheckButton.State.PREPARATION)
+            }
+            is Command.StartConnections -> {
+                Timber.i("abcdea StartConnections")
+                binding.securityCheckButton.setState(SecurityCheckButton.State.PROGRESS)
+            }
+            is Command.AskForAccessFineLocationPermission -> {
+                Timber.i("abcdea AskForAccessFineLocationPermission")
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            }
+            is Command.ShowMessageToUser -> {
+                Timber.i("abcdea ShowMessageToUser: " + command.message)
+                binding.securityCheckTextview.text = command.message
             }
         }
-
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-        requireActivity().registerReceiver(wifiScanReceiver, intentFilter)
-
-        wifiManager.startScan()
     }
-
-    private fun scanSuccess() {
-        //Check if ACCESS_FINE_LOCATION permission is granted
-        if (ContextCompat.checkSelfPermission(
-                requireActivity().applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_DENIED
-        ) {
-            //Ask for the permission
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1
-            )
-        }
-
-        val nearbyWifiPoints = wifiManager.scanResults
-
-        val wifiSSIDs = nearbyWifiPoints.filter {
-            it.SSID != "" && WifiManager.calculateSignalLevel(
-                it.level,
-                10
-            ) > 6
-        }.sortedByDescending { it.level }.map { it.SSID }
-
-        var correctPassword = ""
-        var passwordCountNeeded = 0
-
-        connection = requireActivity().lifecycleScope.launch {
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity().applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-
-                binding.startSecurityCheckButton.isClickable = true
-
-                val textView: TextView = binding.securityCheckTextview
-
-                foundPassword = false
-                var networkCount = 0
-                for (networkSSID in wifiSSIDs) {
-                    networkCount++
-                    // If password was found during this search
-                    if (foundPassword) break
-
-                    val wifi = dao.getWifiCheckResult(networkSSID)
-                    // If this network hasn't ever been a subject to hacking, save it
-                    if (wifi == null) {
-                        dao.insertWifiCheckResult(WifiCheckResult(networkSSID, null))
-                    } else if (wifi.correctPassword != null) {
-                        // If this particular network has already been hacked
-                        continue
-                    }
-                    val triedPasswords = dao.getTriedPasswordsForWifi(networkSSID)
-
-                    val conf = WifiConfiguration()
-                    conf.SSID = "\"" + networkSSID + "\"" // String should contain ssid in quotes
-
-                    val networkPasswords = getPasswordsList(networkSSID)
-                    var passwordCount = 0
-
-
-                    for (networkPass in networkPasswords) {
-                        passwordCount++
-
-                        // If this password has already been checked for this wifi skip it
-                        if (triedPasswords.contains(networkPass)) continue
-
-                        withContext(Dispatchers.Main) {
-                            textView.text = getString(
-                                R.string.attempting_to_connect,
-                                networkSSID,
-                                networkCount, // count of networks already checked
-                                wifiSSIDs.size, // count of networks need to be checked
-                                networkPass, // password currently being tried
-                                passwordCount, // count of passwords already tried
-                                networkPasswords.size, // password count for wifi
-                                60 / (interval / 1000), // passwords a minute
-                            )
-                        }
-
-                        conf.preSharedKey = "\"" + networkPass + "\""
-                        // only works for API < 29
-                        val netId = wifiManager.addNetwork(conf)
-                        if (netId != -1) {
-                            wifiManager.disconnect()
-                            wifiManager.enableNetwork(netId, true)
-                        } else {
-                            val list = wifiManager.configuredNetworks
-                            for (network in list) {
-                                if (network.SSID != null && network.SSID == "\"" + networkSSID + "\"") {
-                                    wifiManager.disconnect()
-                                    wifiManager.enableNetwork(network.networkId, true)
-                                    wifiManager.reconnect()
-                                    break
-                                }
-                            }
-                        }
-                        delay(interval)
-
-                        dao.insertWifiPasswordsCrossRef(
-                            WifiPasswordsCrossRef(
-                                networkSSID,
-                                networkPass
-                            )
-                        )
-
-                        if (foundPassword) {
-                            correctPassword = networkPass
-                            passwordCountNeeded = passwordCount
-                            dao.insertWifiCheckResult(
-                                WifiCheckResult(
-                                    networkSSID,
-                                    correctPassword
-                                )
-                            )
-                            break
-                        }
-
-                    }
-                    if (foundPassword) {
-                        withContext(Dispatchers.Main) {
-                            // Show the correct password
-                            textView.text = getString(
-                                R.string.password_hacking_results,
-                                networkSSID,
-                                correctPassword,
-                                passwordCountNeeded
-                            )
-                        }
-                    }
-                }
-                if (!foundPassword) {
-                    withContext(Dispatchers.Main) {
-                        textView.text = getString(R.string.couldnt_find_password)
-                    }
-                }
-            }
-            withContext(Dispatchers.Main) {
-                setButtonImg(R.drawable.play)
-                binding.attemptingConnectsProgressbar.visibility = View.GONE
-            }
-            connection.cancel()
-        }
-    }
-
-    private fun scanFailure() {
-        binding.securityCheckTextview.text = getString(R.string.scan_failure)
-        connection.cancel()
-        setButtonImg(R.drawable.play)
-        binding.attemptingConnectsProgressbar.visibility = View.GONE
-        binding.startSecurityCheckButton.isClickable = true
-    }
-
-    private fun getPasswordsList(ssid: String): List<String> {
-        val fixedPasswords = requireActivity().assets.open("passwords.txt").bufferedReader().use {
-            it.readLines()
-        }
-        return listOf(ssid, "pokasuki69", "${ssid}123") + fixedPasswords
-    }
-
-    private fun setButtonImg(imgId: Int) {
-        val img = ContextCompat.getDrawable(requireActivity(), imgId)
-        binding.startSecurityCheckButton.setCompoundDrawablesWithIntrinsicBounds(
-            img,
-            null,
-            null,
-            null
-        )
-
-    }
-
-    override fun onSampleDataReady() {
-        foundPassword = true
-    }
-
 }

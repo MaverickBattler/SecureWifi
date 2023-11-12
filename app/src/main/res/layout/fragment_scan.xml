@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/backgroundColor"
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,7 @@
         android:paddingTop="40dp"
         android:paddingBottom="10dp"
         android:text="@string/wifi_scan_results"
-        android:textColor="@color/black"
+        android:textColor="?attr/textColorMain"
         android:textSize="20sp" />
 
     <Button
