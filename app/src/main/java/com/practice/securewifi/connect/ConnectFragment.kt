@@ -1,6 +1,7 @@
 package com.practice.securewifi.connect
 
 import android.Manifest
+import android.app.ActivityManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -9,7 +10,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.practice.securewifi.R
 import com.practice.securewifi.databinding.FragmentConnectBinding
-import timber.log.Timber
 
 
 class ConnectFragment : Fragment(), UpdateListener {
@@ -31,6 +30,8 @@ class ConnectFragment : Fragment(), UpdateListener {
 
     private var serviceBound = false
 
+    private var mConnection: ServiceConnection? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -41,13 +42,19 @@ class ConnectFragment : Fragment(), UpdateListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val buttonConnect: SecurityCheckButton = binding.securityCheckButton
         val securityCheckTextView = binding.securityCheckTextview
-        askForWifiEnabled()
-        val mConnection: ServiceConnection = object : ServiceConnection {
+        mConnection = object : ServiceConnection {
 
             override fun onServiceConnected(className: ComponentName?, binder: IBinder?) {
                 val localBinder = binder as ConnectionService.LocalBinder
                 service = localBinder.service
                 service?.addListener(this@ConnectFragment)
+                val latestData = service?.getLatestData()
+                latestData?.first?.let { firstCommand ->
+                    onUpdate(firstCommand)
+                }
+                latestData?.second?.let { secondCommand ->
+                    onUpdate(secondCommand)
+                }
                 serviceBound = true
             }
 
@@ -55,65 +62,110 @@ class ConnectFragment : Fragment(), UpdateListener {
                 serviceBound = false
             }
         }
-        buttonConnect.setState(SecurityCheckButton.State.INITIAL)
-        buttonConnect.setOnClickListener {
-            //Check if ACCESS_FINE_LOCATION permission is granted
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity().applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_DENIED
-            ) {
-                //Ask for the permission
-                requestPermissions(
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1
-                )
-            } else {
-                buttonConnect.setState(SecurityCheckButton.State.PREPARATION)
 
+        mConnection?.let { mConnection ->
+            // if service is already running
+            if (isMyServiceRunning(ConnectionService::class.java)) {
                 val intent = Intent(requireActivity(), ConnectionService::class.java)
-                requireActivity().startService(intent)
-                if (!requireActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE)) {
-                    securityCheckTextView.text = getString(R.string.connection_start_failure)
-                } else {
-                    buttonConnect.setState(SecurityCheckButton.State.PROGRESS)
+                buttonConnect.setState(SecurityCheckButton.State.PREPARATION)
+                requireActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+            } else {
+                buttonConnect.setState(SecurityCheckButton.State.INITIAL)
+            }
+
+            buttonConnect.setOnClickListener {
+                if (checkForAccessFineLocationPermission() && checkForPostNotificationsPermission()) {
+                    buttonConnect.setState(SecurityCheckButton.State.PREPARATION)
+                    val intent = Intent(requireActivity(), ConnectionService::class.java)
+                    requireActivity().startService(intent)
+                    if (!requireActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE)) {
+                        securityCheckTextView.text = getString(R.string.connection_start_failure)
+                        buttonConnect.setState(SecurityCheckButton.State.INITIAL)
+                    } else {
+                        buttonConnect.setState(SecurityCheckButton.State.PROGRESS)
+                    }
                 }
             }
         }
+
         super.onViewCreated(view, savedInstanceState)
     }
 
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager =
+            requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
+        for (service in manager!!.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
+
     override fun onDestroy() {
+        mConnection?.let {
+            requireActivity().unbindService(it)
+        }
         serviceBound = false
         super.onDestroy()
     }
 
-    private fun askForWifiEnabled() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // At this point it might be a good idea to ask the user to enable his wi-fi
-            val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
-            ActivityCompat.startActivityForResult(requireActivity(), panelIntent, 0, null)
+    private fun checkForAccessFineLocationPermission(): Boolean {
+        return if (ContextCompat.checkSelfPermission(
+                requireActivity().applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            // If permission is not yet granted, ask for the permission
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
+            false
+        } else {
+            true
         }
+    }
+
+    private fun checkForPostNotificationsPermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return if (ContextCompat.checkSelfPermission(
+                    requireActivity().applicationContext, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                // If permission is not yet granted, ask for the permission
+                requestPermissions(
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1
+                )
+                false
+            } else {
+                true
+            }
+        } else {
+            return true
+        }
+
     }
 
     override fun onUpdate(command: Command) {
         when (command) {
             is Command.StopConnections -> {
-                Timber.i("abcdea StopConnections")
                 binding.securityCheckButton.setState(SecurityCheckButton.State.INITIAL)
             }
+
             is Command.PrepareForConnections -> {
-                Timber.i("abcdea PrepareForConnections")
                 binding.securityCheckButton.setState(SecurityCheckButton.State.PREPARATION)
             }
+
             is Command.StartConnections -> {
-                Timber.i("abcdea StartConnections")
                 binding.securityCheckButton.setState(SecurityCheckButton.State.PROGRESS)
             }
+
             is Command.AskForAccessFineLocationPermission -> {
-                Timber.i("abcdea AskForAccessFineLocationPermission")
                 requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
             }
+
             is Command.ShowMessageToUser -> {
-                Timber.i("abcdea ShowMessageToUser: " + command.message)
                 binding.securityCheckTextview.text = command.message
             }
         }

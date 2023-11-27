@@ -14,8 +14,12 @@
     <string name="security_check_results">Results</string>
     <string name="connection_start_failure">An error occurred when trying to start connection attempts. Please try again later</string>
     <string name="scan_failure">An error occurred during the scan. Please try again later</string>
-    <string name="notification_title">SecureWifi</string>
-    <string name="notification_message">Attempting to connect to networks nearby…</string>
+    <string name="performing_connections">Attempting to connect to networks nearby</string>
+    <string name="connection_attempts_ended_success">Password was hacked!</string>
+    <string name="connection_attempts_ended_nothing_found">The check is completed</string>
+    <string name="attempting_to_connect_notification">Wifi: %1$s (%2$d/%3$d) \nPassword: %4$s (%5$d/%6$d)</string>
+    <string name="password_hacking_results_notification">Network: %1$s \nPassword: %2$s</string>
+    <string name="couldnt_find_password_notification">No vulnerabilities in Wi-Fi passwords were found.</string>
     <string name="signal_level">%1$d/10</string>
     <string name="passwords_checked">Passwords checked:</string>
     <string name="password_was_hacked">Password was hacked</string>

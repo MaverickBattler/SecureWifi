@@ -14,7 +14,10 @@ import android.os.*
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.practice.securewifi.R
+import com.practice.securewifi.app.MainActivity
 import com.practice.securewifi.result_storage.dao.WifiSafetyDao
 import com.practice.securewifi.result_storage.database.WifiSafetyDatabase
 import com.practice.securewifi.result_storage.entity.WifiCheckResult
@@ -40,9 +43,14 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     private lateinit var binder: LocalBinder
 
+    private lateinit var notificationChannel: String
+
     private var updateListener: UpdateListener? = null
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private var latestCommand: Command = Command.StartConnections
+    private var latestMessage: Command? = null
 
     inner class LocalBinder : Binder() {
         val service: ConnectionService = this@ConnectionService
@@ -50,6 +58,10 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     fun addListener(listener: UpdateListener) {
         updateListener = listener
+    }
+
+    fun getLatestData(): Pair<Command, Command?> {
+        return Pair(latestCommand, latestMessage)
     }
 
     override fun onCreate() {
@@ -71,8 +83,8 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         if (!connection.isActive) {
             createNotification()
             wifiManager.isWifiEnabled = true
-            updateListener?.onUpdate(Command.ShowMessageToUser(getString(R.string.starting_scan)))
-            updateListener?.onUpdate(Command.PrepareForConnections)
+            update(Command.ShowMessageToUser(getString(R.string.starting_scan)))
+            update(Command.PrepareForConnections)
             startScanningForNearbyWifi()
         } else {
             unregisterWifiScanReceiverIfRegistered()
@@ -87,20 +99,29 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         super.onDestroy()
     }
 
-    override fun onBind(p0: Intent?): IBinder {
+    override fun onRebind(intent: Intent?) {
+        update(latestCommand)
+        latestMessage?.let {
+            update(it)
+        }
+        super.onRebind(intent)
+    }
+
+    override fun onBind(intent: Intent?): IBinder {
+        update(latestCommand)
+        latestMessage?.let {
+            update(it)
+        }
         return binder
     }
 
     private fun createNotification() {
-        val pendingIntent: PendingIntent =
-            Intent(this, ConnectFragment::class.java).let { notificationIntent ->
-                PendingIntent.getActivity(
-                    this, 0, notificationIntent,
-                    PendingIntent.FLAG_IMMUTABLE
-                )
-            }
+        val intent = Intent(this, MainActivity::class.java)
+        intent.action = Intent.ACTION_MAIN
+        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        notificationChannel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel("my_service", "My Background Service")
         } else {
             // If earlier version channel ID is not used
@@ -110,15 +131,61 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
         val notification = NotificationCompat.Builder(
             this,
-            channelId
+            notificationChannel
         )
-            .setContentTitle(getText(R.string.notification_title))
-            .setContentText(getText(R.string.notification_message))
+            .setContentTitle(getText(R.string.performing_connections))
+            .setContentText(getText(R.string.starting_scan))
             .setSmallIcon(R.drawable.wifi_password)
             .setContentIntent(pendingIntent)
             .build()
 
-        startForeground(23, notification)
+        startForeground(PERSISTENT_NOTIFICATION_ID, notification)
+    }
+
+    private fun updateNotification(contentTitle: CharSequence, contentText: CharSequence) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.action = Intent.ACTION_MAIN
+        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val notification = NotificationCompat.Builder(
+            this,
+            notificationChannel
+        )
+            .setContentTitle(contentTitle)
+            .setContentText(contentText)
+            .setSmallIcon(R.drawable.wifi_password)
+            .setContentIntent(pendingIntent)
+            .build()
+
+        val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        mNotificationManager.notify(PERSISTENT_NOTIFICATION_ID, notification)
+    }
+
+    private fun showNotification(contentTitle: CharSequence?, contentText: CharSequence) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.action = Intent.ACTION_MAIN
+        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val notification = NotificationCompat.Builder(
+            this,
+            notificationChannel
+        )
+            .setContentTitle(contentTitle)
+            .setContentText(contentText)
+            .setSmallIcon(R.drawable.wifi_password)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .build()
+        with(NotificationManagerCompat.from(this)) {
+            if (ContextCompat.checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                // notificationId is a unique int for each notification
+                notify(DISMISSABLE_NOTIFICATION_ID, notification)
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -168,7 +235,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            updateListener?.onUpdate(Command.AskForAccessFineLocationPermission)
+            update(Command.AskForAccessFineLocationPermission)
             return
         }
         val nearbyWifiPoints = wifiManager.scanResults
@@ -186,7 +253,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         connection = coroutineScope.launch {
 
             withContext(Dispatchers.Main) {
-                updateListener?.onUpdate(Command.StartConnections)
+                update(Command.StartConnections)
             }
             foundPassword = false
             var networkCount = 0
@@ -218,18 +285,28 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                     if (triedPasswords.contains(networkPass)) continue
 
                     withContext(Dispatchers.Main) {
-                        updateListener?.onUpdate(
-                            Command.ShowMessageToUser(
-                                getString(
-                                    R.string.attempting_to_connect,
-                                    networkSSID,
-                                    networkCount, // count of networks already checked
-                                    wifiSSIDs.size, // count of networks need to be checked
-                                    networkPass, // password currently being tried
-                                    passwordCount, // count of passwords already tried
-                                    networkPasswords.size, // password count for wifi
-                                    60 / (INTERVAL / 1000), // passwords a minute
-                                )
+                        update(Command.ShowMessageToUser(
+                            getString(
+                                R.string.attempting_to_connect,
+                                networkSSID,
+                                networkCount, // count of networks already checked
+                                wifiSSIDs.size, // count of networks need to be checked
+                                networkPass, // password currently being tried
+                                passwordCount, // count of passwords already tried
+                                networkPasswords.size, // password count for wifi
+                                60 / (INTERVAL / 1000), // passwords a minute
+                            )
+                        ))
+                        updateNotification(
+                            getString(R.string.performing_connections),
+                            getString(
+                                R.string.attempting_to_connect_notification,
+                                networkSSID,
+                                networkCount, // count of networks already checked
+                                wifiSSIDs.size, // count of networks need to be checked
+                                networkPass, // password currently being tried
+                                passwordCount, // count of passwords already tried
+                                networkPasswords.size // password count for wifi
                             )
                         )
                     }
@@ -275,14 +352,20 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                 }
                 if (foundPassword) {
                     withContext(Dispatchers.Main) {
-                        updateListener?.onUpdate(
-                            Command.ShowMessageToUser(
-                                getString(
-                                    R.string.password_hacking_results,
-                                    networkSSID,
-                                    correctPassword,
-                                    passwordCountNeeded
-                                )
+                        update(Command.ShowMessageToUser(
+                            getString(
+                                R.string.password_hacking_results,
+                                networkSSID,
+                                correctPassword,
+                                passwordCountNeeded
+                            )
+                        ))
+                        showNotification(
+                            getString(R.string.connection_attempts_ended_success),
+                            getString(
+                                R.string.password_hacking_results_notification,
+                                networkSSID,
+                                correctPassword
                             )
                         )
                     }
@@ -290,10 +373,12 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
             }
             if (!foundPassword) {
                 withContext(Dispatchers.Main) {
-                    updateListener?.onUpdate(
-                        Command.ShowMessageToUser(
-                            getString(R.string.couldnt_find_password)
-                        )
+                    update(Command.ShowMessageToUser(
+                        getString(R.string.couldnt_find_password)
+                    ))
+                    showNotification(
+                        getString(R.string.connection_attempts_ended_nothing_found),
+                        getString(R.string.couldnt_find_password_notification)
                     )
                 }
             }
@@ -304,7 +389,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
     }
 
     private fun scanFailure() {
-        updateListener?.onUpdate(Command.ShowMessageToUser(getString(R.string.scan_failure)))
+        update(Command.ShowMessageToUser(getString(R.string.scan_failure)))
         stopConnections()
     }
 
@@ -323,7 +408,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
     }
 
     private fun stopConnections() {
-        updateListener?.onUpdate(Command.StopConnections)
+        update(Command.StopConnections)
         connection.cancel()
         stopForegroundService()
     }
@@ -335,10 +420,6 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         stopSelf()
     }
 
-    private companion object {
-        const val INTERVAL = 3000L
-    }
-
     private fun getPasswordsList(ssid: String): List<String> {
         val fixedPasswords = assets.open("passwords.txt").bufferedReader().use {
             it.readLines()
@@ -346,7 +427,25 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         return listOf(ssid, "pokasuki69", "${ssid}123") + fixedPasswords
     }
 
+    private fun update(command: Command) {
+        updateListener?.onUpdate(command)
+        if (command is Command.ShowMessageToUser) {
+            latestMessage = command
+        } else {
+            latestCommand = command
+        }
+    }
+
     override fun onSampleDataReady() {
         foundPassword = true
+    }
+
+    private companion object {
+
+        const val PERSISTENT_NOTIFICATION_ID = 23
+
+        const val DISMISSABLE_NOTIFICATION_ID = 1235
+
+        const val INTERVAL = 3000L
     }
 }

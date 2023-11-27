@@ -14,8 +14,12 @@
     <string name="security_check_results">Результаты проверки</string>
     <string name="scan_failure">Произошла ошибка при сканировании. Подождите немного и попробуйте снова</string>
     <string name="connection_start_failure">Произошла ошибка при начале попыток подключения. Подождите немного и попробуйте снова</string>
-    <string name="notification_title">SecureWifi</string>
-    <string name="notification_message">Производятся попытки подключения…</string>
+    <string name="performing_connections">Производятся попытки подключения</string>
+    <string name="connection_attempts_ended_success">Пароль был подобран!</string>
+    <string name="connection_attempts_ended_nothing_found">Проверка завершена</string>
+    <string name="attempting_to_connect_notification">Подключение к %1$s (%2$d/%3$d) \nПароль: %4$s (%5$d/%6$d)</string>
+    <string name="password_hacking_results_notification">Сеть: %1$s \nПароль: %2$s</string>
+    <string name="couldnt_find_password_notification">Уязвимостей в паролях точек Wi-Fi поблизости не обнаружено.</string>
     <string name="signal_level">%1$d/10</string>
     <string name="passwords_checked">Паролей проверено:</string>
     <string name="password_was_hacked">Пароль был подобран</string>
