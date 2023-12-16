@@ -25,4 +25,5 @@
     <string name="password_was_hacked">Пароль был подобран</string>
     <string name="password_was_not_hacked">Пароль не был подобран</string>
     <string name="signal">Уровень сигнала:</string>
+    <string name="wifi_signal_level">Wifi signal level</string>
 </resources>

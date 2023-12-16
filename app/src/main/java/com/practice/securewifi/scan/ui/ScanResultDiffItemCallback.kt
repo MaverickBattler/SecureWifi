@@ -1,6 +1,7 @@
-package com.practice.securewifi.scan
+package com.practice.securewifi.scan.ui
 
 import androidx.recyclerview.widget.DiffUtil
+import com.practice.securewifi.scan.model.WifiScanResult
 
 class ScanResultDiffItemCallback : DiffUtil.ItemCallback<WifiScanResult>() {
     override fun areItemsTheSame(oldItem: WifiScanResult, newItem: WifiScanResult): Boolean =

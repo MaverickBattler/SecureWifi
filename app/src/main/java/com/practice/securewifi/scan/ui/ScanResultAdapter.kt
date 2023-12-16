@@ -1,12 +1,12 @@
-package com.practice.securewifi.scan
+package com.practice.securewifi.scan.ui
 
-import android.net.wifi.WifiManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.practice.securewifi.R
 import com.practice.securewifi.databinding.WifiScanResultItemBinding
+import com.practice.securewifi.scan.model.WifiScanResult
+import com.practice.securewifi.scan.util.WifiSignalLevels
 
 class ScanResultAdapter :
     ListAdapter<WifiScanResult, ScanResultAdapter.ScanResultViewHolder>(ScanResultDiffItemCallback()) {
@@ -36,9 +36,11 @@ class ScanResultAdapter :
         fun bind(item: WifiScanResult) {
             binding.wifiSsidTextview.text = item.ssid
             binding.wifiCapabilitiesTextview.text = item.capabilities
-            binding.wifiSignalLevelTextview.text =
-                binding.root.context.getString(R.string.signal_level, WifiManager
-                    .calculateSignalLevel(item.signalLevel, 10))
+            binding.wifiSignalLevel.setImageResource(
+                WifiSignalLevels.getImageResourceForSignalLevel(
+                    item.signalLevel
+                )
+            )
         }
     }
 }

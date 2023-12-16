@@ -1,4 +1,4 @@
-package com.practice.securewifi.scan
+package com.practice.securewifi.scan.ui.fragment
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -17,6 +17,8 @@ import androidx.core.content.ContextCompat
 import com.practice.securewifi.R
 import com.practice.securewifi.util.WifiManagerProvider
 import com.practice.securewifi.databinding.FragmentScanBinding
+import com.practice.securewifi.scan.model.WifiScanResult
+import com.practice.securewifi.scan.ui.ScanResultAdapter
 
 class ScanFragment : Fragment() {
 
@@ -118,9 +120,16 @@ class ScanFragment : Fragment() {
         }
     }
 
-    private fun scanResultsToDisplayableResults(results: List<ScanResult>): List<WifiScanResult> =
-        results.filter { it.SSID != "" }.map { WifiScanResult(it.SSID, it.capabilities, it.level) }
+    private fun scanResultsToDisplayableResults(results: List<ScanResult>): List<WifiScanResult> {
+        return results.filter { it.SSID != "" }.map { mapToDisplayableResult(it) }
             .sortedByDescending { it.signalLevel }
+    }
+
+    private fun mapToDisplayableResult(result: ScanResult): WifiScanResult {
+        val signalLevel = WifiManager.calculateSignalLevel(result.level, 6)
+        return WifiScanResult(result.SSID, result.capabilities, signalLevel)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

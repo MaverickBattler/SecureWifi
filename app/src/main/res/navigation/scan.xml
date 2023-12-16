@@ -6,7 +6,7 @@
     app:startDestination="@id/scanFragment">
     <fragment
         android:id="@+id/scanFragment"
-        android:name="com.practice.securewifi.scan.ScanFragment"
+        android:name="com.practice.securewifi.scan.ui.fragment.ScanFragment"
         android:label="@string/list_of_wifi_nearby"
         tools:layout="@layout/fragment_scan">
     </fragment>

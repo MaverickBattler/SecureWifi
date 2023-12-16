@@ -2,9 +2,11 @@
     <!-- Base application theme. -->
     <style name="Theme.SecureWifi" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="backgroundColor">@color/very_dark_gray</item>
-        <item name="listItemBackgroundColor">@color/dark_gray_main</item>
+        <item name="backgroundColorSmooth">@color/dark_gray_main</item>
         <item name="textColorMain">@color/white</item>
         <item name="textColorSecondary">@color/gray</item>
+        <item name="controlColor">@color/dark_gray_secondary</item>
+        <item name="primaryColor">@color/turquoise</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/pale_green</item>
         <item name="colorPrimaryVariant">@color/dark_green</item>
