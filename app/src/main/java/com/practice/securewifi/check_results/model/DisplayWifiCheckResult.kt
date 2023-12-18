@@ -1,4 +1,4 @@
-package com.practice.securewifi.check_results
+package com.practice.securewifi.check_results.model
 
 data class DisplayWifiCheckResult(
     val ssid: String,

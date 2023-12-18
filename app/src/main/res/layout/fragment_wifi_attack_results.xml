@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundColorSmooth">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/wifi_ssid_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textAlignment="center"
+            android:textColor="?attr/textColorMain"
+            android:textSize="24sp"
+            tools:text="WifiNetwork" />
+
+        <View
+            android:id="@+id/title_bottom_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="5dp"
+            android:background="?attr/controlColor" />
+
+        <TextView
+            android:id="@+id/was_wifi_hacked_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="?attr/textColorMain"
+            tools:text="Пароль не был подобран" />
+
+        <TextView
+            android:id="@+id/tried_password_list_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/tried_passwords"
+            android:textColor="?attr/textColorMain" />
+
+        <View
+            android:id="@+id/tried_passwords_list_top_separator"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="5dp"
+            android:background="?attr/controlColor" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tried_passwords_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/tried_password_item" />
+    </LinearLayout>
+</ScrollView>

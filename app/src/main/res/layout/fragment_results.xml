@@ -5,7 +5,7 @@
     android:id="@+id/recyclerview_results"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".check_results.ResultsFragment"
+    tools:context=".check_results.ui.ResultsFragment"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     android:background="?attr/backgroundColor"
     tools:listitem="@layout/wifi_check_result_item">

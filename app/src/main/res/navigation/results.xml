@@ -6,8 +6,23 @@
     app:startDestination="@id/resultsFragment">
     <fragment
         android:id="@+id/resultsFragment"
-        android:name="com.practice.securewifi.check_results.ResultsFragment"
+        android:name="com.practice.securewifi.check_results.ui.ResultsFragment"
         android:label="@string/security_check_results"
         tools:layout="@layout/fragment_results">
+        <action
+            android:id="@+id/action_resultsFragment_to_wifiAttackResultFragment"
+            app:destination="@id/wifiAttackResultFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/wifiAttackResultFragment"
+        android:name="com.practice.securewifi.check_results.ui.WifiAttackResultsFragment"
+        android:label="@string/wifi_attack_results"
+        tools:layout="@layout/fragment_wifi_attack_results">
+
+        <argument
+            android:name="wifiName"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
 </navigation>

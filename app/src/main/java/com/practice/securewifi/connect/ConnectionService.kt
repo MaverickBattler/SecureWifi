@@ -18,12 +18,17 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.practice.securewifi.R
 import com.practice.securewifi.app.MainActivity
-import com.practice.securewifi.result_storage.dao.WifiSafetyDao
-import com.practice.securewifi.result_storage.database.WifiSafetyDatabase
-import com.practice.securewifi.result_storage.entity.WifiCheckResult
-import com.practice.securewifi.result_storage.entity.WifiPasswordsCrossRef
+import com.practice.securewifi.data.dao.TriedPasswordsDao
+import com.practice.securewifi.data.dao.WifiCheckResultDao
+import com.practice.securewifi.data.database.WifiSafetyDatabase
+import com.practice.securewifi.data.entity.WifiCheckResult
+import com.practice.securewifi.data.entity.WifiPasswordsCrossRef
+import com.practice.securewifi.data.interactor.CustomPasswordListInteractor
+import com.practice.securewifi.data.interactor.FixedPasswordListsInteractor
+import com.practice.securewifi.data.repository.FixedPasswordListsRepository
 import com.practice.securewifi.util.WifiManagerProvider
 import kotlinx.coroutines.*
+import org.koin.android.ext.android.inject
 
 class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyListener {
 
@@ -39,7 +44,9 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     private lateinit var connectivityActionReceiver: ConnectivityActionReceiver
 
-    private lateinit var dao: WifiSafetyDao
+    private lateinit var triedPasswordsDao: TriedPasswordsDao
+
+    private lateinit var wifiCheckResultDao: WifiCheckResultDao
 
     private lateinit var binder: LocalBinder
 
@@ -51,6 +58,11 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     private var latestCommand: Command = Command.StartConnections
     private var latestMessage: Command? = null
+
+    private var passwordListName: String? = null
+
+    private val fixedPasswordListsInteractor by inject<FixedPasswordListsInteractor>()
+    private val customPasswordListInteractor by inject<CustomPasswordListInteractor>()
 
     inner class LocalBinder : Binder() {
         val service: ConnectionService = this@ConnectionService
@@ -72,7 +84,8 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
         wifiManager = WifiManagerProvider.getWifiManager(applicationContext)
 
-        dao = WifiSafetyDatabase.getInstance(applicationContext).wifiSafetyDao
+        triedPasswordsDao = WifiSafetyDatabase.getInstance(applicationContext).triedPasswordsDao
+        wifiCheckResultDao = WifiSafetyDatabase.getInstance(applicationContext).wifiCheckResultDao
 
         binder = LocalBinder()
 
@@ -81,6 +94,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (!connection.isActive) {
+            passwordListName = intent?.getStringExtra(PASSWORD_LIST_PARAMETER)
             createNotification()
             wifiManager.isWifiEnabled = true
             update(Command.ShowMessageToUser(getString(R.string.starting_scan)))
@@ -262,15 +276,15 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                 // If password was found during this search
                 if (foundPassword) break
 
-                val wifi = dao.getWifiCheckResult(networkSSID)
+                val wifi = wifiCheckResultDao.getWifiCheckResult(networkSSID)
                 // If this network hasn't ever been a subject to hacking, save it
                 if (wifi == null) {
-                    dao.insertWifiCheckResult(WifiCheckResult(networkSSID, null))
+                    wifiCheckResultDao.insertWifiCheckResult(WifiCheckResult(networkSSID, null))
                 } else if (wifi.correctPassword != null) {
                     // If this particular network has already been hacked
                     continue
                 }
-                val triedPasswords = dao.getTriedPasswordsForWifi(networkSSID)
+                val triedPasswords = triedPasswordsDao.getTriedPasswordsForWifi(networkSSID)
 
                 val conf = WifiConfiguration()
                 conf.SSID = "\"" + networkSSID + "\"" // String should contain ssid in quotes
@@ -330,7 +344,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                     }
                     delay(INTERVAL)
 
-                    dao.insertWifiPasswordsCrossRef(
+                    triedPasswordsDao.insertWifiPasswordsCrossRef(
                         WifiPasswordsCrossRef(
                             networkSSID,
                             networkPass
@@ -340,7 +354,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                     if (foundPassword) {
                         correctPassword = networkPass
                         passwordCountNeeded = passwordCount
-                        dao.insertWifiCheckResult(
+                        wifiCheckResultDao.insertWifiCheckResult(
                             WifiCheckResult(
                                 networkSSID,
                                 correctPassword
@@ -420,11 +434,32 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         stopSelf()
     }
 
-    private fun getPasswordsList(ssid: String): List<String> {
-        val fixedPasswords = assets.open("passwords.txt").bufferedReader().use {
-            it.readLines()
+    private suspend fun getPasswordsList(ssid: String): List<String> {
+        return when (passwordListName) {
+            application.getString(R.string.adaptive) -> {
+                fixedPasswordListsInteractor.getFixedPasswordList(
+                    FixedPasswordListsRepository.FixedPassword.ADAPTIVE,
+                    ssid
+                )
+            }
+            application.getString(R.string.most_popular) -> {
+                fixedPasswordListsInteractor.getFixedPasswordList(
+                    FixedPasswordListsRepository.FixedPassword.MOST_POPULAR,
+                    ssid
+                )
+            }
+            else -> {
+                val listName = passwordListName
+                if (listName != null) { // custom list
+                    customPasswordListInteractor.getPasswordsForList(listName)
+                } else { // default list
+                    fixedPasswordListsInteractor.getFixedPasswordList(
+                        FixedPasswordListsRepository.FixedPassword.ADAPTIVE,
+                        ssid
+                    )
+                }
+            }
         }
-        return listOf(ssid, "pokasuki69", "${ssid}123") + fixedPasswords
     }
 
     private fun update(command: Command) {
@@ -440,12 +475,14 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         foundPassword = true
     }
 
-    private companion object {
+    companion object {
 
-        const val PERSISTENT_NOTIFICATION_ID = 23
+        private const val PERSISTENT_NOTIFICATION_ID = 23
 
-        const val DISMISSABLE_NOTIFICATION_ID = 1235
+        private const val DISMISSABLE_NOTIFICATION_ID = 1235
 
-        const val INTERVAL = 3000L
+        private const val INTERVAL = 3000L
+
+        const val PASSWORD_LIST_PARAMETER = "PasswordList"
     }
 }

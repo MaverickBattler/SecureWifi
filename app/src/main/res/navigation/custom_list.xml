@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/custom_list"
+    app:startDestination="@id/customLists">
+    <fragment
+        android:id="@+id/customLists"
+        android:name="com.practice.securewifi.custom_list.ui.CustomPasswordListsFragment"
+        android:label="@string/custom_lists"
+        tools:layout="@layout/fragment_password_lists">
+        <action
+            android:id="@+id/action_customLists_to_edit_customList"
+            app:destination="@id/editCustomList" />
+    </fragment>
+    <fragment
+        android:id="@+id/editCustomList"
+        android:name="com.practice.securewifi.custom_list.ui.CustomPasswordListFragment"
+        android:label="@string/edit_custom_list"
+        tools:layout="@layout/fragment_password_list">
+
+        <argument
+            android:name="customListName"
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
+            android:name="isListEditable"
+            app:argType="boolean"
+            android:defaultValue="true"/>
+    </fragment>
+</navigation>

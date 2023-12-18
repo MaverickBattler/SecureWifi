@@ -6,4 +6,5 @@
     <include app:graph="@navigation/connect"/>
     <include app:graph="@navigation/scan"/>
     <include app:graph="@navigation/results"/>
+    <include app:graph="@navigation/custom_list"/>
 </navigation>

@@ -1,6 +1,7 @@
-package com.practice.securewifi.check_results
+package com.practice.securewifi.check_results.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import com.practice.securewifi.check_results.model.DisplayWifiCheckResult
 
 class CheckResultDiffItemCallback : DiffUtil.ItemCallback<DisplayWifiCheckResult>() {
     override fun areItemsTheSame(

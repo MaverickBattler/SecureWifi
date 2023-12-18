@@ -12,4 +12,8 @@
         android:id="@+id/results"
         android:icon="@drawable/result_list"
         android:title="@string/security_check_results" />
+    <item
+        android:id="@+id/custom_list"
+        android:icon="@drawable/edit_list"
+        android:title="@string/custom_lists" />
 </menu>

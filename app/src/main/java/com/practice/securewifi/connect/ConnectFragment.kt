@@ -13,11 +13,18 @@ import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.R
+import com.practice.securewifi.data.interactor.AllPasswordListsInteractor
 import com.practice.securewifi.databinding.FragmentConnectBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 
 
 class ConnectFragment : Fragment(), UpdateListener {
@@ -32,6 +39,8 @@ class ConnectFragment : Fragment(), UpdateListener {
 
     private var mConnection: ServiceConnection? = null
 
+    private val allPasswordListsInteractor by inject<AllPasswordListsInteractor>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -41,7 +50,7 @@ class ConnectFragment : Fragment(), UpdateListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val buttonConnect: SecurityCheckButton = binding.securityCheckButton
-        val securityCheckTextView = binding.securityCheckTextview
+        val attackInfoTextView = binding.attackInfo
         mConnection = object : ServiceConnection {
 
             override fun onServiceConnected(className: ComponentName?, binder: IBinder?) {
@@ -75,16 +84,31 @@ class ConnectFragment : Fragment(), UpdateListener {
 
             buttonConnect.setOnClickListener {
                 if (checkForAccessFineLocationPermission() && checkForPostNotificationsPermission()) {
+                    binding.wifiListSpinner.isEnabled = false
                     buttonConnect.setState(SecurityCheckButton.State.PREPARATION)
                     val intent = Intent(requireActivity(), ConnectionService::class.java)
+                    val selectedPasswordList = binding.wifiListSpinner.selectedItem.toString()
+                    intent.putExtra(ConnectionService.PASSWORD_LIST_PARAMETER, selectedPasswordList)
                     requireActivity().startService(intent)
                     if (!requireActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE)) {
-                        securityCheckTextView.text = getString(R.string.connection_start_failure)
+                        attackInfoTextView.text = getString(R.string.connection_start_failure)
+                        binding.wifiListSpinner.isEnabled = true
                         buttonConnect.setState(SecurityCheckButton.State.INITIAL)
                     } else {
                         buttonConnect.setState(SecurityCheckButton.State.PROGRESS)
                     }
                 }
+            }
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val wifiListsNames = allPasswordListsInteractor.getPasswordListsNames()
+            withContext(Dispatchers.Main) {
+                binding.wifiListSpinner.adapter = ArrayAdapter(
+                    requireActivity(),
+                    R.layout.wifi_spinner_item,
+                    wifiListsNames
+                )
             }
         }
 
@@ -107,6 +131,7 @@ class ConnectFragment : Fragment(), UpdateListener {
             requireActivity().unbindService(it)
         }
         serviceBound = false
+        _binding = null
         super.onDestroy()
     }
 
@@ -150,6 +175,7 @@ class ConnectFragment : Fragment(), UpdateListener {
     override fun onUpdate(command: Command) {
         when (command) {
             is Command.StopConnections -> {
+                binding.wifiListSpinner.isEnabled = true
                 binding.securityCheckButton.setState(SecurityCheckButton.State.INITIAL)
             }
 
@@ -166,7 +192,7 @@ class ConnectFragment : Fragment(), UpdateListener {
             }
 
             is Command.ShowMessageToUser -> {
-                binding.securityCheckTextview.text = command.message
+                binding.attackInfo.text = command.message
             }
         }
     }

@@ -26,4 +26,24 @@
     <string name="password_was_not_hacked">Password was not hacked</string>
     <string name="signal">Signal level:</string>
     <string name="wifi_signal_level">Wifi signal level</string>
+    <string name="new_password_hint">Add password…</string>
+    <string name="add_button">Add button</string>
+    <string name="password_delete_imageview">Password delete imageview</string>
+    <string name="attack_wifi">Attack point</string>
+    <string name="password_list">Password list:</string>
+    <string name="start_wifi_attack">Start attack</string>
+    <string name="tried_passwords">List of tried passwords:</string>
+    <string name="custom_lists">Custom lists</string>
+    <string name="password_list_delete_imageview">Password list delete imageview\n</string>
+    <string name="add_new_custom_password_list">Add new custom password list</string>
+    <string name="edit_custom_list">Editing of the list</string>
+    <string name="adaptive">Adaptive</string>
+    <string name="most_popular">Most popular</string>
+    <string name="list_name_hint">List name</string>
+    <string name="save_list_name">Save list</string>
+    <string name="enter_list_name">Enter list name</string>
+    <string name="list_name_already_exist">List with this name already exists</string>
+    <string name="plus_adaptive_passwords">+ Adaptive passwords</string>
+    <string name="wifi_attack_results">Wifi attack results</string>
+    <string name="correct_password_is">Point password: %1$s</string>
 </resources>

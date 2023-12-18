@@ -1,20 +1,30 @@
-package com.practice.securewifi.result_storage.database
+package com.practice.securewifi.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.practice.securewifi.result_storage.dao.WifiSafetyDao
-import com.practice.securewifi.result_storage.entity.WifiCheckResult
-import com.practice.securewifi.result_storage.entity.WifiPasswordsCrossRef
+import com.practice.securewifi.data.dao.PasswordListsDao
+import com.practice.securewifi.data.dao.TriedPasswordsDao
+import com.practice.securewifi.data.dao.WifiCheckResultDao
+import com.practice.securewifi.data.entity.PasswordListPasswordCrossRef
+import com.practice.securewifi.data.entity.WifiCheckResult
+import com.practice.securewifi.data.entity.WifiPasswordsCrossRef
 
 @Database(
-    entities = [WifiCheckResult::class, WifiPasswordsCrossRef::class],
+    entities =
+    [
+        PasswordListPasswordCrossRef::class,
+        WifiCheckResult::class,
+        WifiPasswordsCrossRef::class
+    ],
     version = 1,
     exportSchema = false
 )
 abstract class WifiSafetyDatabase : RoomDatabase() {
-    abstract val wifiSafetyDao: WifiSafetyDao
+    abstract val passwordListsDao: PasswordListsDao
+    abstract val triedPasswordsDao: TriedPasswordsDao
+    abstract val wifiCheckResultDao: WifiCheckResultDao
 
     companion object {
         @Volatile

@@ -8,10 +8,10 @@
     <string name="password_hacking_results">Пароль был подобран!\nСеть: %1$s \nПароль: %2$s\nПароль угадан за следующее количество попыток: %3$d</string>
     <string name="couldnt_find_password">По результатам быстрой проверки уязвимостей в паролях беспроводных точек доступа поблизости не обнаружено.</string>
     <string name="disconnect_from_wifi">Отключиться от Wi-fi</string>
-    <string name="check_password_security">Проверить защищенность паролей сетей Wi-Fi поблизости</string>
+    <string name="check_password_security">Проверка защищенность паролей сетей Wi-Fi поблизости</string>
     <string name="list_of_wifi_nearby">Wi-Fi поблизости</string>
     <string name="check_of_passwords_safety">Подбор паролей</string>
-    <string name="security_check_results">Результаты проверки</string>
+    <string name="security_check_results">Результаты</string>
     <string name="scan_failure">Произошла ошибка при сканировании. Подождите немного и попробуйте снова</string>
     <string name="connection_start_failure">Произошла ошибка при начале попыток подключения. Подождите немного и попробуйте снова</string>
     <string name="performing_connections">Производятся попытки подключения</string>
@@ -26,4 +26,24 @@
     <string name="password_was_not_hacked">Пароль не был подобран</string>
     <string name="signal">Уровень сигнала:</string>
     <string name="wifi_signal_level">Wifi signal level</string>
+    <string name="new_password_hint">Добавить пароль…</string>
+    <string name="add_button">Add button</string>
+    <string name="password_delete_imageview">Password delete imageview</string>
+    <string name="attack_wifi">Атаковать точку</string>
+    <string name="password_list">Список паролей:</string>
+    <string name="start_wifi_attack">Начать атаку</string>
+    <string name="tried_passwords">Список попробованных паролей:</string>
+    <string name="custom_lists">Списки паролей</string>
+    <string name="password_list_delete_imageview">Password list delete imageview\n</string>
+    <string name="add_new_custom_password_list">Add new custom password list</string>
+    <string name="edit_custom_list">Редактирование списка</string>
+    <string name="adaptive">Адаптивный</string>
+    <string name="most_popular">Самые популярные</string>
+    <string name="list_name_hint">Название списка</string>
+    <string name="save_list_name">Сохранить список</string>
+    <string name="enter_list_name">Введите название списка</string>
+    <string name="list_name_already_exist">Список с таким названием уже существует</string>
+    <string name="plus_adaptive_passwords">+ Адаптивные пароли</string>
+    <string name="wifi_attack_results">Результаты атаки на точку</string>
+    <string name="correct_password_is">Пароль от точки: %1$s</string>
 </resources>
