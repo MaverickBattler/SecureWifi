@@ -1,4 +1,4 @@
-package com.practice.securewifi.connect
+package com.practice.securewifi.connect.service
 
 import android.Manifest
 import android.app.*
@@ -18,11 +18,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.practice.securewifi.R
 import com.practice.securewifi.app.MainActivity
-import com.practice.securewifi.data.dao.TriedPasswordsDao
-import com.practice.securewifi.data.dao.WifiCheckResultDao
-import com.practice.securewifi.data.database.WifiSafetyDatabase
+import com.practice.securewifi.connect.Command
+import com.practice.securewifi.connect.receiver.ConnectivityActionReceiver
+import com.practice.securewifi.connect.UpdateListener
+import com.practice.securewifi.connect.interactor.TriedPasswordsInteractor
+import com.practice.securewifi.connect.interactor.WifiCheckResultInteractor
 import com.practice.securewifi.data.entity.WifiCheckResult
-import com.practice.securewifi.data.entity.WifiPasswordsCrossRef
 import com.practice.securewifi.data.interactor.CustomPasswordListInteractor
 import com.practice.securewifi.data.interactor.FixedPasswordListsInteractor
 import com.practice.securewifi.data.repository.FixedPasswordListsRepository
@@ -44,9 +45,9 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     private lateinit var connectivityActionReceiver: ConnectivityActionReceiver
 
-    private lateinit var triedPasswordsDao: TriedPasswordsDao
+    private val triedPasswordsInteractor: TriedPasswordsInteractor by inject()
 
-    private lateinit var wifiCheckResultDao: WifiCheckResultDao
+    private val wifiCheckResultInteractor: WifiCheckResultInteractor by inject()
 
     private lateinit var binder: LocalBinder
 
@@ -83,9 +84,6 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         registerReceiver(connectivityActionReceiver, intentFilter)
 
         wifiManager = WifiManagerProvider.getWifiManager(applicationContext)
-
-        triedPasswordsDao = WifiSafetyDatabase.getInstance(applicationContext).triedPasswordsDao
-        wifiCheckResultDao = WifiSafetyDatabase.getInstance(applicationContext).wifiCheckResultDao
 
         binder = LocalBinder()
 
@@ -160,7 +158,12 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         val intent = Intent(this, MainActivity::class.java)
         intent.action = Intent.ACTION_MAIN
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         val notification = NotificationCompat.Builder(
             this,
             notificationChannel
@@ -179,7 +182,12 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         val intent = Intent(this, MainActivity::class.java)
         intent.action = Intent.ACTION_MAIN
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         val notification = NotificationCompat.Builder(
             this,
             notificationChannel
@@ -276,15 +284,15 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                 // If password was found during this search
                 if (foundPassword) break
 
-                val wifi = wifiCheckResultDao.getWifiCheckResult(networkSSID)
+                val wifi = wifiCheckResultInteractor.getWifiCheckResult(networkSSID)
                 // If this network hasn't ever been a subject to hacking, save it
                 if (wifi == null) {
-                    wifiCheckResultDao.insertWifiCheckResult(WifiCheckResult(networkSSID, null))
+                    wifiCheckResultInteractor.insertWifiCheckResult(WifiCheckResult(networkSSID, null))
                 } else if (wifi.correctPassword != null) {
                     // If this particular network has already been hacked
                     continue
                 }
-                val triedPasswords = triedPasswordsDao.getTriedPasswordsForWifi(networkSSID)
+                val triedPasswords = triedPasswordsInteractor.getTriedPasswordsForWifi(networkSSID)
 
                 val conf = WifiConfiguration()
                 conf.SSID = "\"" + networkSSID + "\"" // String should contain ssid in quotes
@@ -299,18 +307,20 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                     if (triedPasswords.contains(networkPass)) continue
 
                     withContext(Dispatchers.Main) {
-                        update(Command.ShowMessageToUser(
-                            getString(
-                                R.string.attempting_to_connect,
-                                networkSSID,
-                                networkCount, // count of networks already checked
-                                wifiSSIDs.size, // count of networks need to be checked
-                                networkPass, // password currently being tried
-                                passwordCount, // count of passwords already tried
-                                networkPasswords.size, // password count for wifi
-                                60 / (INTERVAL / 1000), // passwords a minute
+                        update(
+                            Command.ShowMessageToUser(
+                                getString(
+                                    R.string.attempting_to_connect,
+                                    networkSSID,
+                                    networkCount, // count of networks already checked
+                                    wifiSSIDs.size, // count of networks need to be checked
+                                    networkPass, // password currently being tried
+                                    passwordCount, // count of passwords already tried
+                                    networkPasswords.size, // password count for wifi
+                                    60 / (INTERVAL / 1000), // passwords a minute
+                                )
                             )
-                        ))
+                        )
                         updateNotification(
                             getString(R.string.performing_connections),
                             getString(
@@ -344,17 +354,15 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                     }
                     delay(INTERVAL)
 
-                    triedPasswordsDao.insertWifiPasswordsCrossRef(
-                        WifiPasswordsCrossRef(
-                            networkSSID,
-                            networkPass
-                        )
+                    triedPasswordsInteractor.insertAttemptedPasswordForWifi(
+                        networkPass,
+                        networkSSID,
                     )
 
                     if (foundPassword) {
                         correctPassword = networkPass
                         passwordCountNeeded = passwordCount
-                        wifiCheckResultDao.insertWifiCheckResult(
+                        wifiCheckResultInteractor.insertWifiCheckResult(
                             WifiCheckResult(
                                 networkSSID,
                                 correctPassword
@@ -366,14 +374,16 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                 }
                 if (foundPassword) {
                     withContext(Dispatchers.Main) {
-                        update(Command.ShowMessageToUser(
-                            getString(
-                                R.string.password_hacking_results,
-                                networkSSID,
-                                correctPassword,
-                                passwordCountNeeded
+                        update(
+                            Command.ShowMessageToUser(
+                                getString(
+                                    R.string.password_hacking_results,
+                                    networkSSID,
+                                    correctPassword,
+                                    passwordCountNeeded
+                                )
                             )
-                        ))
+                        )
                         showNotification(
                             getString(R.string.connection_attempts_ended_success),
                             getString(
@@ -387,9 +397,11 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
             }
             if (!foundPassword) {
                 withContext(Dispatchers.Main) {
-                    update(Command.ShowMessageToUser(
-                        getString(R.string.couldnt_find_password)
-                    ))
+                    update(
+                        Command.ShowMessageToUser(
+                            getString(R.string.couldnt_find_password)
+                        )
+                    )
                     showNotification(
                         getString(R.string.connection_attempts_ended_nothing_found),
                         getString(R.string.couldnt_find_password_notification)
@@ -442,12 +454,14 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                     ssid
                 )
             }
+
             application.getString(R.string.most_popular) -> {
                 fixedPasswordListsInteractor.getFixedPasswordList(
                     FixedPasswordListsRepository.FixedPassword.MOST_POPULAR,
                     ssid
                 )
             }
+
             else -> {
                 val listName = passwordListName
                 if (listName != null) { // custom list

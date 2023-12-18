@@ -2,6 +2,7 @@ package com.practice.securewifi.app
 
 import android.app.Application
 import com.practice.securewifi.check_results.di.checkResultsModule
+import com.practice.securewifi.connect.di.connectModule
 import com.practice.securewifi.custom_list.di.customListModule
 import com.practice.securewifi.data.di.dataModule
 import org.koin.android.ext.koin.androidContext
@@ -21,6 +22,7 @@ class MyApp: Application() {
             androidContext(this@MyApp)
             modules(
                 listOf(
+                    connectModule,
                     dataModule,
                     customListModule,
                     checkResultsModule

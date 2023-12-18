@@ -32,7 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".connect.ConnectionService"
+        <service android:name=".connect.service.ConnectionService"
             android:stopWithTask="true"/>
 
 

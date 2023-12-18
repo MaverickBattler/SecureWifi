@@ -17,6 +17,7 @@ class WifiCheckResultRepository(private val wifiCheckResultDao: WifiCheckResultD
     suspend fun getWifiCheckResult(ssid: String): WifiCheckResult? {
         return wifiCheckResultDao.getWifiCheckResult(ssid)
     }
+
     fun getWifiCheckResultAsFlow(ssid: String): Flow<WifiCheckResult?> {
         return wifiCheckResultDao.getWifiCheckResultAsFlow(ssid)
     }

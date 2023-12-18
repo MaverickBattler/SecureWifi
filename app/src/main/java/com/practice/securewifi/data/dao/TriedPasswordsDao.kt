@@ -23,5 +23,5 @@ interface TriedPasswordsDao {
     fun getTriedPasswordsForWifiAsFlow(ssid: String): Flow<List<String>>
 
     @Query("SELECT password FROM tried_passwords WHERE ssid = :ssid")
-    fun getTriedPasswordsForWifi(ssid: String): List<String>
+    suspend fun getTriedPasswordsForWifi(ssid: String): List<String>
 }

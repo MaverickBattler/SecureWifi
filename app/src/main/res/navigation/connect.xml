@@ -6,7 +6,7 @@
     app:startDestination="@id/connectFragment">
     <fragment
         android:id="@+id/connectFragment"
-        android:name="com.practice.securewifi.connect.ConnectFragment"
+        android:name="com.practice.securewifi.connect.ui.ConnectFragment"
         android:label="@string/check_of_passwords_safety"
         tools:layout="@layout/fragment_connect">
     </fragment>

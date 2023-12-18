@@ -21,4 +21,8 @@ class TriedPasswordsRepository(private val triedPasswordsDao: TriedPasswordsDao)
     fun getTriedPasswordsForWifiAsFlow(ssid: String): Flow<List<String>> {
         return triedPasswordsDao.getTriedPasswordsForWifiAsFlow(ssid)
     }
+
+    suspend fun getTriedPasswordForWifi(ssid: String): List<String> {
+        return triedPasswordsDao.getTriedPasswordsForWifi(ssid)
+    }
 }
