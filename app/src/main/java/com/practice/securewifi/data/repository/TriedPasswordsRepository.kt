@@ -10,8 +10,12 @@ class TriedPasswordsRepository(private val triedPasswordsDao: TriedPasswordsDao)
         triedPasswordsDao.insertWifiPasswordsCrossRef(wifiPasswordsCrossRef)
     }
 
-    suspend fun getTriedPasswordsCountForWifi(ssid: String): Int {
-        return triedPasswordsDao.getTriedPasswordsCountForWifi(ssid)
+    fun getTriedPasswordsCountAsFlow(): Flow<List<Int>> {
+        return triedPasswordsDao.getTriedPasswordsCountAsFlow()
+    }
+
+    suspend fun getTriedPasswordsCountForWifi(wifiSsid: String): Int {
+        return triedPasswordsDao.getTriedPasswordsCountForWifi(wifiSsid)
     }
 
     fun getTriedPasswordsForWifiAsFlow(ssid: String): Flow<List<String>> {

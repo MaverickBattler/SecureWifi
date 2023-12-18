@@ -14,7 +14,7 @@ interface WifiCheckResultDao {
     suspend fun insertWifiCheckResult(wifiCheckResult: WifiCheckResult)
 
     @Query("SELECT * FROM wifi_check_result")
-    suspend fun getAllWifiCheckResults(): List<WifiCheckResult>
+    fun getAllWifiCheckResults(): Flow<List<WifiCheckResult>>
 
     @Query("SELECT * FROM wifi_check_result WHERE ssid = :ssid")
     fun getWifiCheckResultAsFlow(ssid: String): Flow<WifiCheckResult?>

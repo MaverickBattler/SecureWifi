@@ -13,6 +13,9 @@ interface TriedPasswordsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWifiPasswordsCrossRef(wifiPasswordsCrossRef: WifiPasswordsCrossRef)
 
+    @Query("SELECT COUNT(password) FROM tried_passwords GROUP BY ssid")
+    fun getTriedPasswordsCountAsFlow(): Flow<List<Int>>
+
     @Query("SELECT COUNT(password) FROM tried_passwords WHERE ssid = :ssid")
     suspend fun getTriedPasswordsCountForWifi(ssid: String): Int
 

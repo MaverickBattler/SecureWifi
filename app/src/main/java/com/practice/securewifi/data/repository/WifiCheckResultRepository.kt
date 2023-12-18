@@ -10,7 +10,7 @@ class WifiCheckResultRepository(private val wifiCheckResultDao: WifiCheckResultD
         wifiCheckResultDao.insertWifiCheckResult(wifiCheckResult)
     }
 
-    suspend fun getAllWifiCheckResults(): List<WifiCheckResult> {
+    fun getAllWifiCheckResultsAsFlow(): Flow<List<WifiCheckResult>> {
         return wifiCheckResultDao.getAllWifiCheckResults()
     }
 

@@ -5,37 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.practice.securewifi.check_results.model.DisplayWifiCheckResult
 import com.practice.securewifi.check_results.adapter.CheckResultAdapter
-import com.practice.securewifi.data.dao.TriedPasswordsDao
-import com.practice.securewifi.data.dao.WifiCheckResultDao
+import com.practice.securewifi.check_results.viewmodel.ResultsViewModel
 import com.practice.securewifi.databinding.FragmentResultsBinding
-import com.practice.securewifi.data.database.WifiSafetyDatabase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ResultsFragment : Fragment() {
-
-    private lateinit var wifiCheckResultDao: WifiCheckResultDao
-
-    private lateinit var triedPasswordsDao: TriedPasswordsDao
 
     private var _binding: FragmentResultsBinding? = null
 
     private val binding get() = _binding!!
+
+    private val viewModel: ResultsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentResultsBinding.inflate(inflater, container, false)
-
-        wifiCheckResultDao = WifiSafetyDatabase.getInstance(requireActivity().application).wifiCheckResultDao
-        triedPasswordsDao = WifiSafetyDatabase.getInstance(requireActivity().application).triedPasswordsDao
-
         return binding.root
     }
 
@@ -48,18 +36,8 @@ class ResultsFragment : Fragment() {
         }
         val adapter = CheckResultAdapter(onItemClickListener)
         binding.recyclerviewResults.adapter = adapter
-        requireActivity().lifecycleScope.launch(Dispatchers.IO) {
-            val wifiList = wifiCheckResultDao.getAllWifiCheckResults()
-            val wifiListToDisplay = wifiList.map {
-                DisplayWifiCheckResult(
-                    it.ssid,
-                    it.correctPassword,
-                    triedPasswordsDao.getTriedPasswordsCountForWifi(it.ssid)
-                )
-            }
-            withContext(Dispatchers.Main) {
-                adapter.submitList(wifiListToDisplay)
-            }
+        viewModel.displayWifiCheckResults.observe(viewLifecycleOwner) { listToDisplay ->
+            adapter.submitList(listToDisplay)
         }
         super.onViewCreated(view, savedInstanceState)
     }
