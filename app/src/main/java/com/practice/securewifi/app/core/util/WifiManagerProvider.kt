@@ -1,9 +1,10 @@
-package com.practice.securewifi.util
+package com.practice.securewifi.app.core.util
 
 import android.content.Context
 import android.net.wifi.WifiManager
 
 object WifiManagerProvider {
+
     fun getWifiManager(context: Context) =
         context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 }

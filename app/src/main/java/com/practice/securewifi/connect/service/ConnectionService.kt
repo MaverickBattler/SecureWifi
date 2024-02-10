@@ -27,7 +27,7 @@ import com.practice.securewifi.data.entity.WifiCheckResult
 import com.practice.securewifi.data.interactor.CustomPasswordListInteractor
 import com.practice.securewifi.data.interactor.FixedPasswordListsInteractor
 import com.practice.securewifi.data.repository.FixedPasswordListsRepository
-import com.practice.securewifi.util.WifiManagerProvider
+import com.practice.securewifi.app.core.util.WifiManagerProvider
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 

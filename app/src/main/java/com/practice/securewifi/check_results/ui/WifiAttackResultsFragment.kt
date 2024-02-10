@@ -12,7 +12,7 @@ import com.practice.securewifi.R
 import com.practice.securewifi.check_results.adapter.WifiAttackResultsAdapter
 import com.practice.securewifi.check_results.viewmodel.WifiAttackResultsViewModel
 import com.practice.securewifi.databinding.FragmentWifiAttackResultsBinding
-import com.practice.securewifi.util.Colors
+import com.practice.securewifi.app.core.util.Colors
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
