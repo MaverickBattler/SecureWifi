@@ -17,31 +17,26 @@ abstract class WifiScanManager(
 
     private val wifiManager = WifiManagerProvider.getWifiManager(context)
 
+    private var receiverWasRegistered = false
+
     init {
         prepareForScanningWifies()
     }
 
-    /**
-     * @return true Если сканирование было начато успешно,
-     * false если неуспешно
-     */
     fun startScan() {
-        val success = wifiManager.startScan()
-        if (!success) {
-            Timber.tag(TAG).e("Couldn't start the scan")
-            onStartScanFailure()
-        }
+        wifiManager.startScan()
     }
 
     fun stop() {
-        context.unregisterReceiver(wifiScanReceiver)
+        if (receiverWasRegistered) {
+            context.unregisterReceiver(wifiScanReceiver)
+            receiverWasRegistered = false
+        }
     }
 
     abstract fun onScanSuccess(scanResults: List<ScanResult>)
 
     abstract fun onScanFailure(oldScanResults: List<ScanResult>)
-
-    abstract fun onStartScanFailure()
 
     private fun prepareForScanningWifies() {
 
@@ -63,6 +58,7 @@ abstract class WifiScanManager(
         val intentFilter = IntentFilter()
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
         context.registerReceiver(wifiScanReceiver, intentFilter)
+        receiverWasRegistered = true
     }
 
     private fun onScanSuccessLocal() {

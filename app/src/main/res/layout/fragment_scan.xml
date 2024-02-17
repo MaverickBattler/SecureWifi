@@ -7,13 +7,19 @@
     android:background="?attr/backgroundColor"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_scan"
-        android:layout_weight="1"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        tools:listitem="@layout/wifi_scan_result_item"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_scan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/wifi_scan_result_item"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/scan_results_textview"
@@ -21,18 +27,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:paddingTop="40dp"
+        android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:text="@string/wifi_scan_results"
         android:textColor="?attr/textColorMain"
         android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/start_scan_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:padding="10dp"
-        android:text="@string/get_wifi_scan_results" />
 </LinearLayout>

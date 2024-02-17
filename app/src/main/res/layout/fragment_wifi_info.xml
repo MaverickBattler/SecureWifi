@@ -42,19 +42,9 @@
             android:layout_height="0.5dp"
             android:background="?attr/controlColor" />
 
-        <TextView
-            android:id="@+id/wifi_attack_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:text="@string/attack_wifi"
-            android:textAlignment="center"
-            android:textColor="?attr/textColorMain"
-            android:textSize="18sp" />
-
         <Button
             android:id="@+id/start_attack_button"
-            android:text="@string/start_wifi_attack"
+            android:text="@string/see_wifi_attack_results"
             android:paddingVertical="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

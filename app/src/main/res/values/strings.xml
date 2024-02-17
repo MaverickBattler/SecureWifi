@@ -31,7 +31,7 @@
     <string name="password_delete_imageview">Password delete imageview</string>
     <string name="attack_wifi">Атаковать точку</string>
     <string name="password_list">Список паролей:</string>
-    <string name="start_wifi_attack">Начать атаку</string>
+    <string name="see_wifi_attack_results">Посмотреть результаты атаки на точку</string>
     <string name="tried_passwords">Список попробованных паролей:</string>
     <string name="custom_lists">Списки паролей</string>
     <string name="password_list_delete_imageview">Password list delete imageview\n</string>
@@ -46,4 +46,5 @@
     <string name="plus_adaptive_passwords">+ Адаптивные пароли</string>
     <string name="wifi_attack_results">Результаты атаки на точку</string>
     <string name="correct_password_is">Пароль от точки: %1$s</string>
+    <string name="menu_refresh">Сканировать Wi-Fi снова</string>
 </resources>

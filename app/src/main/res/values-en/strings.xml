@@ -31,7 +31,7 @@
     <string name="password_delete_imageview">Password delete imageview</string>
     <string name="attack_wifi">Attack point</string>
     <string name="password_list">Password list:</string>
-    <string name="start_wifi_attack">Start attack</string>
+    <string name="see_wifi_attack_results">See wifi attack results</string>
     <string name="tried_passwords">List of tried passwords:</string>
     <string name="custom_lists">Custom lists</string>
     <string name="password_list_delete_imageview">Password list delete imageview\n</string>
@@ -46,4 +46,5 @@
     <string name="plus_adaptive_passwords">+ Adaptive passwords</string>
     <string name="wifi_attack_results">Wifi attack results</string>
     <string name="correct_password_is">Point password: %1$s</string>
+    <string name="menu_refresh">Scan Wi-Fi again</string>
 </resources>

