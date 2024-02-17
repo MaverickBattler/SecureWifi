@@ -1,7 +1,7 @@
-package com.practice.securewifi.connect.di
+package com.practice.securewifi.check.di
 
-import com.practice.securewifi.connect.interactor.TriedPasswordsInteractor
-import com.practice.securewifi.connect.interactor.WifiCheckResultInteractor
+import com.practice.securewifi.check.interactor.TriedPasswordsInteractor
+import com.practice.securewifi.check.interactor.WifiCheckResultInteractor
 import org.koin.dsl.module
 
 val connectModule = module {

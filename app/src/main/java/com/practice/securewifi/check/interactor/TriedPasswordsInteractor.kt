@@ -1,4 +1,4 @@
-package com.practice.securewifi.connect.interactor
+package com.practice.securewifi.check.interactor
 
 import com.practice.securewifi.data.entity.WifiPasswordsCrossRef
 import com.practice.securewifi.data.repository.TriedPasswordsRepository

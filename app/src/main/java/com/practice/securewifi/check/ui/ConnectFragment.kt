@@ -1,4 +1,4 @@
-package com.practice.securewifi.connect.ui
+package com.practice.securewifi.check.ui
 
 import android.Manifest
 import android.app.ActivityManager
@@ -19,9 +19,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.R
-import com.practice.securewifi.connect.Command
-import com.practice.securewifi.connect.service.ConnectionService
-import com.practice.securewifi.connect.UpdateListener
+import com.practice.securewifi.check.Command
+import com.practice.securewifi.check.service.ConnectionService
+import com.practice.securewifi.check.UpdateListener
 import com.practice.securewifi.data.interactor.AllPasswordListsInteractor
 import com.practice.securewifi.databinding.FragmentConnectBinding
 import kotlinx.coroutines.Dispatchers

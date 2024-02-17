@@ -1,4 +1,4 @@
-package com.practice.securewifi.connect.wifi_points_selection.ui
+package com.practice.securewifi.check.wifi_points_selection.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater

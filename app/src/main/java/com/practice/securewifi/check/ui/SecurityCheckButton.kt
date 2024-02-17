@@ -1,4 +1,4 @@
-package com.practice.securewifi.connect.ui
+package com.practice.securewifi.check.ui
 
 import android.content.Context
 import android.util.AttributeSet

@@ -1,4 +1,4 @@
-package com.practice.securewifi.connect.service
+package com.practice.securewifi.check.service
 
 import android.Manifest
 import android.app.*
@@ -17,11 +17,11 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.practice.securewifi.R
 import com.practice.securewifi.app.MainActivity
-import com.practice.securewifi.connect.Command
-import com.practice.securewifi.connect.receiver.ConnectivityActionReceiver
-import com.practice.securewifi.connect.UpdateListener
-import com.practice.securewifi.connect.interactor.TriedPasswordsInteractor
-import com.practice.securewifi.connect.interactor.WifiCheckResultInteractor
+import com.practice.securewifi.check.Command
+import com.practice.securewifi.check.receiver.ConnectivityActionReceiver
+import com.practice.securewifi.check.UpdateListener
+import com.practice.securewifi.check.interactor.TriedPasswordsInteractor
+import com.practice.securewifi.check.interactor.WifiCheckResultInteractor
 import com.practice.securewifi.data.entity.WifiCheckResult
 import com.practice.securewifi.data.interactor.CustomPasswordListInteractor
 import com.practice.securewifi.data.interactor.FixedPasswordListsInteractor

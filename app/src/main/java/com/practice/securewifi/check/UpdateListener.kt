@@ -1,4 +1,4 @@
-package com.practice.securewifi.connect
+package com.practice.securewifi.check
 
 interface UpdateListener {
 
