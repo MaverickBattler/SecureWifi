@@ -47,4 +47,6 @@
     <string name="wifi_attack_results">Wifi attack results</string>
     <string name="correct_password_is">Point password: %1$s</string>
     <string name="menu_refresh">Scan Wi-Fi again</string>
+    <string name="select_all">Select all</string>
+    <string name="save">Save</string>
 </resources>

@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
+import com.practice.securewifi.app.core.base.BaseDialogFragment
 import com.practice.securewifi.databinding.FragmentWifiInfoBinding
 
-class WifiPointsSelectionDialog : DialogFragment() {
+class WifiPointsSelectionDialog : BaseDialogFragment() {
 
     private var _binding: FragmentWifiInfoBinding? = null
 
     private val binding get() = _binding!!
+
+    override val dialogWidth: Float = 85f
+    override val dialogHeight: Float = 85f
 
     override fun onCreateView(
         inflater: LayoutInflater,
