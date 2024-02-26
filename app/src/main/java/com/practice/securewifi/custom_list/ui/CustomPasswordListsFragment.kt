@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.practice.securewifi.R
 import com.practice.securewifi.custom_list.adapter.CustomPasswordListsAdapter
+import com.practice.securewifi.custom_list.model.CustomPasswordList
 import com.practice.securewifi.custom_list.viewmodel.CustomPasswordListsViewModel
 import com.practice.securewifi.databinding.FragmentPasswordListsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,11 +32,10 @@ class CustomPasswordListsFragment : Fragment() {
         val onDeleteClickListener: (String) -> Unit = { listName ->
             viewModel.onDeletePasswordList(listName)
         }
-        val onItemClickListener: (String) -> Unit = { listName ->
-            val editable = viewModel.isChosenPasswordListEditable(listName)
+        val onItemClickListener: (CustomPasswordList) -> Unit = { customPasswordList ->
             val action = CustomPasswordListsFragmentDirections.actionCustomListsToEditCustomList(
-                listName,
-                editable
+                customPasswordList.listName,
+                customPasswordList.deletable
             )
             findNavController().navigate(action)
         }
@@ -50,7 +50,7 @@ class CustomPasswordListsFragment : Fragment() {
         binding.addListFab.setOnClickListener {
             findNavController().navigate(R.id.action_customLists_to_edit_customList)
         }
-        viewModel.allPasswordLists.observe(viewLifecycleOwner) { allPasswordLists ->
+        viewModel.customPasswordLists.observe(viewLifecycleOwner) { allPasswordLists ->
             adapter.submitList(allPasswordLists)
         }
         super.onViewCreated(view, savedInstanceState)

@@ -1,15 +1,11 @@
 package com.practice.securewifi.custom_list.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.practice.securewifi.R
-import com.practice.securewifi.data.interactor.CustomPasswordListInteractor
-import com.practice.securewifi.data.interactor.CustomPasswordListsInteractor
-import com.practice.securewifi.data.interactor.FixedPasswordListsInteractor
-import com.practice.securewifi.data.repository.FixedPasswordListsRepository
+import com.practice.securewifi.custom_list.interactor.CustomPasswordListInteractor
+import com.practice.securewifi.custom_list.interactor.CustomPasswordListsInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,8 +14,6 @@ class CustomPasswordListViewModel(
     private val listName: String,
     private val customPasswordListInteractor: CustomPasswordListInteractor,
     private val customPasswordListsInteractor: CustomPasswordListsInteractor,
-    private val fixedPasswordListsInteractor: FixedPasswordListsInteractor,
-    private val application: Application
 ) : ViewModel() {
 
     val customPasswordList: LiveData<List<String>> =
@@ -27,21 +21,7 @@ class CustomPasswordListViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val storedPasswordList = when (listName) {
-                application.getString(R.string.adaptive) -> {
-                    fixedPasswordListsInteractor.getFixedPasswordListForShow(
-                        FixedPasswordListsRepository.FixedPassword.ADAPTIVE,
-                    ) + application.getString(R.string.plus_adaptive_passwords)
-                }
-                application.getString(R.string.most_popular) -> {
-                    fixedPasswordListsInteractor.getFixedPasswordListForShow(
-                        FixedPasswordListsRepository.FixedPassword.MOST_POPULAR,
-                    )
-                }
-                else -> {
-                    customPasswordListInteractor.getPasswordsForList(listName)
-                }
-            }
+            val storedPasswordList = customPasswordListInteractor.getPasswordsForList(listName)
             customPasswordListInteractor.updatePasswordList(storedPasswordList)
         }
     }
@@ -60,8 +40,7 @@ class CustomPasswordListViewModel(
 
     suspend fun onSaveList(newListName: String): SaveResult {
         return withContext(Dispatchers.IO) {
-            val allPasswordListsNames =
-                customPasswordListsInteractor.getPasswordLists() + fixedPasswordListsInteractor.getFixedPasswordListsNames()
+            val allPasswordListsNames = customPasswordListsInteractor.getPasswordLists()
             if (newListName != listName && allPasswordListsNames.contains(newListName)) {
                 SaveResult.LIST_NAME_ALREADY_EXIST
             } else if (newListName.isEmpty()) {
@@ -69,7 +48,7 @@ class CustomPasswordListViewModel(
             } else {
                 val customPasswordList = customPasswordList.value
                 customPasswordList?.let {
-                    customPasswordListsInteractor.saveList(
+                    customPasswordListsInteractor.saveUserList(
                         listName,
                         newListName,
                         customPasswordList

@@ -10,7 +10,7 @@ import com.practice.securewifi.databinding.CustomPasswordListItemBinding
 
 class CustomPasswordListsAdapter(
     private val onDeleteClickListener: (String) -> Unit,
-    private val onItemClickListener: (String) -> Unit
+    private val onItemClickListener: (CustomPasswordList) -> Unit
 ) : ListAdapter<CustomPasswordList, CustomPasswordListsAdapter.CustomPasswordListsViewHolder>(
     CustomPasswordListDiffCallback()
 ) {
@@ -44,7 +44,7 @@ class CustomPasswordListsAdapter(
         fun bind(
             item: CustomPasswordList,
             onDeleteClickListener: (String) -> Unit,
-            onItemClickListener: (String) -> Unit
+            onItemClickListener: (CustomPasswordList) -> Unit
         ) {
             binding.passwordList.text = item.listName
             binding.passwordListDeleteImageview.isVisible = item.deletable
@@ -52,7 +52,7 @@ class CustomPasswordListsAdapter(
                 onDeleteClickListener(item.listName)
             }
             binding.root.setOnClickListener {
-                onItemClickListener(item.listName)
+                onItemClickListener(item)
             }
         }
     }

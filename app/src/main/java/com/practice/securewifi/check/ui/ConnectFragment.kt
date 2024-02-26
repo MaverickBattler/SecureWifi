@@ -13,21 +13,15 @@ import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.R
 import com.practice.securewifi.check.Command
 import com.practice.securewifi.check.service.ConnectionService
 import com.practice.securewifi.check.UpdateListener
-import com.practice.securewifi.data.interactor.AllPasswordListsInteractor
+import com.practice.securewifi.check.passwords_lists_selection.ui.PasswordsListsSelectionDialog
 import com.practice.securewifi.databinding.FragmentConnectBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.inject
 
 
 class ConnectFragment : Fragment(), UpdateListener {
@@ -41,8 +35,6 @@ class ConnectFragment : Fragment(), UpdateListener {
     private var serviceBound = false
 
     private var mConnection: ServiceConnection? = null
-
-    private val allPasswordListsInteractor by inject<AllPasswordListsInteractor>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -87,15 +79,19 @@ class ConnectFragment : Fragment(), UpdateListener {
 
             buttonConnect.setOnClickListener {
                 if (checkForAccessFineLocationPermission() && checkForPostNotificationsPermission()) {
-                    binding.wifiListSpinner.isEnabled = false
+                    //binding.wifiListSpinner.isEnabled = false
                     buttonConnect.setState(SecurityCheckButton.State.PREPARATION)
                     val intent = Intent(requireActivity(), ConnectionService::class.java)
-                    val selectedPasswordList = binding.wifiListSpinner.selectedItem.toString()
-                    intent.putExtra(ConnectionService.PASSWORD_LIST_PARAMETER, selectedPasswordList)
+                    //val selectedPasswordList = binding.wifiListSpinner.selectedItem.toString()
+                    //intent.putExtra(ConnectionService.PASSWORD_LIST_PARAMETER, selectedPasswordList)
                     requireActivity().startService(intent)
-                    if (!requireActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE)) {
+                    if (!requireActivity().bindService(
+                            intent,
+                            mConnection,
+                            Context.BIND_AUTO_CREATE
+                        )
+                    ) {
                         attackInfoTextView.text = getString(R.string.connection_start_failure)
-                        binding.wifiListSpinner.isEnabled = true
                         buttonConnect.setState(SecurityCheckButton.State.INITIAL)
                     } else {
                         buttonConnect.setState(SecurityCheckButton.State.PROGRESS)
@@ -104,17 +100,12 @@ class ConnectFragment : Fragment(), UpdateListener {
             }
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val wifiListsNames = allPasswordListsInteractor.getPasswordListsNames()
-            withContext(Dispatchers.Main) {
-                binding.wifiListSpinner.adapter = ArrayAdapter(
-                    requireActivity(),
-                    R.layout.wifi_spinner_item,
-                    wifiListsNames
-                )
-            }
+        binding.passwordsListsLayout.setOnClickListener {
+            PasswordsListsSelectionDialog().show(
+                parentFragmentManager,
+                PasswordsListsSelectionDialog.TAG
+            )
         }
-
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -178,7 +169,7 @@ class ConnectFragment : Fragment(), UpdateListener {
     override fun onUpdate(command: Command) {
         when (command) {
             is Command.StopConnections -> {
-                binding.wifiListSpinner.isEnabled = true
+                //binding.wifiListSpinner.isEnabled = true
                 binding.securityCheckButton.setState(SecurityCheckButton.State.INITIAL)
             }
 

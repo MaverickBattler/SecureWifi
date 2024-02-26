@@ -54,6 +54,8 @@ class ScanFragment : Fragment() {
             refresh()
         }
 
+        refresh()
+
         return binding.root
     }
 

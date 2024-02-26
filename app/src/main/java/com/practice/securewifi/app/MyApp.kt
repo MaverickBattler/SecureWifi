@@ -1,6 +1,7 @@
 package com.practice.securewifi.app
 
 import android.app.Application
+import com.practice.securewifi.app.initialization.di.mainModule
 import com.practice.securewifi.check_results.di.checkResultsModule
 import com.practice.securewifi.check.di.connectModule
 import com.practice.securewifi.custom_list.di.customListModule
@@ -22,6 +23,7 @@ class MyApp: Application() {
             androidContext(this@MyApp)
             modules(
                 listOf(
+                    mainModule,
                     connectModule,
                     dataModule,
                     customListModule,

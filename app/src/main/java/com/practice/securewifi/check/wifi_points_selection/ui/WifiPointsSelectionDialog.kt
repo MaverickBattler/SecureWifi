@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.practice.securewifi.app.core.base.BaseDialogFragment
-import com.practice.securewifi.databinding.FragmentWifiInfoBinding
+import com.practice.securewifi.databinding.DialogWifiPointsSelectionBinding
 
 class WifiPointsSelectionDialog : BaseDialogFragment() {
 
-    private var _binding: FragmentWifiInfoBinding? = null
+    private var _binding: DialogWifiPointsSelectionBinding? = null
 
     private val binding get() = _binding!!
 
@@ -21,7 +21,7 @@ class WifiPointsSelectionDialog : BaseDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentWifiInfoBinding.inflate(inflater, container, false)
+        _binding = DialogWifiPointsSelectionBinding.inflate(inflater, container, false)
         return binding.root
     }
 

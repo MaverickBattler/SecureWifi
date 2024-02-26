@@ -23,10 +23,8 @@ import com.practice.securewifi.check.UpdateListener
 import com.practice.securewifi.check.interactor.TriedPasswordsInteractor
 import com.practice.securewifi.check.interactor.WifiCheckResultInteractor
 import com.practice.securewifi.data.entity.WifiCheckResult
-import com.practice.securewifi.data.interactor.CustomPasswordListInteractor
-import com.practice.securewifi.data.interactor.FixedPasswordListsInteractor
-import com.practice.securewifi.data.repository.FixedPasswordListsRepository
 import com.practice.securewifi.app.core.util.WifiManagerProvider
+import com.practice.securewifi.check.interactor.PasswordListsInteractor
 import com.practice.securewifi.scan_feature.WifiScanManager
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
@@ -63,8 +61,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     private var passwordListName: String? = null
 
-    private val fixedPasswordListsInteractor by inject<FixedPasswordListsInteractor>()
-    private val customPasswordListInteractor by inject<CustomPasswordListInteractor>()
+    private val passwordListsInteractor by inject<PasswordListsInteractor>()
 
     inner class LocalBinder : Binder() {
         val service: ConnectionService = this@ConnectionService
@@ -433,32 +430,11 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
     }
 
     private suspend fun getPasswordsList(ssid: String): List<String> {
-        return when (passwordListName) {
-            application.getString(R.string.adaptive) -> {
-                fixedPasswordListsInteractor.getFixedPasswordList(
-                    FixedPasswordListsRepository.FixedPassword.ADAPTIVE,
-                    ssid
-                )
-            }
-
-            application.getString(R.string.most_popular) -> {
-                fixedPasswordListsInteractor.getFixedPasswordList(
-                    FixedPasswordListsRepository.FixedPassword.MOST_POPULAR,
-                    ssid
-                )
-            }
-
-            else -> {
-                val listName = passwordListName
-                if (listName != null) { // custom list
-                    customPasswordListInteractor.getPasswordsForList(listName)
-                } else { // default list
-                    fixedPasswordListsInteractor.getFixedPasswordList(
-                        FixedPasswordListsRepository.FixedPassword.ADAPTIVE,
-                        ssid
-                    )
-                }
-            }
+        val listName = passwordListName
+        return if (listName != null) {
+            passwordListsInteractor.getPasswordsForChosenListAndWifi(listName, ssid)
+        } else {
+            emptyList()
         }
     }
 

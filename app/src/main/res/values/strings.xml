@@ -50,4 +50,7 @@
     <string name="select_all">Выбрать все</string>
     <string name="closebutton" translatable="false">CloseButton</string>
     <string name="save">Сохранить</string>
+    <string name="wifi_icon" translatable="false">Wifi Icon</string>
+    <string name="dropdown_arrow_icon" translatable="false">Dropdown arrow icon</string>
+    <string name="password_icon" translatable="false">Password Icon</string>
 </resources>

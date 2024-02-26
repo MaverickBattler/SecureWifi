@@ -1,4 +1,4 @@
-package com.practice.securewifi.data.interactor
+package com.practice.securewifi.custom_list.interactor
 
 import com.practice.securewifi.custom_list.repository.CustomListRepository
 import com.practice.securewifi.data.repository.PasswordListsRepository
