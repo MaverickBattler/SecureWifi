@@ -1,4 +1,4 @@
-package com.practice.securewifi.scan.ui
+package com.practice.securewifi.scan.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

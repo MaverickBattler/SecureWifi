@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.practice.securewifi.data.dao.PasswordListDao
 import com.practice.securewifi.data.dao.PasswordListPasswordDao
+import com.practice.securewifi.data.dao.SelectedWifiDao
 import com.practice.securewifi.data.dao.TriedPasswordsDao
 import com.practice.securewifi.data.dao.WifiCheckResultDao
 import com.practice.securewifi.data.entity.PasswordList
@@ -31,6 +32,7 @@ abstract class WifiSafetyDatabase : RoomDatabase() {
     abstract val passwordListDao: PasswordListDao
     abstract val triedPasswordsDao: TriedPasswordsDao
     abstract val wifiCheckResultDao: WifiCheckResultDao
+    abstract val selectedWifiDao: SelectedWifiDao
 
     companion object {
         @Volatile

@@ -1,7 +1,9 @@
 package com.practice.securewifi.app.core.base
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import androidx.annotation.CallSuper
 import androidx.fragment.app.DialogFragment
 
@@ -27,5 +29,6 @@ abstract class BaseDialogFragment: DialogFragment() {
         val percentWidthResult = rect.width() * percentWidth
         val percentHeightResult = rect.height() * percentHeight
         dialog?.window?.setLayout(percentWidthResult.toInt(), percentHeightResult.toInt())
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 }

@@ -16,7 +16,7 @@
         android:paddingEnd="22dp"
         android:drawableLeft="@drawable/play"
         android:drawableTint="@color/white"
-        android:background="@drawable/rounded_button"
+        android:background="@drawable/round_button"
         tools:ignore="RtlHardcoded" />
 
     <ProgressBar

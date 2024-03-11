@@ -20,5 +20,6 @@
         android:id="@+id/wifi_add_checkbox"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:clickable="false"
         android:layout_gravity="center_vertical" />
 </LinearLayout>

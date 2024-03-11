@@ -6,4 +6,6 @@
     <attr format="reference|color" name="textColorSecondary" />
     <attr format="reference|color" name="primaryColor" />
     <attr format="reference|color" name="controlColor" />
+    <attr format="reference|color" name="colorDrawablesOnBackground" />
+    <attr format="reference|color" name="colorDrawablesOnPrimary" />
 </resources>

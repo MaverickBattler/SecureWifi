@@ -13,16 +13,16 @@ import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.practice.securewifi.R
+import com.practice.securewifi.app.core.checkForAccessFineLocationPermission
 import com.practice.securewifi.check.Command
 import com.practice.securewifi.check.service.ConnectionService
 import com.practice.securewifi.check.UpdateListener
 import com.practice.securewifi.check.passwords_lists_selection.ui.PasswordsListsSelectionDialog
+import com.practice.securewifi.check.wifi_points_selection.ui.WifiPointsSelectionDialog
 import com.practice.securewifi.databinding.FragmentConnectBinding
-
 
 class ConnectFragment : Fragment(), UpdateListener {
 
@@ -79,11 +79,8 @@ class ConnectFragment : Fragment(), UpdateListener {
 
             buttonConnect.setOnClickListener {
                 if (checkForAccessFineLocationPermission() && checkForPostNotificationsPermission()) {
-                    //binding.wifiListSpinner.isEnabled = false
                     buttonConnect.setState(SecurityCheckButton.State.PREPARATION)
                     val intent = Intent(requireActivity(), ConnectionService::class.java)
-                    //val selectedPasswordList = binding.wifiListSpinner.selectedItem.toString()
-                    //intent.putExtra(ConnectionService.PASSWORD_LIST_PARAMETER, selectedPasswordList)
                     requireActivity().startService(intent)
                     if (!requireActivity().bindService(
                             intent,
@@ -106,6 +103,12 @@ class ConnectFragment : Fragment(), UpdateListener {
                 PasswordsListsSelectionDialog.TAG
             )
         }
+        binding.listOfWifiesLayout.setOnClickListener {
+            WifiPointsSelectionDialog().show(
+                parentFragmentManager,
+                WifiPointsSelectionDialog.TAG
+            )
+        }
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -121,29 +124,14 @@ class ConnectFragment : Fragment(), UpdateListener {
     }
 
     override fun onDestroy() {
-        mConnection?.let {
-            requireActivity().unbindService(it)
+        if (serviceBound) {
+            mConnection?.let { serviceConnection ->
+                requireActivity().unbindService(serviceConnection)
+            }
         }
         serviceBound = false
         _binding = null
         super.onDestroy()
-    }
-
-    private fun checkForAccessFineLocationPermission(): Boolean {
-        return if (ContextCompat.checkSelfPermission(
-                requireActivity().applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_DENIED
-        ) {
-            // If permission is not yet granted, ask for the permission
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1
-            )
-            false
-        } else {
-            true
-        }
     }
 
     private fun checkForPostNotificationsPermission(): Boolean {

@@ -1,7 +1,5 @@
 package com.practice.securewifi.scan.ui.fragment
 
-import android.net.wifi.ScanResult
-import android.net.wifi.WifiManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,17 +10,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import com.practice.securewifi.R
 import com.practice.securewifi.app.core.checkForAccessFineLocationPermission
 import com.practice.securewifi.databinding.FragmentScanBinding
-import com.practice.securewifi.scan.model.WifiScanResult
-import com.practice.securewifi.scan.ui.ScanResultAdapter
-import com.practice.securewifi.scan_feature.WifiScanManager
+import com.practice.securewifi.scan.model.ScanResultInfo
+import com.practice.securewifi.scan.ui.adapter.ScanResultAdapter
+import com.practice.securewifi.scan.viewmodel.WifiPointsScanViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ScanFragment : Fragment() {
 
-    private lateinit var wifiScanManager: WifiScanManager
+    private val viewModel by viewModel<WifiPointsScanViewModel>()
 
     private lateinit var scanResultAdapter: ScanResultAdapter
 
@@ -34,19 +34,13 @@ class ScanFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentScanBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initSubscriptions()
         scanResultAdapter = ScanResultAdapter()
         binding.recyclerviewScan.adapter = scanResultAdapter
-
-        wifiScanManager = object: WifiScanManager(requireActivity().applicationContext) {
-            override fun onScanSuccess(scanResults: List<ScanResult>) {
-                scanSuccess(scanResults)
-            }
-
-            override fun onScanFailure(oldScanResults: List<ScanResult>) {
-                scanFailure(oldScanResults)
-            }
-        }
 
         setupMenu()
 
@@ -55,52 +49,46 @@ class ScanFragment : Fragment() {
         }
 
         refresh()
+        super.onViewCreated(view, savedInstanceState)
+    }
 
-        return binding.root
+    private fun initSubscriptions() {
+        viewModel.scanResultInfo.observe(viewLifecycleOwner) { scanResultInfo ->
+            when (scanResultInfo) {
+                is ScanResultInfo.ScanSuccess -> {
+                    binding.progressBar.isVisible = false
+                    binding.scanResultsTextview.isVisible = false
+                    scanResultAdapter.submitList(scanResultInfo.scanResults)
+                    binding.swiperefresh.isRefreshing = false
+                }
+
+                is ScanResultInfo.ScanFailure -> {
+                    binding.progressBar.isVisible = false
+                    if (scanResultInfo.oldScanResults.isNotEmpty()) {
+                        binding.scanResultsTextview.isVisible = false
+                        scanResultAdapter.submitList(scanResultInfo.oldScanResults)
+                    } else {
+                        binding.scanResultsTextview.isVisible = true
+                        binding.scanResultsTextview.text = getString(R.string.scan_failure)
+                    }
+                    binding.swiperefresh.isRefreshing = false
+                }
+
+                is ScanResultInfo.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
     }
 
     private fun refresh() {
         if (checkForAccessFineLocationPermission()) {
-            wifiScanManager.startScan()
+            viewModel.onRefresh()
         }
-    }
-
-    private fun scanSuccess(scanResults: List<ScanResult>) {
-        val scanResultsTextView = binding.scanResultsTextview
-        scanResultsTextView.visibility = View.GONE
-        val displayableResults = scanResultsToDisplayableResults(scanResults)
-        scanResultAdapter.submitList(displayableResults)
-        binding.swiperefresh.isRefreshing = false
-    }
-
-    private fun scanFailure(oldScanResults: List<ScanResult>) {
-        val scanResultsTextView = binding.scanResultsTextview
-        if (oldScanResults.isNotEmpty()) {
-            scanResultsTextView.visibility = View.GONE
-            // handle failure: new scan did NOT succeed
-            // showing OLD scan results
-            val wifiScanResults = scanResultsToDisplayableResults(oldScanResults)
-            scanResultAdapter.submitList(wifiScanResults)
-        } else {
-            scanResultsTextView.visibility = View.VISIBLE
-            scanResultsTextView.text = getString(R.string.scan_failure)
-        }
-        binding.swiperefresh.isRefreshing = false
-    }
-
-    private fun scanResultsToDisplayableResults(results: List<ScanResult>): List<WifiScanResult> {
-        return results.filter { it.SSID != "" }.map { mapToDisplayableResult(it) }
-            .sortedByDescending { it.signalLevel }
-    }
-
-    private fun mapToDisplayableResult(result: ScanResult): WifiScanResult {
-        val signalLevel = WifiManager.calculateSignalLevel(result.level, 6)
-        return WifiScanResult(result.SSID, result.capabilities, signalLevel)
     }
 
     override fun onDestroyView() {
         _binding = null
-        wifiScanManager.stop()
         super.onDestroyView()
     }
 
@@ -109,12 +97,10 @@ class ScanFragment : Fragment() {
 
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
                 menuInflater.inflate(R.menu.menu_refresh, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.menu_refresh -> {
                         binding.swiperefresh.isRefreshing = true

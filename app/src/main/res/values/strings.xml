@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">SecureWifi</string>
-    <string name="wifi_scan_results">Результаты сканирования</string>
     <string name="get_wifi_scan_results">Сканировать точки доступа поблизости</string>
     <string name="connect_to_wifi">Подключиться к Wi-Fi</string>
     <string name="starting_scan">Начинаем сканирование…</string>
@@ -8,7 +7,7 @@
     <string name="password_hacking_results">Пароль был подобран!\nСеть: %1$s \nПароль: %2$s\nПароль угадан за следующее количество попыток: %3$d</string>
     <string name="couldnt_find_password">По результатам быстрой проверки уязвимостей в паролях беспроводных точек доступа поблизости не обнаружено.</string>
     <string name="disconnect_from_wifi">Отключиться от Wi-fi</string>
-    <string name="check_password_security">Проверка защищенность паролей сетей Wi-Fi поблизости</string>
+    <string name="check_password_security">Проверка защищенности паролей точек Wi-Fi поблизости</string>
     <string name="list_of_wifi_nearby">Wi-Fi поблизости</string>
     <string name="check_of_passwords_safety">Подбор паролей</string>
     <string name="security_check_results">Результаты</string>
@@ -48,6 +47,7 @@
     <string name="correct_password_is">Пароль от точки: %1$s</string>
     <string name="menu_refresh">Сканировать Wi-Fi снова</string>
     <string name="select_all">Выбрать все</string>
+    <string name="deselect_all">Снять выделение</string>
     <string name="closebutton" translatable="false">CloseButton</string>
     <string name="save">Сохранить</string>
     <string name="wifi_icon" translatable="false">Wifi Icon</string>

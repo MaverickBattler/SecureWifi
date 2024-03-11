@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">SecureWifi</string>
-    <string name="wifi_scan_results">Scan results</string>
     <string name="get_wifi_scan_results">Scan access points nearby</string>
     <string name="connect_to_wifi">Connect to Wi-Fi</string>
     <string name="starting_scan">Starting scanning…</string>
@@ -48,5 +47,6 @@
     <string name="correct_password_is">Point password: %1$s</string>
     <string name="menu_refresh">Scan Wi-Fi again</string>
     <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
     <string name="save">Save</string>
 </resources>

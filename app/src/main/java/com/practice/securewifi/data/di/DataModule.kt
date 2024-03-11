@@ -2,6 +2,7 @@ package com.practice.securewifi.data.di
 
 import com.practice.securewifi.data.database.WifiSafetyDatabase
 import com.practice.securewifi.data.repository.PasswordListsRepository
+import com.practice.securewifi.data.repository.SelectedWifiesRepository
 import com.practice.securewifi.data.repository.TriedPasswordsRepository
 import com.practice.securewifi.data.repository.WifiCheckResultRepository
 import org.koin.android.ext.koin.androidApplication
@@ -14,6 +15,7 @@ val dataModule = module {
     single { get<WifiSafetyDatabase>().passwordListDao }
     single { get<WifiSafetyDatabase>().triedPasswordsDao }
     single { get<WifiSafetyDatabase>().wifiCheckResultDao }
+    single { get<WifiSafetyDatabase>().selectedWifiDao }
 
     factory {
         PasswordListsRepository(
@@ -28,5 +30,9 @@ val dataModule = module {
 
     factory {
         WifiCheckResultRepository(wifiCheckResultDao = get())
+    }
+
+    factory {
+        SelectedWifiesRepository(selectedWifiDao = get())
     }
 }

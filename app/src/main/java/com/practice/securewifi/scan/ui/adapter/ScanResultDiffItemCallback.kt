@@ -1,4 +1,4 @@
-package com.practice.securewifi.scan.ui
+package com.practice.securewifi.scan.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.practice.securewifi.scan.model.WifiScanResult

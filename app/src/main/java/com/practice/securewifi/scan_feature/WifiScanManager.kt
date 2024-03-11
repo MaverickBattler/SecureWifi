@@ -64,7 +64,7 @@ abstract class WifiScanManager(
     private fun onScanSuccessLocal() {
         try {
             Timber.tag(TAG).i("Scan success!")
-            onScanSuccess(wifiManager.scanResults)
+            onScanSuccess(wifiManager.scanResults.filterScanResults())
         } catch (e: SecurityException) {
             Timber.tag(TAG).e(e)
             onScanFailure(emptyList())
@@ -74,10 +74,20 @@ abstract class WifiScanManager(
     private fun onScanFailureLocal() {
         try {
             Timber.tag(TAG).i("Scan failure!")
-            onScanFailure(wifiManager.scanResults)
+            onScanFailure(wifiManager.scanResults.filterScanResults())
         } catch (e: SecurityException) {
             Timber.tag(TAG).e(e)
             onScanFailure(emptyList())
+        }
+    }
+
+    private fun List<ScanResult>.filterScanResults(): List<ScanResult> {
+        return filter {
+            !it.SSID.isNullOrEmpty()
+        }.groupBy {
+            it.SSID
+        }.values.flatten().sortedByDescending {
+            it.level
         }
     }
 

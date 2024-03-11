@@ -6,6 +6,7 @@ import com.practice.securewifi.check_results.di.checkResultsModule
 import com.practice.securewifi.check.di.connectModule
 import com.practice.securewifi.custom_list.di.customListModule
 import com.practice.securewifi.data.di.dataModule
+import com.practice.securewifi.scan.di.scanModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
@@ -27,7 +28,8 @@ class MyApp: Application() {
                     connectModule,
                     dataModule,
                     customListModule,
-                    checkResultsModule
+                    checkResultsModule,
+                    scanModule
                 )
             )
         }
