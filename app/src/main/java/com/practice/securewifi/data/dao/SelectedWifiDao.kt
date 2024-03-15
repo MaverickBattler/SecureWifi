@@ -16,6 +16,9 @@ interface SelectedWifiDao {
     @Query("SELECT * FROM selected_wifi")
     fun getSelectedWifiesListAsFlow(): Flow<List<SelectedWifi>>
 
+    @Query("SELECT * FROM selected_wifi")
+    suspend fun getSelectedWifiesList(): List<SelectedWifi>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSelectedWifi(selectedWifi: SelectedWifi)
 

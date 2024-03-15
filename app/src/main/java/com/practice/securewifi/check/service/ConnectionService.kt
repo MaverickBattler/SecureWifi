@@ -25,6 +25,8 @@ import com.practice.securewifi.check.interactor.WifiCheckResultInteractor
 import com.practice.securewifi.data.entity.WifiCheckResult
 import com.practice.securewifi.app.core.util.WifiManagerProvider
 import com.practice.securewifi.check.interactor.PasswordListsInteractor
+import com.practice.securewifi.check.interactor.SelectedPasswordListsInteractor
+import com.practice.securewifi.check.interactor.SelectedWifiesInteractor
 import com.practice.securewifi.scan_feature.WifiScanManager
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
@@ -46,6 +48,10 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     private val wifiCheckResultInteractor: WifiCheckResultInteractor by inject()
 
+    private val selectedWifiesInteractor: SelectedWifiesInteractor by inject()
+
+    private val selectedPasswordListsInteractor: SelectedPasswordListsInteractor by inject()
+
     private lateinit var binder: LocalBinder
 
     private lateinit var notificationChannel: String
@@ -58,8 +64,6 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     private var latestCommand: Command = Command.StartConnections
     private var latestMessage: Command? = null
-
-    private var passwordListName: String? = null
 
     private val passwordListsInteractor by inject<PasswordListsInteractor>()
 
@@ -90,7 +94,6 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (!connection.isActive) {
-            passwordListName = intent?.getStringExtra(PASSWORD_LIST_PARAMETER)
             createNotification()
             wifiManager.isWifiEnabled = true
             update(Command.ShowMessageToUser(getString(R.string.starting_scan)))
@@ -225,18 +228,24 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
         wifiScanManager = object : WifiScanManager(this@ConnectionService) {
             override fun onScanSuccess(scanResults: List<ScanResult>) {
+                wifiScanManager?.stop()
                 scanSuccess(scanResults)
             }
 
             override fun onScanFailure(oldScanResults: List<ScanResult>) {
-                scanFailure()
+                wifiScanManager?.stop()
+                if (oldScanResults.isEmpty()) {
+                    scanFailure()
+                } else {
+                    scanSuccess(oldScanResults)
+                }
             }
         }
         wifiScanManager?.startScan()
 
         // Timeout if connections didn't start in 5 seconds
         timeoutJob.cancel()
-        timeoutJob = coroutineScope.launch {
+        timeoutJob = coroutineScope.launch(Dispatchers.IO) {
             delay(START_CONNECTIONS_TIMEOUT)
             wifiScanManager?.stop()
             if (!connection.isActive) {
@@ -246,17 +255,27 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
     }
 
     private fun scanSuccess(nearbyWifiPoints: List<ScanResult>) {
-
-        val wifiSSIDs = nearbyWifiPoints.filter {
-            it.SSID != "" /*&& WifiManager.calculateSignalLevel(
-                it.level,
-                10
-            ) > 6*/
-        }.sortedByDescending { it.level }.map { it.SSID }
-
-        connection = coroutineScope.launch {
+        connection = coroutineScope.launch(Dispatchers.IO) {
+            val wifiSSIDs = getWifiSsids(nearbyWifiPoints)
             attemptConnections(wifiSSIDs)
         }
+    }
+
+    private suspend fun getWifiSsids(nearbyWifiPoints: List<ScanResult>): List<String> {
+        return nearbyWifiPoints
+            .filter {
+                WifiManager.calculateSignalLevel(
+                    it.level,
+                    10
+                ) > 6
+            }
+            .sortedByDescending { scanResult ->
+                scanResult.level
+            }
+            .map { it.SSID }
+            .filter { ssid -> // filter only selected wifies out of wifies nearby
+                selectedWifiesInteractor.getSelectedWifiesSsids().contains(ssid)
+            }
     }
 
     private suspend fun attemptConnections(wifiSSIDs: List<String>) {
@@ -430,12 +449,14 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
     }
 
     private suspend fun getPasswordsList(ssid: String): List<String> {
-        val listName = passwordListName
-        return if (listName != null) {
-            passwordListsInteractor.getPasswordsForChosenListAndWifi(listName, ssid)
-        } else {
-            emptyList()
+        val selectedPasswordLists = selectedPasswordListsInteractor.getSelectedPasswordLists()
+        val allPasswords = mutableListOf<String>()
+        selectedPasswordLists.forEach { passwordListName ->
+            val passwordList =
+                passwordListsInteractor.getPasswordsForChosenListAndWifi(passwordListName, ssid)
+            allPasswords += passwordList
         }
+        return allPasswords
     }
 
     private fun update(command: Command) {
@@ -460,8 +481,6 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
         private const val INTERVAL = 3000L
 
         private const val START_CONNECTIONS_TIMEOUT = 5000L
-
-        const val PASSWORD_LIST_PARAMETER = "PasswordList"
 
         val TAG: String = ConnectionService::class.java.simpleName
     }

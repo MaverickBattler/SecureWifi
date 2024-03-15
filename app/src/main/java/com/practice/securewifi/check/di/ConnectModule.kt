@@ -1,6 +1,8 @@
 package com.practice.securewifi.check.di
 
 import com.practice.securewifi.check.interactor.PasswordListsInteractor
+import com.practice.securewifi.check.interactor.SelectedPasswordListsInteractor
+import com.practice.securewifi.check.interactor.SelectedWifiesInteractor
 import com.practice.securewifi.check.interactor.TriedPasswordsInteractor
 import com.practice.securewifi.check.interactor.WifiCheckResultInteractor
 import com.practice.securewifi.check.passwords_lists_selection.interactor.PasswordsListsInteractor
@@ -74,5 +76,17 @@ val connectModule = module {
 
     factory {
         WifiListStateMapper()
+    }
+
+    factory {
+        SelectedWifiesInteractor(
+            selectedWifiesRepository = get()
+        )
+    }
+
+    factory {
+        SelectedPasswordListsInteractor(
+            passwordListsRepository = get()
+        )
     }
 }

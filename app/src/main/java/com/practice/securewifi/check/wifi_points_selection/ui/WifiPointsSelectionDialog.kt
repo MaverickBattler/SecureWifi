@@ -73,6 +73,11 @@ class WifiPointsSelectionDialog : BaseDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onStart() {
+        viewModel.startScan()
+        super.onStart()
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

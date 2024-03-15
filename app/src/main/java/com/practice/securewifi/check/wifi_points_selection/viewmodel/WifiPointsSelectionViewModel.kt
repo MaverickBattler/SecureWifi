@@ -43,10 +43,6 @@ class WifiPointsSelectionViewModel(
         }
     }
 
-    init {
-        wifiScanManager.startScan()
-    }
-
     fun onWifiInListClicked(wifiPointItem: WifiPointItem) {
         viewModelScope.launch(Dispatchers.IO) {
             selectedWifiesListInteractor.switchWifiSelection(
@@ -62,6 +58,10 @@ class WifiPointsSelectionViewModel(
                 currentList
             )
         }
+    }
+
+    fun startScan() {
+        wifiScanManager.startScan()
     }
 
     override fun onCleared() {

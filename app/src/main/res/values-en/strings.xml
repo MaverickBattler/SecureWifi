@@ -49,4 +49,5 @@
     <string name="select_all">Select all</string>
     <string name="deselect_all">Deselect all</string>
     <string name="save">Save</string>
+    <string name="no_results_yet">There are no results yet</string>
 </resources>

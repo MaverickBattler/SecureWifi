@@ -29,7 +29,7 @@ class CustomPasswordListsInteractor(private val passwordListsRepository: Passwor
         newListName: String,
         passwordList: List<String>
     ) {
-        val newPasswordList = PasswordList(newListName, deletable = false, selected = false)
+        val newPasswordList = PasswordList(newListName, deletable = true, selected = false)
         if (oldListName != newListName) {
             passwordListsRepository.deletePasswordList(oldListName)
         }

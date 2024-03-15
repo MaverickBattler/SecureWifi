@@ -59,6 +59,7 @@ class CustomPasswordListFragment : Fragment() {
         }
         binding.buttonAdd.setOnClickListener {
             viewModel.onAddNewPasswordToList(binding.newPasswordEditText.text.toString())
+            binding.newPasswordEditText.setText("")
         }
         binding.saveListButton.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {

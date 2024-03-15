@@ -48,8 +48,12 @@ class ScanFragment : Fragment() {
             refresh()
         }
 
-        refresh()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onStart() {
+        refresh()
+        super.onStart()
     }
 
     private fun initSubscriptions() {

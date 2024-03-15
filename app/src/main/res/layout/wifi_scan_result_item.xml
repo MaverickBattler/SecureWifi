@@ -18,8 +18,12 @@
             android:layout_margin="10dp"
             android:textColor="?attr/textColorMain"
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/wifi_signal_level"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintVertical_bias="0"
             tools:text="WifiNetwork" />
 
         <TextView
@@ -31,7 +35,7 @@
             android:textColor="?attr/textColorSecondary"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/wifi_signal_level"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@id/wifi_ssid_textview"
             app:layout_constraintTop_toBottomOf="@id/wifi_ssid_textview"
@@ -44,7 +48,7 @@
             android:layout_margin="10dp"
             android:contentDescription="@string/wifi_signal_level"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/signal_wifi_3_bar" />
 

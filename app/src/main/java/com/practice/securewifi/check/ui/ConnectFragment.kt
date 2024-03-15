@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.R
 import com.practice.securewifi.app.core.checkForAccessFineLocationPermission
 import com.practice.securewifi.check.Command
@@ -23,6 +24,8 @@ import com.practice.securewifi.check.UpdateListener
 import com.practice.securewifi.check.passwords_lists_selection.ui.PasswordsListsSelectionDialog
 import com.practice.securewifi.check.wifi_points_selection.ui.WifiPointsSelectionDialog
 import com.practice.securewifi.databinding.FragmentConnectBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ConnectFragment : Fragment(), UpdateListener {
 
@@ -155,26 +158,27 @@ class ConnectFragment : Fragment(), UpdateListener {
     }
 
     override fun onUpdate(command: Command) {
-        when (command) {
-            is Command.StopConnections -> {
-                //binding.wifiListSpinner.isEnabled = true
-                binding.securityCheckButton.setState(SecurityCheckButton.State.INITIAL)
-            }
+        lifecycleScope.launch(Dispatchers.Main) {
+            when (command) {
+                is Command.StopConnections -> {
+                    binding.securityCheckButton.setState(SecurityCheckButton.State.INITIAL)
+                }
 
-            is Command.PrepareForConnections -> {
-                binding.securityCheckButton.setState(SecurityCheckButton.State.PREPARATION)
-            }
+                is Command.PrepareForConnections -> {
+                    binding.securityCheckButton.setState(SecurityCheckButton.State.PREPARATION)
+                }
 
-            is Command.StartConnections -> {
-                binding.securityCheckButton.setState(SecurityCheckButton.State.PROGRESS)
-            }
+                is Command.StartConnections -> {
+                    binding.securityCheckButton.setState(SecurityCheckButton.State.PROGRESS)
+                }
 
-            is Command.AskForAccessFineLocationPermission -> {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-            }
+                is Command.AskForAccessFineLocationPermission -> {
+                    requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+                }
 
-            is Command.ShowMessageToUser -> {
-                binding.attackInfo.text = command.message
+                is Command.ShowMessageToUser -> {
+                    binding.attackInfo.text = command.message
+                }
             }
         }
     }

@@ -12,6 +12,10 @@ class SelectedWifiesRepository(
         return selectedWifiDao.getSelectedWifiesListAsFlow()
     }
 
+    suspend fun getSelectedWifiesList(): List<SelectedWifi> {
+        return selectedWifiDao.getSelectedWifiesList()
+    }
+
     suspend fun insertSelectedWifi(selectedWifi: SelectedWifi) {
         return selectedWifiDao.insertSelectedWifi(selectedWifi)
     }

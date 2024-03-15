@@ -37,14 +37,12 @@ class WifiPointsScanViewModel(
     }
 
     private fun scanSuccess(scanResults: List<ScanResult>) {
-        val wifiScanResults = wifiScanResultsMapper.mapScanResults(scanResults)
-        val wifiScanInfo = ScanResultInfo.ScanSuccess(wifiScanResults)
+        val wifiScanInfo = wifiScanResultsMapper.mapScanResultInfo(scanResults, true)
         _scanResultInfo.postValue(wifiScanInfo)
     }
 
     private fun scanFailure(oldScanResults: List<ScanResult>) {
-        val wifiScanResults = wifiScanResultsMapper.mapScanResults(oldScanResults)
-        val wifiScanInfo = ScanResultInfo.ScanFailure(wifiScanResults)
+        val wifiScanInfo = wifiScanResultsMapper.mapScanResultInfo(oldScanResults, false)
         _scanResultInfo.postValue(wifiScanInfo)
     }
 }
