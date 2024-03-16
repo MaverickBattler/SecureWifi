@@ -5,6 +5,15 @@
     android:layout_height="wrap_content"
     android:padding="2dp">
 
+    <ImageView
+        android:id="@+id/wifi_signal_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/wifi_signal_level"
+        tools:src="@drawable/signal_wifi_3_bar" />
+
     <TextView
         android:id="@+id/wifi"
         android:layout_width="0dp"

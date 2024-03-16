@@ -2,12 +2,17 @@ package com.practice.securewifi.check.di
 
 import com.practice.securewifi.check.interactor.PasswordListsInteractor
 import com.practice.securewifi.check.interactor.SelectedPasswordListsInteractor
+import com.practice.securewifi.check.interactor.SelectedPasswordListsPreviewInteractor
 import com.practice.securewifi.check.interactor.SelectedWifiesInteractor
+import com.practice.securewifi.check.interactor.SelectedWifiesPreviewInteractor
 import com.practice.securewifi.check.interactor.TriedPasswordsInteractor
 import com.practice.securewifi.check.interactor.WifiCheckResultInteractor
+import com.practice.securewifi.check.mapper.SelectedPasswordListsPreviewUiStateMapper
+import com.practice.securewifi.check.mapper.SelectedWifiesPreviewUiStateMapper
 import com.practice.securewifi.check.passwords_lists_selection.interactor.PasswordsListsInteractor
-import com.practice.securewifi.check.passwords_lists_selection.mapper.PasswordsListsModelMapper
+import com.practice.securewifi.check.passwords_lists_selection.mapper.PasswordsListModelsMapper
 import com.practice.securewifi.check.passwords_lists_selection.viewmodel.PasswordsListSelectionViewModel
+import com.practice.securewifi.check.viewmodel.ConnectViewModel
 import com.practice.securewifi.check.wifi_points_selection.interactor.SelectedWifiesListInteractor
 import com.practice.securewifi.check.wifi_points_selection.interactor.WifiScanResultsListInteractor
 import com.practice.securewifi.check.wifi_points_selection.mapper.WifiListStateMapper
@@ -29,7 +34,7 @@ val connectModule = module {
     factory {
         PasswordsListsInteractor(
             passwordListsRepository = get(),
-            passwordsListsModelMapper = get()
+            passwordsListModelsMapper = get()
         )
     }
 
@@ -40,7 +45,7 @@ val connectModule = module {
     }
 
     factory {
-        PasswordsListsModelMapper()
+        PasswordsListModelsMapper()
     }
 
     factory {
@@ -87,6 +92,39 @@ val connectModule = module {
     factory {
         SelectedPasswordListsInteractor(
             passwordListsRepository = get()
+        )
+    }
+
+    factory {
+        SelectedPasswordListsPreviewInteractor(
+            passwordListsRepository = get(),
+            selectedPasswordListsPreviewUiStateMapper = get()
+        )
+    }
+
+    factory {
+        SelectedWifiesPreviewInteractor(
+            selectedWifiesRepository = get(),
+            selectedWifiesPreviewUiStateMapper = get()
+        )
+    }
+
+    viewModel {
+        ConnectViewModel(
+            selectedWifiesPreviewInteractor = get(),
+            selectedPasswordListsPreviewInteractor = get()
+        )
+    }
+
+    factory {
+        SelectedPasswordListsPreviewUiStateMapper(
+            application = androidApplication()
+        )
+    }
+
+    factory {
+        SelectedWifiesPreviewUiStateMapper(
+            application = androidApplication()
         )
     }
 }

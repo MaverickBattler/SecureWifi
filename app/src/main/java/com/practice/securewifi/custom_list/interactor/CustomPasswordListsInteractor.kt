@@ -1,17 +1,21 @@
 package com.practice.securewifi.custom_list.interactor
 
+import com.practice.securewifi.custom_list.mapper.CustomPasswordListsMapper
 import com.practice.securewifi.custom_list.model.CustomPasswordList
 import com.practice.securewifi.data.entity.PasswordList
 import com.practice.securewifi.data.repository.PasswordListsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class CustomPasswordListsInteractor(private val passwordListsRepository: PasswordListsRepository) {
+class CustomPasswordListsInteractor(
+    private val passwordListsRepository: PasswordListsRepository,
+    private val customPasswordListsMapper: CustomPasswordListsMapper
+) {
 
     fun getCustomPasswordListsAsFlow(): Flow<List<CustomPasswordList>> {
         return passwordListsRepository.getPasswordListsAsFlow().map { listOfPasswordsList ->
-            listOfPasswordsList.map { passwordList ->
-                CustomPasswordList(passwordList.listName, passwordList.deletable)
+            customPasswordListsMapper.map(listOfPasswordsList).sortedBy {
+                it.listName
             }
         }
     }

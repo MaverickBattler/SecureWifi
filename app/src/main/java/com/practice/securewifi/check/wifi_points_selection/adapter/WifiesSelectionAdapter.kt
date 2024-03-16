@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.practice.securewifi.check.wifi_points_selection.model.WifiPointItem
 import com.practice.securewifi.databinding.WifiListChoosingItemBinding
+import com.practice.securewifi.scan.util.WifiSignalLevels
 
 class WifiesSelectionAdapter(private val onItemClickListener: (WifiPointItem) -> Unit) :
     ListAdapter<WifiPointItem, WifiesSelectionAdapter.WifiesSelectionViewHolder>(
@@ -39,6 +40,11 @@ class WifiesSelectionAdapter(private val onItemClickListener: (WifiPointItem) ->
             binding.root.setOnClickListener {
                 onItemClickListener(item)
             }
+            binding.wifiSignalLevel.setImageResource(
+                WifiSignalLevels.getImageResourceForSignalLevel(
+                    item.signalLevel
+                )
+            )
             binding.wifi.text = item.ssid
             binding.wifiAddCheckbox.isChecked = item.selected
         }

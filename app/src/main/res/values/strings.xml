@@ -54,4 +54,7 @@
     <string name="dropdown_arrow_icon" translatable="false">Dropdown arrow icon</string>
     <string name="password_icon" translatable="false">Password Icon</string>
     <string name="no_results_yet">Результатов еще нет</string>
+    <string name="no_password_lists_selected">-Списки паролей не выбраны-</string>
+    <string name="something_and_n_others">%1$s и %2$d др.</string>
+    <string name="no_wifies_selected">-Точки для проверки не выбраны-</string>
 </resources>

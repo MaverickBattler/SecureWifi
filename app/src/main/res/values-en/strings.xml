@@ -50,4 +50,7 @@
     <string name="deselect_all">Deselect all</string>
     <string name="save">Save</string>
     <string name="no_results_yet">There are no results yet</string>
+    <string name="no_password_lists_selected">-No password lists selected-</string>
+    <string name="something_and_n_others">%1$s and %2$d others</string>
+    <string name="no_wifies_selected">-No Wi-Fi points selected-</string>
 </resources>

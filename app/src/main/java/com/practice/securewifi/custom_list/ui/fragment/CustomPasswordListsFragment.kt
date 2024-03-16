@@ -1,4 +1,4 @@
-package com.practice.securewifi.custom_list.ui
+package com.practice.securewifi.custom_list.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.practice.securewifi.R
-import com.practice.securewifi.custom_list.adapter.CustomPasswordListsAdapter
+import com.practice.securewifi.custom_list.ui.adapter.CustomPasswordListsAdapter
 import com.practice.securewifi.custom_list.model.CustomPasswordList
 import com.practice.securewifi.custom_list.viewmodel.CustomPasswordListsViewModel
 import com.practice.securewifi.databinding.FragmentPasswordListsBinding

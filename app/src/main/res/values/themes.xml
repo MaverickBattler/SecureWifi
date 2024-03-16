@@ -4,6 +4,7 @@
         <item name="backgroundColor">@color/white</item>
         <item name="backgroundColorSmooth">@color/white</item>
         <item name="textColorMain">@color/dark_gray_main</item>
+        <item name="textColorInactive">@color/gray</item>
         <item name="colorDrawablesOnBackground">@color/dark_gray_main</item>
         <item name="colorDrawablesOnPrimary">@color/white</item>
         <item name="textColorSecondary">@color/dark_gray_secondary</item>

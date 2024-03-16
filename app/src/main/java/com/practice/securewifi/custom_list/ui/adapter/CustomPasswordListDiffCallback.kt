@@ -1,4 +1,4 @@
-package com.practice.securewifi.custom_list.adapter
+package com.practice.securewifi.custom_list.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.practice.securewifi.custom_list.model.CustomPasswordList

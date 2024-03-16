@@ -6,7 +6,7 @@
     app:startDestination="@id/customLists">
     <fragment
         android:id="@+id/customLists"
-        android:name="com.practice.securewifi.custom_list.ui.CustomPasswordListsFragment"
+        android:name="com.practice.securewifi.custom_list.ui.fragment.CustomPasswordListsFragment"
         android:label="@string/custom_lists"
         tools:layout="@layout/fragment_password_lists">
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/editCustomList"
-        android:name="com.practice.securewifi.custom_list.ui.CustomPasswordListFragment"
+        android:name="com.practice.securewifi.custom_list.ui.fragment.CustomPasswordListFragment"
         android:label="@string/edit_custom_list"
         tools:layout="@layout/fragment_password_list">
 
