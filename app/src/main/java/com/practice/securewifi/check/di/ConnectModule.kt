@@ -111,6 +111,7 @@ val connectModule = module {
 
     viewModel {
         ConnectViewModel(
+            application = get(),
             selectedWifiesPreviewInteractor = get(),
             selectedPasswordListsPreviewInteractor = get()
         )

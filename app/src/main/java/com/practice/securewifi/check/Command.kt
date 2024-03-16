@@ -8,8 +8,6 @@ sealed interface Command {
 
     object StartConnections: Command
 
-    object AskForAccessFineLocationPermission: Command
-
     data class ShowMessageToUser(val message: String): Command
 
 }
