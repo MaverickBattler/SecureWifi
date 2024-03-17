@@ -8,14 +8,16 @@ import com.practice.securewifi.databinding.WifiScanResultItemBinding
 import com.practice.securewifi.scan.model.WifiScanResult
 import com.practice.securewifi.scan.util.WifiSignalLevels
 
-class ScanResultAdapter :
+class ScanResultAdapter(
+    private val onItemClickListener: (String) -> Unit
+) :
     ListAdapter<WifiScanResult, ScanResultAdapter.ScanResultViewHolder>(ScanResultDiffItemCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScanResultViewHolder =
         ScanResultViewHolder.inflateFrom(parent)
 
     override fun onBindViewHolder(holder: ScanResultViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, onItemClickListener)
     }
 
     class ScanResultViewHolder(private val binding: WifiScanResultItemBinding) :
@@ -33,7 +35,7 @@ class ScanResultAdapter :
             }
         }
 
-        fun bind(item: WifiScanResult) {
+        fun bind(item: WifiScanResult, onItemClickListener: (String) -> Unit) {
             binding.wifiSsidTextview.text = item.ssid
             binding.wifiCapabilitiesTextview.text = item.capabilities
             binding.wifiSignalLevel.setImageResource(
@@ -41,6 +43,9 @@ class ScanResultAdapter :
                     item.signalLevel
                 )
             )
+            binding.root.setOnClickListener {
+                onItemClickListener(item.ssid)
+            }
         }
     }
 }

@@ -12,12 +12,17 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.practice.securewifi.R
 import com.practice.securewifi.app.core.checkForAccessFineLocationPermission
 import com.practice.securewifi.databinding.FragmentScanBinding
 import com.practice.securewifi.scan.model.ScanResultInfo
 import com.practice.securewifi.scan.ui.adapter.ScanResultAdapter
 import com.practice.securewifi.scan.viewmodel.WifiPointsScanViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ScanFragment : Fragment() {
@@ -30,6 +35,8 @@ class ScanFragment : Fragment() {
 
     private val binding get() = _binding!!
 
+    private var openWifiInfoOnCommandJob: Job? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -38,8 +45,11 @@ class ScanFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initSubscriptions()
-        scanResultAdapter = ScanResultAdapter()
+        initObservers()
+        val onWifiItemClickListener: (String) -> Unit = { wifiSsid ->
+            viewModel.onWifiItemClick(wifiSsid)
+        }
+        scanResultAdapter = ScanResultAdapter(onWifiItemClickListener)
         binding.recyclerviewScan.adapter = scanResultAdapter
 
         setupMenu()
@@ -56,7 +66,7 @@ class ScanFragment : Fragment() {
         super.onStart()
     }
 
-    private fun initSubscriptions() {
+    private fun initObservers() {
         viewModel.scanResultInfo.observe(viewLifecycleOwner) { scanResultInfo ->
             when (scanResultInfo) {
                 is ScanResultInfo.ScanSuccess -> {
@@ -81,6 +91,12 @@ class ScanFragment : Fragment() {
                 is ScanResultInfo.Loading -> {
                     binding.progressBar.isVisible = true
                 }
+            }
+        }
+        openWifiInfoOnCommandJob?.cancel()
+        openWifiInfoOnCommandJob = lifecycleScope.launch(Dispatchers.Main) {
+            viewModel.openWifiInfoEvent.collect {
+                findNavController().navigate(R.id.action_scanFragment_to_wifiInfoFragment)
             }
         }
     }

@@ -59,4 +59,5 @@
     <string name="no_wifies_selected">-Точки для проверки не выбраны-</string>
     <string name="passwords_amt">Паролей: %d</string>
     <string name="total_passwords_amt">Паролей: %d</string>
+    <string name="wifi_info">Информация о точке доступа</string>
 </resources>
