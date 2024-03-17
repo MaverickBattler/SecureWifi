@@ -3,7 +3,8 @@ package com.practice.securewifi.check.model
 import androidx.annotation.AttrRes
 
 data class SelectedPasswordListsPreviewUiState(
-    val text: String,
+    val listsText: String,
+    val totalPasswordsAmtString: String?,
     @AttrRes
-    val textColor: Int
+    val listsTextColor: Int
 )

@@ -13,7 +13,10 @@ class PasswordsListsInteractor(
 
     val passwordModelList: Flow<List<PasswordListModel>> =
         passwordListsRepository.getPasswordListsAsFlow().map { listOfPasswordLists ->
-            passwordsListModelsMapper.map(listOfPasswordLists).sortedBy {
+            listOfPasswordLists.map { passwordList ->
+                val passwordsForList = passwordListsRepository.getPasswordsForList(passwordList.listName)
+                passwordsListModelsMapper.map(passwordList, passwordsForList)
+            }.sortedBy {
                 it.listName
             }
         }

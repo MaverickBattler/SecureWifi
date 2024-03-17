@@ -47,6 +47,7 @@ class CustomPasswordListsAdapter(
             onItemClickListener: (CustomPasswordList) -> Unit
         ) {
             binding.passwordList.text = item.listName
+            binding.passwordsAmt.text = item.passwordsAmtString
             binding.passwordListDeleteImageview.isVisible = item.deletable
             binding.passwordListDeleteImageview.setOnClickListener {
                 onDeleteClickListener(item.listName)

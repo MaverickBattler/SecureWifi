@@ -40,6 +40,7 @@ class PasswordsListsSelectionAdapter(private val onItemClickListener: (PasswordL
                 onItemClickListener(item)
             }
             binding.passwordList.text = item.listName
+            binding.passwordsAmt.text = item.passwordsAmtString
             binding.passwordListAddCheckbox.isChecked = item.selected
         }
     }

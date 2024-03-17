@@ -115,11 +115,26 @@
             android:textSize="17sp"
             android:maxLines="2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/drop_down_arrow_password_lists"
+            app:layout_constraintEnd_toStartOf="@id/passwords_amt"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/password_icon"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Адаптивный и 8 др." />
+
+        <TextView
+            android:id="@+id/passwords_amt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingHorizontal="6dp"
+            android:textColor="?attr/textColorSecondary"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/drop_down_arrow_password_lists"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Паролей: 123" />
 
         <ImageView
             android:id="@+id/drop_down_arrow_password_lists"

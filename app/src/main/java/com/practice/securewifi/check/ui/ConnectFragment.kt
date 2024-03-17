@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.practice.securewifi.app.core.checkForAccessFineLocationPermission
 import com.practice.securewifi.app.core.util.Colors
@@ -92,11 +93,19 @@ class ConnectFragment : Fragment() {
             }
         }
         viewModel.selectedPasswordListsPreviewUiState.observe(viewLifecycleOwner) { selectedPasswordListsPreviewUiState ->
-            binding.selectedPasswordsListsTextview.text = selectedPasswordListsPreviewUiState.text
+            binding.selectedPasswordsListsTextview.text =
+                selectedPasswordListsPreviewUiState.listsText
             val textColor = Colors.getThemeColorFromAttr(
-                selectedPasswordListsPreviewUiState.textColor,
+                selectedPasswordListsPreviewUiState.listsTextColor,
                 requireActivity()
             )
+            if (selectedPasswordListsPreviewUiState.totalPasswordsAmtString != null) {
+                binding.passwordsAmt.isVisible = true
+                binding.passwordsAmt.text =
+                    selectedPasswordListsPreviewUiState.totalPasswordsAmtString
+            } else {
+                binding.passwordsAmt.isVisible = false
+            }
             textColor?.let {
                 binding.selectedPasswordsListsTextview.setTextColor(textColor)
             }

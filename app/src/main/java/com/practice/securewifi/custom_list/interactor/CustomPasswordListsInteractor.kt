@@ -14,7 +14,11 @@ class CustomPasswordListsInteractor(
 
     fun getCustomPasswordListsAsFlow(): Flow<List<CustomPasswordList>> {
         return passwordListsRepository.getPasswordListsAsFlow().map { listOfPasswordsList ->
-            customPasswordListsMapper.map(listOfPasswordsList).sortedBy {
+            listOfPasswordsList.map { passwordList ->
+                val passwordsForList =
+                    passwordListsRepository.getPasswordsForList(passwordList.listName)
+                customPasswordListsMapper.map(passwordList, passwordsForList)
+            }.sortedBy {
                 it.listName
             }
         }

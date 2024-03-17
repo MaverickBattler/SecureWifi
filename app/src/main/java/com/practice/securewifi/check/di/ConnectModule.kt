@@ -45,7 +45,9 @@ val connectModule = module {
     }
 
     factory {
-        PasswordsListModelsMapper()
+        PasswordsListModelsMapper(
+            application = androidApplication()
+        )
     }
 
     factory {

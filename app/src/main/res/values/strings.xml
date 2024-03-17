@@ -5,11 +5,11 @@
     <string name="starting_scan">Начинаем сканирование…</string>
     <string name="attempting_to_connect">Подключение к %1$s (%2$d/%3$d) \nПароль: %4$s (%5$d/%6$d) \nСкорость подбора: %7$d/мин \n</string>
     <string name="password_hacking_results">Пароль был подобран!\nСеть: %1$s \nПароль: %2$s\nПароль угадан за следующее количество попыток: %3$d</string>
-    <string name="couldnt_find_password">По результатам быстрой проверки уязвимостей в паролях беспроводных точек доступа поблизости не обнаружено.</string>
+    <string name="couldnt_find_password">По результатам проверки уязвимостей в беспроводных точек доступа поблизости не обнаружено.</string>
     <string name="disconnect_from_wifi">Отключиться от Wi-fi</string>
     <string name="check_password_security">Проверка защищенности паролей точек Wi-Fi поблизости</string>
     <string name="list_of_wifi_nearby">Wi-Fi поблизости</string>
-    <string name="check_of_passwords_safety">Подбор паролей</string>
+    <string name="check_of_passwords_safety">Проверка</string>
     <string name="security_check_results">Результаты</string>
     <string name="scan_failure">Произошла ошибка при сканировании. Подождите немного и попробуйте снова</string>
     <string name="connection_start_failure">Произошла ошибка при начале попыток подключения. Подождите немного и попробуйте снова</string>
@@ -57,4 +57,6 @@
     <string name="no_password_lists_selected">-Списки паролей не выбраны-</string>
     <string name="something_and_n_others">%1$s и %2$d др.</string>
     <string name="no_wifies_selected">-Точки для проверки не выбраны-</string>
+    <string name="passwords_amt">Паролей: %d</string>
+    <string name="total_passwords_amt">Паролей: %d</string>
 </resources>
