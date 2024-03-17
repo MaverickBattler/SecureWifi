@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/editCustomList"
-        android:name="com.practice.securewifi.custom_list.ui.fragment.CustomPasswordListFragment"
+        android:name="com.practice.securewifi.custom_list.custom_list_edit.ui.fragment.CustomPasswordListFragment"
         android:label="@string/edit_custom_list"
         tools:layout="@layout/fragment_password_list">
 

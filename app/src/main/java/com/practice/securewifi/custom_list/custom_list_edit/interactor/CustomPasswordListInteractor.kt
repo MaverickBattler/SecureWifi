@@ -1,6 +1,6 @@
-package com.practice.securewifi.custom_list.interactor
+package com.practice.securewifi.custom_list.custom_list_edit.interactor
 
-import com.practice.securewifi.custom_list.repository.CustomListRepository
+import com.practice.securewifi.custom_list.custom_list_edit.repository.CustomListRepository
 import com.practice.securewifi.data.repository.PasswordListsRepository
 import kotlinx.coroutines.flow.Flow
 

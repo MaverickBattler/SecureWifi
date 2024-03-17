@@ -1,4 +1,4 @@
-package com.practice.securewifi.custom_list.ui.adapter
+package com.practice.securewifi.custom_list.custom_list_edit.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,10 +1,10 @@
-package com.practice.securewifi.custom_list.viewmodel
+package com.practice.securewifi.custom_list.custom_list_edit.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.practice.securewifi.custom_list.interactor.CustomPasswordListInteractor
+import com.practice.securewifi.custom_list.custom_list_edit.interactor.CustomPasswordListInteractor
 import com.practice.securewifi.custom_list.interactor.CustomPasswordListsInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

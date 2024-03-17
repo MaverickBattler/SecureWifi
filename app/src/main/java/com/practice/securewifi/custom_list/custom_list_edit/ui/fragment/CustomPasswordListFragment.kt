@@ -1,4 +1,4 @@
-package com.practice.securewifi.custom_list.ui.fragment
+package com.practice.securewifi.custom_list.custom_list_edit.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,8 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.practice.securewifi.R
-import com.practice.securewifi.custom_list.ui.adapter.CustomPasswordListAdapter
-import com.practice.securewifi.custom_list.viewmodel.CustomPasswordListViewModel
+import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.CustomPasswordListAdapter
+import com.practice.securewifi.custom_list.custom_list_edit.viewmodel.CustomPasswordListViewModel
 import com.practice.securewifi.databinding.FragmentPasswordListBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
