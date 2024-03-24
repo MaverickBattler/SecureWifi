@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.practice.securewifi.scan.interactor.ScanResultsInteractor
 import com.practice.securewifi.scan.mapper.WifiScanResultsMapper
 import com.practice.securewifi.scan.model.ScanResultInfo
-import com.practice.securewifi.scan.repository.WifiInfoRepository
+import com.practice.securewifi.scan.wifi_info.interactor.WifiInfoUiStateInteractor
 import com.practice.securewifi.scan_feature.WifiScanManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class WifiPointsScanViewModel(
     private val application: Application,
     private val wifiScanResultsMapper: WifiScanResultsMapper,
-    private val wifiInfoRepository: WifiInfoRepository,
+    private val wifiInfoUiStateInteractor: WifiInfoUiStateInteractor,
     private val scanResultsInteractor: ScanResultsInteractor
 ): ViewModel() {
 
@@ -44,7 +44,7 @@ class WifiPointsScanViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val scanResult = scanResultsInteractor.getLatestScanResults().find { it.SSID == wifiSsid }
             scanResult?.let {
-                wifiInfoRepository.setSelectedWifiInfo(scanResult)
+                wifiInfoUiStateInteractor.setWifiInfoUiStateFromScanResult(scanResult)
                 _openWifiInfoEvent.emit(Unit)
             }
         }
@@ -66,6 +66,7 @@ class WifiPointsScanViewModel(
     }
 
     private fun scanFailure(oldScanResults: List<ScanResult>) {
+        scanResultsInteractor.updateScanResults(oldScanResults)
         val wifiScanInfo = wifiScanResultsMapper.mapScanResultInfo(oldScanResults, false)
         _scanResultInfo.postValue(wifiScanInfo)
     }

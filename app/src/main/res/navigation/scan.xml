@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/wifiInfoFragment"
-        android:name="com.practice.securewifi.scan.wifi_info.ui.WifiInfoFragment"
+        android:name="com.practice.securewifi.scan.wifi_info.ui.fragment.WifiInfoFragment"
         android:label="@string/wifi_info"
         tools:layout="@layout/fragment_wifi_info">
     </fragment>
