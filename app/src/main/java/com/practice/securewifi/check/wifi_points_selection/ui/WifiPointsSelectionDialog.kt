@@ -9,13 +9,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.practice.securewifi.app.core.base.BaseDialogFragment
+import com.practice.securewifi.app.core.launchOnStarted
 import com.practice.securewifi.check.wifi_points_selection.adapter.WifiesSelectionAdapter
 import com.practice.securewifi.check.wifi_points_selection.model.WifiListState
 import com.practice.securewifi.check.wifi_points_selection.viewmodel.WifiPointsSelectionViewModel
 import com.practice.securewifi.databinding.DialogWifiPointsSelectionBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -31,9 +29,7 @@ class WifiPointsSelectionDialog : BaseDialogFragment() {
     private val viewModel by viewModel<WifiPointsSelectionViewModel>()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = DialogWifiPointsSelectionBinding.inflate(inflater, container, false)
         return binding.root
@@ -43,27 +39,23 @@ class WifiPointsSelectionDialog : BaseDialogFragment() {
         val adapter = WifiesSelectionAdapter { wifiPointItem ->
             viewModel.onWifiInListClicked(wifiPointItem)
         }
-        viewModel.wifiList
-            .onEach { wifiListState ->
-                when (wifiListState) {
-                    is WifiListState.WifiList -> {
-                        binding.progressBar.isVisible = false
-                        adapter.submitList(wifiListState.wifiPointItems)
-                    }
+        viewModel.wifiList.onEach { wifiListState ->
+            when (wifiListState) {
+                is WifiListState.WifiList -> {
+                    binding.progressBar.isVisible = false
+                    adapter.submitList(wifiListState.wifiPointItems)
+                }
 
-                    is WifiListState.Loading -> {
-                        binding.progressBar.isVisible = true
-                    }
+                is WifiListState.Loading -> {
+                    binding.progressBar.isVisible = true
                 }
             }
-            .flowOn(Dispatchers.Main)
-            .launchIn(lifecycleScope)
+        }.launchOnStarted(lifecycleScope)
         (binding.wifiList.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         binding.wifiList.adapter = adapter
         binding.wifiList.addItemDecoration(
             DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
+                context, DividerItemDecoration.VERTICAL
             )
         )
         binding.buttonSelectAll.setOnClickListener {

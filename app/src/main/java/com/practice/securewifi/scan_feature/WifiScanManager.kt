@@ -84,9 +84,9 @@ abstract class WifiScanManager(
     private fun List<ScanResult>.filterScanResults(): List<ScanResult> {
         return filter {
             !it.SSID.isNullOrEmpty()
-        }.groupBy {
+        }.distinctBy {
             it.SSID
-        }.values.flatten().sortedByDescending {
+        }.sortedByDescending {
             it.level
         }
     }
