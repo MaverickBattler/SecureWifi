@@ -2,8 +2,6 @@ package com.practice.securewifi.scan.viewmodel
 
 import android.app.Application
 import android.net.wifi.ScanResult
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practice.securewifi.scan.interactor.ScanResultsInteractor
@@ -13,8 +11,10 @@ import com.practice.securewifi.scan.wifi_info.interactor.WifiInfoUiStateInteract
 import com.practice.securewifi.scan_feature.WifiScanManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class WifiPointsScanViewModel(
@@ -24,8 +24,8 @@ class WifiPointsScanViewModel(
     private val scanResultsInteractor: ScanResultsInteractor
 ): ViewModel() {
 
-    private val _scanResultInfo: MutableLiveData<ScanResultInfo> = MutableLiveData(ScanResultInfo.Loading)
-    val scanResultInfo: LiveData<ScanResultInfo> = _scanResultInfo
+    private val _scanResultInfo: MutableStateFlow<ScanResultInfo> = MutableStateFlow(ScanResultInfo.Loading)
+    val scanResultInfo = _scanResultInfo.asStateFlow()
 
     private val _openWifiInfoEvent: MutableSharedFlow<Unit> = MutableSharedFlow()
     val openWifiInfoEvent: SharedFlow<Unit> = _openWifiInfoEvent.asSharedFlow()
@@ -62,12 +62,16 @@ class WifiPointsScanViewModel(
     private fun scanSuccess(scanResults: List<ScanResult>) {
         scanResultsInteractor.updateScanResults(scanResults)
         val wifiScanInfo = wifiScanResultsMapper.mapScanResultInfo(scanResults, true)
-        _scanResultInfo.postValue(wifiScanInfo)
+        viewModelScope.launch {
+            _scanResultInfo.emit(wifiScanInfo)
+        }
     }
 
     private fun scanFailure(oldScanResults: List<ScanResult>) {
         scanResultsInteractor.updateScanResults(oldScanResults)
         val wifiScanInfo = wifiScanResultsMapper.mapScanResultInfo(oldScanResults, false)
-        _scanResultInfo.postValue(wifiScanInfo)
+        viewModelScope.launch(Dispatchers.Main) {
+            _scanResultInfo.emit(wifiScanInfo)
+        }
     }
 }

@@ -1,12 +1,11 @@
 package com.practice.securewifi.custom_list.custom_list_edit.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.practice.securewifi.custom_list.custom_list_edit.interactor.CustomPasswordListInteractor
 import com.practice.securewifi.custom_list.interactor.CustomPasswordListsInteractor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -16,8 +15,7 @@ class CustomPasswordListViewModel(
     private val customPasswordListsInteractor: CustomPasswordListsInteractor,
 ) : ViewModel() {
 
-    val customPasswordList: LiveData<List<String>> =
-        customPasswordListInteractor.passwordList.asLiveData()
+    val customPasswordList: StateFlow<List<String>> = customPasswordListInteractor.passwordList
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -47,7 +45,7 @@ class CustomPasswordListViewModel(
                 SaveResult.NO_LIST_NAME_PROVIDED
             } else {
                 val customPasswordList = customPasswordList.value
-                customPasswordList?.let {
+                customPasswordList.let {
                     customPasswordListsInteractor.saveUserList(
                         listName,
                         newListName,

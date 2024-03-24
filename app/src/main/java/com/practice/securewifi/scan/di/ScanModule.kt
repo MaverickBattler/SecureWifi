@@ -7,6 +7,7 @@ import com.practice.securewifi.scan.wifi_info.repository.WifiInfoUiStateReposito
 import com.practice.securewifi.scan.viewmodel.WifiPointsScanViewModel
 import com.practice.securewifi.scan.wifi_info.interactor.WifiInfoUiStateInteractor
 import com.practice.securewifi.scan.wifi_info.mapper.WifiCapabilityItemsMapper
+import com.practice.securewifi.scan.wifi_info.ui.adapter.WifiCapabilitiesListAdapter
 import com.practice.securewifi.scan.wifi_info.viewmodel.WifiInfoViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -58,5 +59,9 @@ val scanModule = module {
         WifiCapabilityItemsMapper(
             application = androidApplication()
         )
+    }
+
+    factory {
+        WifiCapabilitiesListAdapter()
     }
 }

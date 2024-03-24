@@ -16,12 +16,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.practice.securewifi.R
 import com.practice.securewifi.app.core.checkForAccessFineLocationPermission
+import com.practice.securewifi.app.core.launchOnStarted
 import com.practice.securewifi.databinding.FragmentScanBinding
 import com.practice.securewifi.scan.model.ScanResultInfo
 import com.practice.securewifi.scan.ui.adapter.ScanResultAdapter
 import com.practice.securewifi.scan.viewmodel.WifiPointsScanViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -67,7 +69,7 @@ class ScanFragment : Fragment() {
     }
 
     private fun initObservers() {
-        viewModel.scanResultInfo.observe(viewLifecycleOwner) { scanResultInfo ->
+        viewModel.scanResultInfo.onEach { scanResultInfo ->
             when (scanResultInfo) {
                 is ScanResultInfo.ScanSuccess -> {
                     binding.progressBar.isVisible = false
@@ -92,7 +94,7 @@ class ScanFragment : Fragment() {
                     binding.progressBar.isVisible = true
                 }
             }
-        }
+        }.launchOnStarted(lifecycleScope)
         openWifiInfoOnCommandJob?.cancel()
         openWifiInfoOnCommandJob = lifecycleScope.launch(Dispatchers.Main) {
             viewModel.openWifiInfoEvent.collect {

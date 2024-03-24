@@ -1,10 +1,7 @@
 package com.practice.securewifi.check.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.practice.securewifi.R
 import com.practice.securewifi.check.Command
@@ -15,6 +12,9 @@ import com.practice.securewifi.check.model.SelectedPasswordListsPreviewUiState
 import com.practice.securewifi.check.model.SelectedWifiesPreviewUiState
 import com.practice.securewifi.check.ui.SecurityCheckButton
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ConnectViewModel(
@@ -23,21 +23,18 @@ class ConnectViewModel(
     selectedPasswordListsPreviewInteractor: SelectedPasswordListsPreviewInteractor
 ) : ViewModel(), UpdateListener {
 
-    val selectedWifiesPreviewUiState: LiveData<SelectedWifiesPreviewUiState> =
-        selectedWifiesPreviewInteractor.getSelectedWifiesPreview().asLiveData()
+    val selectedWifiesPreviewUiState: Flow<SelectedWifiesPreviewUiState> =
+        selectedWifiesPreviewInteractor.getSelectedWifiesPreview()
 
-    val selectedPasswordListsPreviewUiState: LiveData<SelectedPasswordListsPreviewUiState> =
-        selectedPasswordListsPreviewInteractor.getSelectedPasswordListsPreview().asLiveData()
+    val selectedPasswordListsPreviewUiState: Flow<SelectedPasswordListsPreviewUiState> =
+        selectedPasswordListsPreviewInteractor.getSelectedPasswordListsPreview()
 
+    private val _securityCheckButtonState: MutableStateFlow<SecurityCheckButton.State> =
+        MutableStateFlow(SecurityCheckButton.State.INITIAL)
+    val securityCheckButtonState = _securityCheckButtonState.asStateFlow()
 
-    private val _securityCheckButtonState: MutableLiveData<SecurityCheckButton.State> =
-        MutableLiveData(SecurityCheckButton.State.INITIAL)
-    val securityCheckButtonState: LiveData<SecurityCheckButton.State>
-        get() = _securityCheckButtonState
-
-    private val _attackInfoText: MutableLiveData<String> = MutableLiveData()
-    val attackInfoText: LiveData<String>
-        get() = _attackInfoText
+    private val _attackInfoText: MutableStateFlow<String> = MutableStateFlow("")
+    val attackInfoText = _attackInfoText.asStateFlow()
 
     fun onRetrieveLatestDataFromService(latestData: Pair<Command, Command?>) {
         onUpdate(latestData.first)
@@ -47,23 +44,31 @@ class ConnectViewModel(
     }
 
     fun onRebindToService() {
-        _securityCheckButtonState.postValue(SecurityCheckButton.State.PREPARATION)
+        viewModelScope.launch(Dispatchers.Main) {
+            _securityCheckButtonState.emit(SecurityCheckButton.State.PREPARATION)
+        }
     }
 
     fun onSetInitialState() {
-        _securityCheckButtonState.postValue(SecurityCheckButton.State.INITIAL)
+        viewModelScope.launch(Dispatchers.Main) {
+            _securityCheckButtonState.emit(SecurityCheckButton.State.INITIAL)
+        }
     }
 
     fun onStartCheck() {
-        _securityCheckButtonState.postValue(SecurityCheckButton.State.PREPARATION)
+        viewModelScope.launch(Dispatchers.Main) {
+            _securityCheckButtonState.emit(SecurityCheckButton.State.PREPARATION)
+        }
     }
 
     fun onBindToService(successfully: Boolean) {
-        if (successfully) {
-            _securityCheckButtonState.postValue(SecurityCheckButton.State.PROGRESS)
-        } else {
-            _attackInfoText.postValue(application.getString(R.string.connection_start_failure))
-            _securityCheckButtonState.postValue(SecurityCheckButton.State.INITIAL)
+        viewModelScope.launch(Dispatchers.Main) {
+            if (successfully) {
+                _securityCheckButtonState.emit(SecurityCheckButton.State.PROGRESS)
+            } else {
+                _attackInfoText.emit(application.getString(R.string.connection_start_failure))
+                _securityCheckButtonState.emit(SecurityCheckButton.State.INITIAL)
+            }
         }
     }
 
@@ -71,19 +76,19 @@ class ConnectViewModel(
         viewModelScope.launch(Dispatchers.Main) {
             when (command) {
                 is Command.StopConnections -> {
-                    _securityCheckButtonState.postValue(SecurityCheckButton.State.INITIAL)
+                    _securityCheckButtonState.emit(SecurityCheckButton.State.INITIAL)
                 }
 
                 is Command.PrepareForConnections -> {
-                    _securityCheckButtonState.postValue(SecurityCheckButton.State.PREPARATION)
+                    _securityCheckButtonState.emit(SecurityCheckButton.State.PREPARATION)
                 }
 
                 is Command.StartConnections -> {
-                    _securityCheckButtonState.postValue(SecurityCheckButton.State.PROGRESS)
+                    _securityCheckButtonState.emit(SecurityCheckButton.State.PROGRESS)
                 }
 
                 is Command.ShowMessageToUser -> {
-                    _attackInfoText.postValue(command.message)
+                    _attackInfoText.emit(command.message)
                 }
             }
         }

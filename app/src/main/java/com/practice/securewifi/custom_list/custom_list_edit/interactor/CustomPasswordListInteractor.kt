@@ -2,14 +2,14 @@ package com.practice.securewifi.custom_list.custom_list_edit.interactor
 
 import com.practice.securewifi.custom_list.custom_list_edit.repository.CustomListRepository
 import com.practice.securewifi.data.repository.PasswordListsRepository
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 class CustomPasswordListInteractor(
     private val passwordListsRepository: PasswordListsRepository,
     private val customListRepository: CustomListRepository
 ) {
 
-    val passwordList: Flow<List<String>> = customListRepository.passwordList
+    val passwordList: StateFlow<List<String>> = customListRepository.passwordList
 
     suspend fun updatePasswordList(newPasswordList: List<String>) {
         customListRepository.updatePasswordList(newPasswordList)

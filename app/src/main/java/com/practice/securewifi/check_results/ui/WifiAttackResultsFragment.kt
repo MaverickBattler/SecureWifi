@@ -6,13 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.practice.securewifi.R
+import com.practice.securewifi.app.core.launchOnStarted
 import com.practice.securewifi.check_results.adapter.WifiAttackResultsAdapter
 import com.practice.securewifi.check_results.viewmodel.WifiAttackResultsViewModel
 import com.practice.securewifi.databinding.FragmentWifiAttackResultsBinding
 import com.practice.securewifi.app.core.util.Colors
+import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -44,10 +47,10 @@ class WifiAttackResultsFragment : Fragment() {
             )
         )
         binding.wifiSsidTextview.text = wifiName
-        viewModel.triedPasswordList.observe(viewLifecycleOwner) { triedPassword ->
+        viewModel.triedPasswordList.onEach { triedPassword ->
             adapter.submitList(triedPassword)
-        }
-        viewModel.correctPassword.observe(viewLifecycleOwner) { correctPassword ->
+        }.launchOnStarted(lifecycleScope)
+        viewModel.correctPassword.onEach { correctPassword ->
             val wasWifiHackedTextview = binding.wasWifiHackedTextview
             wasWifiHackedTextview.text = if (correctPassword == null) {
                 val colorFromTheme =
@@ -64,7 +67,7 @@ class WifiAttackResultsFragment : Fragment() {
                 )
                 getString(R.string.correct_password_is, correctPassword)
             }
-        }
+        }.launchOnStarted(lifecycleScope)
         super.onViewCreated(view, savedInstanceState)
     }
 

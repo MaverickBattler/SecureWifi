@@ -13,10 +13,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.practice.securewifi.R
+import com.practice.securewifi.app.core.launchOnStarted
 import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.CustomPasswordListAdapter
 import com.practice.securewifi.custom_list.custom_list_edit.viewmodel.CustomPasswordListViewModel
 import com.practice.securewifi.databinding.FragmentPasswordListBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -53,10 +55,10 @@ class CustomPasswordListFragment : Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
-        viewModel.customPasswordList.observe(viewLifecycleOwner) { passwordList ->
+        viewModel.customPasswordList.onEach { passwordList ->
             binding.saveListButton.isVisible = passwordList.isNotEmpty() && args.isListEditable
             adapter.submitList(passwordList)
-        }
+        }.launchOnStarted(lifecycleScope)
         binding.buttonAdd.setOnClickListener {
             viewModel.onAddNewPasswordToList(binding.newPasswordEditText.text.toString())
             binding.newPasswordEditText.setText("")
