@@ -10,7 +10,7 @@ class WifiInfoViewModel(
     wifiInfoUiStateInteractor: WifiInfoUiStateInteractor
 ) : ViewModel() {
 
-    val wifiInfoUiState: LiveData<WifiInfoUiState?> =
+    val wifiInfoUiState: LiveData<WifiInfoUiState> =
         wifiInfoUiStateInteractor.wifiInfoUiState.asLiveData()
 
 }

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class WifiInfoUiStateRepository {
 
     private val _wifiInfoUiState: MutableStateFlow<WifiInfoUiState> = MutableStateFlow(WifiInfoUiState.NoInfo)
-    val wifiInfoUiState: StateFlow<WifiInfoUiState?> = _wifiInfoUiState.asStateFlow()
+    val wifiInfoUiState: StateFlow<WifiInfoUiState> = _wifiInfoUiState.asStateFlow()
 
     suspend fun updateWifiInfoUiState(wifiInfoUiStateToSet: WifiInfoUiState) {
         _wifiInfoUiState.emit(wifiInfoUiStateToSet)

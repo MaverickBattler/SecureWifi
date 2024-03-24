@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.practice.securewifi.R
 import com.practice.securewifi.databinding.FragmentWifiInfoBinding
 import com.practice.securewifi.scan.wifi_info.model.WifiInfoUiState
 import com.practice.securewifi.scan.wifi_info.ui.adapter.WifiCapabilitiesListAdapter
@@ -43,12 +44,18 @@ class WifiInfoFragment : Fragment() {
 
     private fun initObservers() {
         viewModel.wifiInfoUiState.observe(viewLifecycleOwner) { wifiInfoUiState ->
-            if (wifiInfoUiState is WifiInfoUiState.Content) {
-                binding.wifiSsidTextview.text = wifiInfoUiState.wifiSsid
-                val adapter = WifiCapabilitiesListAdapter()
-                binding.wifiCapabilitiesList.adapter = adapter
-                adapter.submitList(wifiInfoUiState.wifiCapabilities)
-                binding.showAttackResults.isVisible = wifiInfoUiState.buttonCheckResultsVisible
+            when (wifiInfoUiState) {
+                is WifiInfoUiState.Content -> {
+                    binding.wifiSsidTextview.text = wifiInfoUiState.wifiSsid
+                    val adapter = WifiCapabilitiesListAdapter()
+                    binding.wifiCapabilitiesList.adapter = adapter
+                    adapter.submitList(wifiInfoUiState.wifiCapabilities)
+                    binding.showAttackResults.isVisible = wifiInfoUiState.buttonCheckResultsVisible
+                }
+                WifiInfoUiState.NoInfo -> {
+                    binding.wifiSsidTextview.text = getString(R.string.you_are_too_far_from_wifi)
+                    binding.showAttackResults.isVisible = false
+                }
             }
         }
     }
