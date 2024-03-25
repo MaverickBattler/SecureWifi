@@ -10,13 +10,12 @@ class WifiCapabilityItemsMapper(
     private val application: Application
 ) {
 
-    fun map(scanResult: ScanResult, areThereResultsForWifi: Boolean): WifiInfoUiState {
+    fun map(scanResult: ScanResult): WifiInfoUiState {
         val wifiSsid = scanResult.SSID
         val wifiCapabilitiesItems = getWifiCapabilitiesItems(scanResult)
         return WifiInfoUiState.Content(
             wifiSsid = wifiSsid,
             wifiCapabilities = wifiCapabilitiesItems,
-            buttonCheckResultsVisible = areThereResultsForWifi
         )
     }
 

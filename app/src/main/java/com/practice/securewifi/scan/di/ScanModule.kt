@@ -51,7 +51,6 @@ val scanModule = module {
         WifiInfoUiStateInteractor(
             wifiInfoUiStateRepository = get(),
             wifiCapabilityItemsMapper = get(),
-            triedPasswordsRepository = get()
         )
     }
 

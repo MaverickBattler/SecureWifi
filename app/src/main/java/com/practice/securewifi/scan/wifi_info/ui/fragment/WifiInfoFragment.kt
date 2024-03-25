@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.practice.securewifi.R
 import com.practice.securewifi.app.core.launchOnStarted
@@ -57,18 +55,10 @@ class WifiInfoFragment : Fragment() {
                 is WifiInfoUiState.Content -> {
                     binding.wifiSsidTextview.text = wifiInfoUiState.wifiSsid
                     adapter.submitList(wifiInfoUiState.wifiCapabilities)
-                    binding.showAttackResults.isVisible = wifiInfoUiState.buttonCheckResultsVisible
-                    binding.showAttackResults.setOnClickListener {
-                        val bundle = Bundle().apply {
-                            putString("wifiName", wifiInfoUiState.wifiSsid)
-                        }
-                        findNavController().navigate(R.id.wifiAttackResultFragment, bundle)
-                    }
                 }
 
                 WifiInfoUiState.NoInfo -> {
                     binding.wifiSsidTextview.text = getString(R.string.you_are_too_far_from_wifi)
-                    binding.showAttackResults.isVisible = false
                 }
             }
         }.launchOnStarted(lifecycleScope)

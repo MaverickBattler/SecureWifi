@@ -7,41 +7,27 @@
     android:background="?attr/backgroundColorSmooth"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/wifi_ssid_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="12dp"
-            android:textAlignment="center"
-            android:textColor="?attr/textColorMain"
-            android:textSize="24sp"
-            tools:text="WifiNetwork" />
-
-        <View
-            android:id="@+id/title_bottom_line"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="?attr/controlColor" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/wifi_capabilities_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/wifi_capability_item" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/show_attack_results"
+    <TextView
+        android:id="@+id/wifi_ssid_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="16dp"
-        android:text="@string/see_wifi_attack_results" />
+        android:layout_marginVertical="12dp"
+        android:textAlignment="center"
+        android:textColor="?attr/textColorMain"
+        android:textSize="24sp"
+        tools:text="WifiNetwork" />
+
+    <View
+        android:id="@+id/title_bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="?attr/controlColor" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/wifi_capabilities_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/wifi_capability_item" />
 </LinearLayout>
