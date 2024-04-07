@@ -18,9 +18,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.practice.securewifi.app.core.checkForAccessFineLocationPermission
-import com.practice.securewifi.app.core.launchOnStarted
-import com.practice.securewifi.app.core.util.Colors
+import com.practice.securewifi.core.extensions.checkForAccessFineLocationPermission
+import com.practice.securewifi.core.extensions.launchOnStarted
+import com.practice.securewifi.core.util.Colors
 import com.practice.securewifi.check.service.ConnectionService
 import com.practice.securewifi.check.passwords_lists_selection.ui.PasswordsListsSelectionDialog
 import com.practice.securewifi.check.viewmodel.ConnectViewModel

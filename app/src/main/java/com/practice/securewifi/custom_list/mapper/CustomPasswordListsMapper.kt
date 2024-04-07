@@ -3,7 +3,7 @@ package com.practice.securewifi.custom_list.mapper
 import android.app.Application
 import com.practice.securewifi.R
 import com.practice.securewifi.custom_list.model.CustomPasswordList
-import com.practice.securewifi.data.entity.PasswordList
+import com.practice.securewifi.data.password_lists.entity.PasswordList
 
 class CustomPasswordListsMapper(
     private val application: Application

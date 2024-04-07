@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.practice.securewifi.app.core.base.BaseDialogFragment
-import com.practice.securewifi.app.core.launchOnStarted
+import com.practice.securewifi.core.base.BaseDialogFragment
+import com.practice.securewifi.core.extensions.launchOnStarted
 import com.practice.securewifi.check.wifi_points_selection.adapter.WifiesSelectionAdapter
 import com.practice.securewifi.check.wifi_points_selection.model.WifiListState
 import com.practice.securewifi.check.wifi_points_selection.viewmodel.WifiPointsSelectionViewModel

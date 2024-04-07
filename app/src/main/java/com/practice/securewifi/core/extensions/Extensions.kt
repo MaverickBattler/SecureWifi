@@ -1,10 +1,11 @@
-package com.practice.securewifi.app.core
+package com.practice.securewifi.core.extensions
 
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import timber.log.Timber
 
 fun Fragment.checkForAccessFineLocationPermission(): Boolean {
     return if (ContextCompat.checkSelfPermission(
@@ -20,5 +21,14 @@ fun Fragment.checkForAccessFineLocationPermission(): Boolean {
         false
     } else {
         true
+    }
+}
+
+fun String.safeCastToInt(): Int? {
+    return try {
+        toInt()
+    } catch (e: NumberFormatException) {
+        Timber.e("Couldn't properly cast \"$this\" to int")
+        null
     }
 }

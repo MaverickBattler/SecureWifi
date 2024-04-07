@@ -4,10 +4,10 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
@@ -24,6 +24,7 @@ import com.practice.securewifi.R
 import com.practice.securewifi.app.initialization.interactor.InitializationInteractor
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+
 
 class MainActivity : AppCompatActivity() {
 

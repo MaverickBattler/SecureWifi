@@ -1,4 +1,4 @@
-package com.practice.securewifi.app.core.util
+package com.practice.securewifi.core.util
 
 import android.content.Context
 import android.content.res.Resources

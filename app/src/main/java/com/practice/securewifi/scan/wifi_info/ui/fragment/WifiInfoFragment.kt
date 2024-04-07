@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.practice.securewifi.R
-import com.practice.securewifi.app.core.launchOnStarted
+import com.practice.securewifi.core.extensions.launchOnStarted
 import com.practice.securewifi.databinding.FragmentWifiInfoBinding
 import com.practice.securewifi.scan.wifi_info.model.WifiInfoUiState
 import com.practice.securewifi.scan.wifi_info.ui.adapter.WifiCapabilitiesListAdapter

@@ -3,7 +3,7 @@ package com.practice.securewifi.check.passwords_lists_selection.mapper
 import android.app.Application
 import com.practice.securewifi.R
 import com.practice.securewifi.check.passwords_lists_selection.model.PasswordListModel
-import com.practice.securewifi.data.entity.PasswordList
+import com.practice.securewifi.data.password_lists.entity.PasswordList
 
 class PasswordsListModelsMapper(
     private val application: Application

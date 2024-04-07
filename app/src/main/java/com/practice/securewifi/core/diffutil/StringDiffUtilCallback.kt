@@ -1,4 +1,4 @@
-package com.practice.securewifi.app.core.diffutil
+package com.practice.securewifi.core.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 

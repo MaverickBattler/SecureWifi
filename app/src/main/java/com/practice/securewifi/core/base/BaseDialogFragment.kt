@@ -1,4 +1,4 @@
-package com.practice.securewifi.app.core.base
+package com.practice.securewifi.core.base
 
 import android.content.res.Resources
 import android.graphics.Color

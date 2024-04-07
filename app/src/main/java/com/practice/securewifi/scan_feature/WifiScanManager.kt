@@ -6,7 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
-import com.practice.securewifi.app.core.util.WifiManagerProvider
+import com.practice.securewifi.core.util.WifiManagerProvider
 import timber.log.Timber
 
 abstract class WifiScanManager(

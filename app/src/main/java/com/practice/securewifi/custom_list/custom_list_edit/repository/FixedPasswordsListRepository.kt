@@ -2,7 +2,7 @@ package com.practice.securewifi.custom_list.custom_list_edit.repository
 
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class CustomListRepository {
+class FixedPasswordsListRepository {
 
     val passwordList: MutableStateFlow<List<String>> = MutableStateFlow(listOf())
 

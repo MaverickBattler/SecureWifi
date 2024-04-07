@@ -25,7 +25,7 @@
     <string name="password_was_not_hacked">Пароль не был подобран</string>
     <string name="signal">Уровень сигнала:</string>
     <string name="wifi_signal_level">Wifi signal level</string>
-    <string name="new_password_hint">Добавить пароль…</string>
+    <string name="new_password_hint">Добавить пароль</string>
     <string name="add_button">Add button</string>
     <string name="password_delete_imageview">Password delete imageview</string>
     <string name="attack_wifi">Атаковать точку</string>
@@ -88,4 +88,19 @@
     <string name="ieee8021x_explanation">IEEE 802.1X — это стандарт IEEE для управления доступом к сети на основе портов (PNAC). Он входит в группу сетевых протоколов IEEE 802.1. Он обеспечивает механизм аутентификации для устройств, желающих подключиться к локальной или беспроводной локальной сети. Введение стандарта напрямую связано с защитой оттипа взлома под названием «DarkVishnya». Однако в спецификациях 802.1X-2001 и 802.1X-2004 обнаружено несколько серьезных уязвимостей, в том числе атака «человек посередине», подмена MAC-адреса и атаки EAPOL-Logoff.</string>
     <string name="passpoint_explanation">В сети Passpoint устройства аутентифицируются автоматически, что уменьшает необходимость входа в систему вручную и обеспечивает доступ только авторизованным пользователям. Эта функция особенно полезна в средах, где важно быстрое и безопасное подключение, например в сфере розничной торговли или гостиничного бизнеса. Passpoint использует безопасность корпоративного уровня с новейшими протоколами безопасности, такими как WPA2 и WPA3, для повышения безопасности и защиты от попыток взлома.</string>
     <string name="you_are_too_far_from_wifi">Вы ушли слишком далеко от выбранной точки Wi-Fi</string>
+    <string name="generated_passwords">Генерируемые пароли</string>
+    <string name="fixed_passwords">Фиксированный список</string>
+    <string name="new_name_hint">Имя</string>
+    <string name="new_second_name_hint">Фамилия</string>
+    <string name="new_father_or_middle_name_hint">Отчество</string>
+    <string name="new_day_hint">День</string>
+    <string name="new_month_hint">Месяц</string>
+    <string name="new_year_hint">Год</string>
+    <string name="key_word">Ключевое слово</string>
+    <string name="person_info_title">Информация о людях, связанных с точкой доступа и любые даты (например, дата рождения). Можно заполнить 1 и больше полей.</string>
+    <string name="place_name_title">Названия мест, фирм, учреждений и другие ключевые слова.</string>
+    <string name="no_dynamically_generated_passwords_for_this_list">Для данного списка нет динамически генерируемых паролей.</string>
+    <string name="fill_at_least_one_field">Заполните одно из полей</string>
+    <string name="please_fill_this_field">Пожалуйста, заполните это поле</string>
+    <string name="amount_of_generated_passwords">Количество генерируемых паролей</string>
 </resources>

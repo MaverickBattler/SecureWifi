@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.practice.securewifi.app.core.diffutil.StringDiffUtilCallback
+import com.practice.securewifi.core.diffutil.StringDiffUtilCallback
 import com.practice.securewifi.databinding.TriedPasswordItemBinding
 
 class WifiAttackResultsAdapter :

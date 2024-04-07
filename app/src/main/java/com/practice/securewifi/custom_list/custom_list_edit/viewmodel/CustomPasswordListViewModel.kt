@@ -1,40 +1,18 @@
 package com.practice.securewifi.custom_list.custom_list_edit.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.practice.securewifi.custom_list.custom_list_edit.interactor.CustomPasswordListInteractor
+import com.practice.securewifi.custom_list.custom_list_edit.interactor.DynamicPasswordsInfoInteractor
+import com.practice.securewifi.custom_list.custom_list_edit.interactor.FixedPasswordsListInteractor
 import com.practice.securewifi.custom_list.interactor.CustomPasswordListsInteractor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CustomPasswordListViewModel(
     private val listName: String,
-    private val customPasswordListInteractor: CustomPasswordListInteractor,
+    private val fixedPasswordsListInteractor: FixedPasswordsListInteractor,
+    private val dynamicPasswordsInfoInteractor: DynamicPasswordsInfoInteractor,
     private val customPasswordListsInteractor: CustomPasswordListsInteractor,
 ) : ViewModel() {
-
-    val customPasswordList: StateFlow<List<String>> = customPasswordListInteractor.passwordList
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            val storedPasswordList = customPasswordListInteractor.getPasswordsForList(listName)
-            customPasswordListInteractor.updatePasswordList(storedPasswordList)
-        }
-    }
-
-    fun onDeletePasswordFromList(password: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            customPasswordListInteractor.deletePasswordFromList(password)
-        }
-    }
-
-    fun onAddNewPasswordToList(password: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            customPasswordListInteractor.insertPasswordToList(password)
-        }
-    }
 
     suspend fun onSaveList(newListName: String): SaveResult {
         return withContext(Dispatchers.IO) {
@@ -44,12 +22,16 @@ class CustomPasswordListViewModel(
             } else if (newListName.isEmpty()) {
                 SaveResult.NO_LIST_NAME_PROVIDED
             } else {
-                val customPasswordList = customPasswordList.value
-                customPasswordList.let {
+                val fixedPasswordsList = fixedPasswordsListInteractor.passwordList.value
+                val personInfoList = dynamicPasswordsInfoInteractor.personInfoList.value
+                val placesNamesList = dynamicPasswordsInfoInteractor.placesNamesList.value
+                fixedPasswordsList.let {
                     customPasswordListsInteractor.saveUserList(
                         listName,
                         newListName,
-                        customPasswordList
+                        fixedPasswordsList,
+                        personInfoList,
+                        placesNamesList
                     )
                 }
                 SaveResult.SUCCESS

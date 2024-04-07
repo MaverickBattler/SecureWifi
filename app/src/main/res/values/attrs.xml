@@ -5,8 +5,11 @@
     <attr format="reference|color" name="textColorMain" />
     <attr format="reference|color" name="textColorSecondary" />
     <attr format="reference|color" name="textColorInactive" />
+    <attr format="reference|color" name="textColorError" />
     <attr format="reference|color" name="primaryColor" />
     <attr format="reference|color" name="controlColor" />
+    <attr format="reference|color" name="seekbarInactiveBackground" />
+    <attr format="reference|color" name="seekbarInactiveBackgroundShadow" />
     <attr format="reference|color" name="colorDrawablesOnBackground" />
     <attr format="reference|color" name="colorDrawablesOnPrimary" />
 </resources>

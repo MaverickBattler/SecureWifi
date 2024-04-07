@@ -1,12 +1,14 @@
 package com.practice.securewifi.app.initialization.interactor
 
 import android.content.Context
-import com.practice.securewifi.data.entity.PasswordList
+import com.practice.securewifi.data.password_lists.entity.PasswordList
+import com.practice.securewifi.data.password_lists.repository.PasswordListFixedPasswordsRepository
 import com.practice.securewifi.data.repository.PasswordListsRepository
 
 class LoadPasswordsListsFromAssetsInteractor(
     private val applicationContext: Context,
-    private val passwordsListsRepository: PasswordListsRepository
+    private val passwordsListsRepository: PasswordListsRepository,
+    private val passwordsListFixedPasswordsRepository: PasswordListFixedPasswordsRepository
 ) {
 
     suspend fun loadPasswordsListsFromAssets() {
@@ -23,7 +25,7 @@ class LoadPasswordsListsFromAssetsInteractor(
         listOfPasswordListsFromFile.forEach { listName ->
             val existingPasswordListWithName = passwordsListsRepository.getPasswordList(listName)
             val passwordsFromExistingPasswordList =
-                passwordsListsRepository.getPasswordsForList(listName)
+                passwordsListFixedPasswordsRepository.getFixedPasswordsForList(listName)
             val passwordsForListFromFile = getFixedPasswordListForName(listName)
             if (passwordsFromExistingPasswordList.toSet() != passwordsForListFromFile.toSet()) {
                 passwordsListsRepository.saveList(
@@ -32,7 +34,9 @@ class LoadPasswordsListsFromAssetsInteractor(
                         deletable = false,
                         selected = false
                     ),
-                    passwordsForListFromFile
+                    passwordsForListFromFile,
+                    emptyList(),
+                    emptyList()
                 )
             }
         }

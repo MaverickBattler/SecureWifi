@@ -1,4 +1,4 @@
-package com.practice.securewifi.data.entity
+package com.practice.securewifi.data.password_lists.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

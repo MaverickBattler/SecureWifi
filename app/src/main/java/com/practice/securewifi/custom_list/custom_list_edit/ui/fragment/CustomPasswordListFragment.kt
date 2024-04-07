@@ -11,14 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.DividerItemDecoration
+import com.google.android.material.tabs.TabLayoutMediator
 import com.practice.securewifi.R
-import com.practice.securewifi.app.core.launchOnStarted
-import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.CustomPasswordListAdapter
+import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.PasswordTypesPagerAdapter
 import com.practice.securewifi.custom_list.custom_list_edit.viewmodel.CustomPasswordListViewModel
 import com.practice.securewifi.databinding.FragmentPasswordListBinding
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,6 +32,8 @@ class CustomPasswordListFragment : Fragment() {
 
     private val listName by lazy { args.customListName }
 
+    private val isListEditable by lazy { args.isListEditable }
+
     private val viewModel: CustomPasswordListViewModel by viewModel { parametersOf(listName) }
 
     override fun onCreateView(
@@ -44,25 +44,16 @@ class CustomPasswordListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val onDeleteClickListener: (String) -> Unit = { password ->
-            viewModel.onDeletePasswordFromList(password)
-        }
-        val adapter = CustomPasswordListAdapter(onDeleteClickListener, args.isListEditable)
-        binding.passwordList.adapter = adapter
-        binding.passwordList.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            )
+        val pagerAdapter = PasswordTypesPagerAdapter(
+            listName,
+            isListEditable,
+            childFragmentManager,
+            lifecycle
         )
-        viewModel.customPasswordList.onEach { passwordList ->
-            binding.saveListButton.isVisible = passwordList.isNotEmpty() && args.isListEditable
-            adapter.submitList(passwordList)
-        }.launchOnStarted(lifecycleScope)
-        binding.buttonAdd.setOnClickListener {
-            viewModel.onAddNewPasswordToList(binding.newPasswordEditText.text.toString())
-            binding.newPasswordEditText.setText("")
-        }
+        binding.viewPager.adapter = pagerAdapter
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { _, _ ->
+            /* do nothing */
+        }.attach()
         binding.saveListButton.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 val listName = binding.listNameEditText.text.toString()
@@ -91,11 +82,10 @@ class CustomPasswordListFragment : Fragment() {
             }
         }
         binding.listNameEditText.setText(listName)
-        if (!args.isListEditable) {
+        if (!isListEditable) {
             binding.listNameEditText.isClickable = false
             binding.listNameEditText.isFocusable = false
             binding.listNameEditText.textAlignment = EditText.TEXT_ALIGNMENT_CENTER
-            binding.addPasswordLayout.isVisible = false
             binding.saveListButton.isVisible = false
             binding.listNameContainer.isHintEnabled = false
         }
@@ -103,6 +93,20 @@ class CustomPasswordListFragment : Fragment() {
             binding.listNameContainer.isErrorEnabled = false
             binding.listNameContainer.error = null
         }
+
+        binding.viewPager.isUserInputEnabled = false
+        
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            when (position) {
+                0 -> {
+                    tab.setText(R.string.fixed_passwords)
+                }
+
+                1 -> {
+                    tab.setText(R.string.generated_passwords)
+                }
+            }
+        }.attach()
         super.onViewCreated(view, savedInstanceState)
     }
 

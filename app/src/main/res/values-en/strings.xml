@@ -25,7 +25,7 @@
     <string name="password_was_not_hacked">Password was not hacked</string>
     <string name="signal">Signal level:</string>
     <string name="wifi_signal_level">Wifi signal level</string>
-    <string name="new_password_hint">Add password…</string>
+    <string name="new_password_hint">Add a password</string>
     <string name="add_button">Add button</string>
     <string name="password_delete_imageview">Password delete imageview</string>
     <string name="attack_wifi">Attack point</string>
@@ -84,4 +84,19 @@
     <string name="ieee8021x_explanation">IEEE 802.1X is an IEEE Standard for port-based network access control (PNAC). It is part of the IEEE 802.1 group of networking protocols. It provides an authentication mechanism to devices wishing to attach to a LAN or WLAN. The standard directly addresses a type of hacking called "DarkVishnya". However, there are some serious vulnerabilities found in 802.1X-2001 and 802.1X-2004 specifications, including a man in the middle attack, MAC spoofing and EAPOL-Logoff attacks.</string>
     <string name="passpoint_explanation">In a Passpoint network, devices are authenticated automatically, reducing the need for manual logins while ensuring only authorized users gain access. This feature is particularly beneficial in environments where quick, secure connectivity is essential, such as in retail or hospitality sectors. Passpoint uses enterprise security with the latest security protocols, such as WPA2 and WPA3,for enhanced security and protection against hacking attempts.</string>
     <string name="you_are_too_far_from_wifi">You are too far from the selected Wi-Fi point</string>
+    <string name="generated_passwords">Generated passwords</string>
+    <string name="fixed_passwords">Фиксированный список</string>
+    <string name="new_name_hint">Name</string>
+    <string name="new_second_name_hint">Second name</string>
+    <string name="new_father_or_middle_name_hint">Middle name</string>
+    <string name="new_day_hint">Day</string>
+    <string name="new_month_hint">Month</string>
+    <string name="new_year_hint">Year</string>
+    <string name="key_word">Keyword</string>
+    <string name="person_info_title">Info about the person related to the Wi-Fi and any dates (for example, date of birth). 1 or more fields may be filled.</string>
+    <string name="place_name_title">Names of places, firms, establishments or other keywords.</string>
+    <string name="no_dynamically_generated_passwords_for_this_list">No dynamically generated passwords for this list.</string>
+    <string name="fill_at_least_one_field">Fill one of the fields</string>
+    <string name="please_fill_this_field">Please, fill out this field</string>
+    <string name="amount_of_generated_passwords">Amount of generated passwords</string>
 </resources>

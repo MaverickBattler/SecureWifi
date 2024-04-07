@@ -5,6 +5,9 @@
         <item name="backgroundColorSmooth">@color/dark_gray_main</item>
         <item name="textColorMain">@color/white</item>
         <item name="textColorInactive">@color/gray</item>
+        <item name="textColorError">@color/red</item>
+        <item name="seekbarInactiveBackground">@color/shadow_lighter_color_dark</item>
+        <item name="seekbarInactiveBackgroundShadow">@color/shadow_darker_color_dark</item>
         <item name="colorDrawablesOnBackground">@color/white</item>
         <item name="colorDrawablesOnPrimary">@color/white</item>
         <item name="textColorSecondary">@color/gray</item>

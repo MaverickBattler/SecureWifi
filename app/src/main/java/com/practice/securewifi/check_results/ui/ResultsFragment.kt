@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.practice.securewifi.app.core.launchOnStarted
+import com.practice.securewifi.core.extensions.launchOnStarted
 import com.practice.securewifi.check_results.adapter.CheckResultAdapter
 import com.practice.securewifi.check_results.viewmodel.ResultsViewModel
 import com.practice.securewifi.databinding.FragmentResultsBinding

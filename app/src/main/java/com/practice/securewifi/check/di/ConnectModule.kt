@@ -34,6 +34,7 @@ val connectModule = module {
     factory {
         PasswordsListsInteractor(
             passwordListsRepository = get(),
+            passwordListFixedPasswordsRepository = get(),
             passwordsListModelsMapper = get()
         )
     }
@@ -52,7 +53,7 @@ val connectModule = module {
 
     factory {
         PasswordListsInteractor(
-            passwordListsRepository = get()
+            passwordListFixedPasswordsRepository = get()
         )
     }
 
@@ -100,6 +101,7 @@ val connectModule = module {
     factory {
         SelectedPasswordListsPreviewInteractor(
             passwordListsRepository = get(),
+            passwordListFixedPasswordsRepository = get(),
             selectedPasswordListsPreviewUiStateMapper = get()
         )
     }

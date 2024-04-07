@@ -23,7 +23,7 @@ import com.practice.securewifi.check.UpdateListener
 import com.practice.securewifi.check.interactor.TriedPasswordsInteractor
 import com.practice.securewifi.check.interactor.WifiCheckResultInteractor
 import com.practice.securewifi.data.entity.WifiCheckResult
-import com.practice.securewifi.app.core.util.WifiManagerProvider
+import com.practice.securewifi.core.util.WifiManagerProvider
 import com.practice.securewifi.check.interactor.PasswordListsInteractor
 import com.practice.securewifi.check.interactor.SelectedPasswordListsInteractor
 import com.practice.securewifi.check.interactor.SelectedWifiesInteractor

@@ -1,4 +1,4 @@
-package com.practice.securewifi.app.core
+package com.practice.securewifi.core.extensions
 
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers

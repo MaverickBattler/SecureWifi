@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practice.securewifi.R
 import com.practice.securewifi.check_results.model.DisplayWifiCheckResult
 import com.practice.securewifi.databinding.WifiCheckResultItemBinding
-import com.practice.securewifi.app.core.util.Colors
+import com.practice.securewifi.core.util.Colors
 
 class CheckResultAdapter(private val onItemClickListener: (String) -> Unit) :
     ListAdapter<DisplayWifiCheckResult, CheckResultAdapter.CheckResultViewHolder>(

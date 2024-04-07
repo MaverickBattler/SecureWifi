@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.practice.securewifi.R
-import com.practice.securewifi.app.core.launchOnStarted
+import com.practice.securewifi.core.extensions.launchOnStarted
 import com.practice.securewifi.custom_list.ui.adapter.CustomPasswordListsAdapter
 import com.practice.securewifi.custom_list.model.CustomPasswordList
 import com.practice.securewifi.custom_list.viewmodel.CustomPasswordListsViewModel

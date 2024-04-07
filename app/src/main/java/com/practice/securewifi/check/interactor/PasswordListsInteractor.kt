@@ -1,13 +1,13 @@
 package com.practice.securewifi.check.interactor
 
-import com.practice.securewifi.data.repository.PasswordListsRepository
+import com.practice.securewifi.data.password_lists.repository.PasswordListFixedPasswordsRepository
 
 class PasswordListsInteractor(
-    private val passwordListsRepository: PasswordListsRepository
+    private val passwordListFixedPasswordsRepository: PasswordListFixedPasswordsRepository
 ) {
 
     suspend fun getPasswordsForChosenListAndWifi(listName: String, wifiSsid: String): List<String> {
         // TODO process adaptive custom lists here
-        return passwordListsRepository.getPasswordsForList(listName)
+        return passwordListFixedPasswordsRepository.getFixedPasswordsForList(listName)
     }
 }

@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.practice.securewifi.app.core.base.BaseDialogFragment
-import com.practice.securewifi.app.core.launchOnStarted
+import com.practice.securewifi.core.base.BaseDialogFragment
+import com.practice.securewifi.core.extensions.launchOnStarted
 import com.practice.securewifi.check.passwords_lists_selection.adapter.PasswordsListsSelectionAdapter
 import com.practice.securewifi.check.passwords_lists_selection.viewmodel.PasswordsListSelectionViewModel
 import com.practice.securewifi.databinding.DialogPasswordsListsSelectionBinding

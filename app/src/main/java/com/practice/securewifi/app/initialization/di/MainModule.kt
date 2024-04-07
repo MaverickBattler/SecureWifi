@@ -15,7 +15,8 @@ val mainModule = module {
     factory {
         LoadPasswordsListsFromAssetsInteractor(
             applicationContext = androidApplication(),
-            passwordsListsRepository = get()
+            passwordsListsRepository = get(),
+            passwordsListFixedPasswordsRepository = get()
         )
     }
 }

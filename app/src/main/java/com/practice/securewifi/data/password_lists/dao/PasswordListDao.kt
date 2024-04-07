@@ -1,10 +1,10 @@
-package com.practice.securewifi.data.dao
+package com.practice.securewifi.data.password_lists.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.practice.securewifi.data.entity.PasswordList
+import com.practice.securewifi.data.password_lists.entity.PasswordList
 import kotlinx.coroutines.flow.Flow
 
 @Dao

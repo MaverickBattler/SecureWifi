@@ -15,8 +15,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.practice.securewifi.R
-import com.practice.securewifi.app.core.checkForAccessFineLocationPermission
-import com.practice.securewifi.app.core.launchOnStarted
+import com.practice.securewifi.core.extensions.checkForAccessFineLocationPermission
+import com.practice.securewifi.core.extensions.launchOnStarted
 import com.practice.securewifi.databinding.FragmentScanBinding
 import com.practice.securewifi.scan.model.ScanResultInfo
 import com.practice.securewifi.scan.ui.adapter.ScanResultAdapter
