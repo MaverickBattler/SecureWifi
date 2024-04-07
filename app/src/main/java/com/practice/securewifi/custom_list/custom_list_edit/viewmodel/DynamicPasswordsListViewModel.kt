@@ -8,6 +8,7 @@ import com.practice.securewifi.data.password_lists.entity.PersonInfo
 import com.practice.securewifi.data.password_lists.entity.PlaceName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class DynamicPasswordsListViewModel(
@@ -18,6 +19,10 @@ class DynamicPasswordsListViewModel(
 
     val personInfoList: StateFlow<List<PersonInfo>> = dynamicPasswordsInfoInteractor.personInfoList
     val placesNamesList: StateFlow<List<PlaceName>> = dynamicPasswordsInfoInteractor.placesNamesList
+
+    val presenceOfInfo = personInfoList.combine(placesNamesList) { personInfoList, placeNameList ->
+        return@combine Pair(personInfoList.isNotEmpty(), placeNameList.isNotEmpty())
+    }
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

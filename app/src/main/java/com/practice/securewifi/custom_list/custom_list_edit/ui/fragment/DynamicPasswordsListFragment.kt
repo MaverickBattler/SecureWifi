@@ -46,14 +46,6 @@ class DynamicPasswordsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val listEditable = isListEditable ?: false
 
-        if (!listEditable) {
-            binding.addPersonInfoLayout.isVisible = false
-            binding.addPlaceNameLayout.isVisible = false
-            binding.separator.isVisible = false
-            binding.dynamicPasswordsAmtEditText.isEnabled = false
-            binding.seekBarPasswordsAmt.isEnabled = false
-        }
-
         val personInfoListAdapter = PersonInfoListAdapter(listEditable) { id ->
             viewModel.onDeletePersonInfoFromList(id)
         }
@@ -110,14 +102,40 @@ class DynamicPasswordsListFragment : Fragment() {
             }
         }
 
-        if (viewModel.personInfoList.value.isEmpty() && viewModel.placesNamesList.value.isEmpty() && !listEditable) {
-            binding.separator.isVisible = false
+
+        if (!listEditable) {
             binding.addPersonInfoLayout.isVisible = false
             binding.addPlaceNameLayout.isVisible = false
-            binding.textviewAddPlaceNameLabel.isVisible = false
-            binding.textviewAddPersonInfoLabel.text =
-                getString(R.string.no_dynamically_generated_passwords_for_this_list)
+            binding.separator.isVisible = false
+            binding.dynamicPasswordsAmtEditText.isEnabled = false
+            binding.seekBarPasswordsAmt.isEnabled = false
         }
+
+
+        viewModel.presenceOfInfo.onEach { pair ->
+            binding.cover.isVisible = false
+            val isTherePersonInfo = pair.first
+            val isTherePlaceName = pair.second
+            if (!isTherePersonInfo && !isTherePlaceName && !listEditable) {
+                binding.addPlaceNameLayout.isVisible = false
+                binding.textviewAddPlaceNameLabel.isVisible = false
+                binding.separator.isVisible = false
+                binding.addPersonInfoLayout.isVisible = false
+                binding.textviewAddPersonInfoLabel.text =
+                    getString(R.string.no_dynamically_generated_passwords_for_this_list)
+                binding.dynamicPasswordsAmtEditText.isVisible = false
+                binding.seekBarPasswordsAmt.isVisible = false
+                binding.amountOfGeneratedPasswords.isVisible = false
+            } else if (!isTherePersonInfo && !listEditable) {
+                binding.separator.isVisible = false
+                binding.addPersonInfoLayout.isVisible = false
+                binding.textviewAddPersonInfoLabel.isVisible = false
+            } else if (!isTherePlaceName && !listEditable) {
+                binding.addPlaceNameLayout.isVisible = false
+                binding.textviewAddPlaceNameLabel.isVisible = false
+                binding.separator.isVisible = false
+            }
+        }.launchOnStarted(lifecycleScope)
 
         viewModel.personInfoList.onEach { personInfoList ->
             personInfoListAdapter.submitList(personInfoList)

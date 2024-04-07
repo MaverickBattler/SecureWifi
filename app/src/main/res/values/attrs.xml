@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr format="reference|color" name="backgroundColor" />
+    <attr format="reference|color" name="backgroundColorSharp" />
     <attr format="reference|color" name="backgroundColorSmooth" />
+    <attr format="reference|color" name="rippleColorOnBackground" />
     <attr format="reference|color" name="textColorMain" />
     <attr format="reference|color" name="textColorSecondary" />
     <attr format="reference|color" name="textColorInactive" />

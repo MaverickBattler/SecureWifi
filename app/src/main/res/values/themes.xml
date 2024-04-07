@@ -2,7 +2,9 @@
     <!-- Base application theme. -->
     <style name="Theme.SecureWifi" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="backgroundColor">@color/white</item>
+        <item name="backgroundColorSharp">@color/white</item>
         <item name="backgroundColorSmooth">@color/white</item>
+        <item name="rippleColorOnBackground">@color/light_gray</item>
         <item name="textColorMain">@color/dark_gray_main</item>
         <item name="textColorInactive">@color/gray</item>
         <item name="textColorError">@color/red</item>
