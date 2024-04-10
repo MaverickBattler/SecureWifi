@@ -11,7 +11,7 @@ abstract class BaseViewPagerFragment: Fragment() {
     fun fadeViewOut(view: View) {
         view.isVisible = true
         val fadeOutAnimation = AlphaAnimation(1f, 0f)
-        fadeOutAnimation.duration = 100
+        fadeOutAnimation.duration = 150
         fadeOutAnimation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
 
