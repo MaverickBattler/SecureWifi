@@ -19,6 +19,8 @@ class DynamicPasswordsListViewModel(
 
     val personInfoList: StateFlow<List<PersonInfo>> = dynamicPasswordsInfoInteractor.personInfoList
     val placesNamesList: StateFlow<List<PlaceName>> = dynamicPasswordsInfoInteractor.placesNamesList
+    val amountOfGeneratedPasswords: StateFlow<Int> =
+        dynamicPasswordsInfoInteractor.amountOfGeneratedPasswords
 
     val presenceOfInfo = personInfoList.combine(placesNamesList) { personInfoList, placeNameList ->
         return@combine Pair(personInfoList.isNotEmpty(), placeNameList.isNotEmpty())
@@ -29,9 +31,12 @@ class DynamicPasswordsListViewModel(
             val storedPersonInfo = getDynamicPasswordsInfoInteractor.getPersonInfoForList(listName)
             val storedPlacesNames =
                 getDynamicPasswordsInfoInteractor.getPlacesNamesForList(listName)
+            val amountOfGeneratedPasswords =
+                getDynamicPasswordsInfoInteractor.getAmountOfGeneratedPasswordsForList(listName)
             dynamicPasswordsInfoInteractor.updateDynamicPasswordsInfo(
                 storedPersonInfo,
-                storedPlacesNames
+                storedPlacesNames,
+                amountOfGeneratedPasswords
             )
         }
     }
@@ -57,7 +62,8 @@ class DynamicPasswordsListViewModel(
         year: Int? = null
     ): AddStatus {
         if (name.isNullOrEmpty() && secondName.isNullOrEmpty() && fatherOrMiddleName.isNullOrEmpty()
-            && day == null && month == null && year == null) {
+            && day == null && month == null && year == null
+        ) {
             return AddStatus.NO_DATA_PROVIDED
         }
         viewModelScope.launch(Dispatchers.IO) {
@@ -82,6 +88,12 @@ class DynamicPasswordsListViewModel(
             dynamicPasswordsInfoInteractor.addPlaceName(listName, placeName)
         }
         return AddStatus.SUCCESS
+    }
+
+    fun onChangeAmountOfGeneratedPasswords(amount: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dynamicPasswordsInfoInteractor.setAmountOfGeneratedPasswords(amount)
+        }
     }
 
     enum class AddStatus {

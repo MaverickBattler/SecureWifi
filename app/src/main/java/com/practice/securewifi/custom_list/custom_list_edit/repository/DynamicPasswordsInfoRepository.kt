@@ -3,32 +3,42 @@ package com.practice.securewifi.custom_list.custom_list_edit.repository
 import com.practice.securewifi.data.password_lists.entity.PersonInfo
 import com.practice.securewifi.data.password_lists.entity.PlaceName
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class DynamicPasswordsInfoRepository {
 
-    val personInfoList: MutableStateFlow<List<PersonInfo>> = MutableStateFlow(emptyList())
-    val placesNamesList: MutableStateFlow<List<PlaceName>> = MutableStateFlow(emptyList())
+    private val _personInfoList: MutableStateFlow<List<PersonInfo>> = MutableStateFlow(emptyList())
+    private val _placesNamesList: MutableStateFlow<List<PlaceName>> = MutableStateFlow(emptyList())
+    private val _amountOfGeneratedPasswords: MutableStateFlow<Int> = MutableStateFlow(0)
+
+    val personInfoList: StateFlow<List<PersonInfo>> =
+        _personInfoList.asStateFlow()
+    val placesNamesList: StateFlow<List<PlaceName>> =
+        _placesNamesList.asStateFlow()
+    val amountOfGeneratedPasswords: StateFlow<Int> =
+        _amountOfGeneratedPasswords.asStateFlow()
 
     suspend fun updateDynamicPasswordsInfo(
         newPersonInfoList: List<PersonInfo>,
-        newPlacesNamesList: List<PlaceName>
+        newPlacesNamesList: List<PlaceName>,
+        newAmountOfGeneratedPasswords: Int
     ) {
-        personInfoList.emit(newPersonInfoList)
-        placesNamesList.emit(newPlacesNamesList)
+        _personInfoList.emit(newPersonInfoList)
+        _placesNamesList.emit(newPlacesNamesList)
+        _amountOfGeneratedPasswords.emit(newAmountOfGeneratedPasswords)
     }
 
     suspend fun deletePersonInfoFromList(personInfoId: Int) {
-        personInfoList.emit(
-            personInfoList.value.toMutableList().apply { removeIf { it.id == personInfoId } })
+        _personInfoList.emit(personInfoList.value.filter { it.id != personInfoId })
     }
 
     suspend fun deletePlaceNameFromList(placeNameId: Int) {
-        placesNamesList.emit(
-            placesNamesList.value.toMutableList().apply { removeIf { it.id == placeNameId } })
+        _placesNamesList.emit(placesNamesList.value.filter { it.id != placeNameId })
     }
 
     suspend fun addPersonInfo(personInfo: PersonInfo) {
-        personInfoList.emit(personInfoList.value.toMutableList().apply {
+        _personInfoList.emit(personInfoList.value.toMutableList().apply {
             if (personInfoList.value.find {
                     it.day == personInfo.day
                             && it.month == personInfo.month
@@ -43,10 +53,14 @@ class DynamicPasswordsInfoRepository {
     }
 
     suspend fun addPlaceName(placeName: PlaceName) {
-        placesNamesList.emit(placesNamesList.value.toMutableList().apply {
+        _placesNamesList.emit(placesNamesList.value.toMutableList().apply {
             if (!placesNamesList.value.contains(placeName)) {
                 add(placeName)
             }
         })
+    }
+
+    suspend fun setAmountOfGeneratedPasswords(amount: Int) {
+        _amountOfGeneratedPasswords.emit(amount)
     }
 }

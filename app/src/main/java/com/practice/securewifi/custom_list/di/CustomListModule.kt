@@ -78,7 +78,8 @@ val customListModule = module {
 
     factory {
         GetDynamicPasswordsInfoInteractor(
-            passwordListDynamicPasswordsInfoRepository = get()
+            passwordListDynamicPasswordsInfoRepository = get(),
+            passwordListsRepository = get()
         )
     }
 

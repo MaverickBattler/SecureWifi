@@ -1,14 +1,16 @@
 package com.practice.securewifi.custom_list.custom_list_edit.ui.fragment
 
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputFilter
 import android.text.Spanned
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.SeekBar
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.R
 import com.practice.securewifi.core.extensions.hideKeyboardIfOpened
@@ -18,14 +20,19 @@ import com.practice.securewifi.core.extensions.setViewsThatHideKeyboardOnClick
 import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.PasswordTypesPagerAdapter
 import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.PersonInfoListAdapter
 import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.PlacesNamesAdapter
+import com.practice.securewifi.custom_list.custom_list_edit.ui.input_filter.MinMaxEditTextInputFilter
+import com.practice.securewifi.custom_list.custom_list_edit.ui.input_filter.MinMaxEditTextValues
 import com.practice.securewifi.custom_list.custom_list_edit.viewmodel.DynamicPasswordsListViewModel
 import com.practice.securewifi.databinding.FragmentDynamicPasswordsListBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 
-class DynamicPasswordsListFragment : Fragment() {
+class DynamicPasswordsListFragment : BaseViewPagerFragment() {
 
     private var _binding: FragmentDynamicPasswordsListBinding? = null
     private val binding get() = _binding!!
@@ -55,12 +62,7 @@ class DynamicPasswordsListFragment : Fragment() {
         binding.personInfoList.adapter = personInfoListAdapter
         binding.placesNamesList.adapter = placesNamesAdapter
 
-        setOnlyLettersInputFilter(binding.newNameEditText)
-        setOnlyLettersInputFilter(binding.newSecondNameEditText)
-        setOnlyLettersInputFilter(binding.newFatherOrMiddleNameEditText)
-        setNumericInputFilter(binding.newDayEditText)
-        setNumericInputFilter(binding.newMonthEditText)
-        setNumericInputFilter(binding.newYearEditText)
+        setEditTextFilters()
 
         binding.buttonAddPersonInfo.setOnClickListener {
             hideKeyboardIfOpened()
@@ -113,7 +115,6 @@ class DynamicPasswordsListFragment : Fragment() {
 
 
         viewModel.presenceOfInfo.onEach { pair ->
-            binding.cover.isVisible = false
             val isTherePersonInfo = pair.first
             val isTherePlaceName = pair.second
             if (!isTherePersonInfo && !isTherePlaceName && !listEditable) {
@@ -143,6 +144,60 @@ class DynamicPasswordsListFragment : Fragment() {
         viewModel.placesNamesList.onEach { placesNamesList ->
             placesNamesAdapter.submitList(placesNamesList)
         }.launchOnStarted(lifecycleScope)
+        viewModel.amountOfGeneratedPasswords.onEach { amountOfGeneratedPasswords ->
+            if (amountOfGeneratedPasswords > binding.seekBarPasswordsAmt.max) {
+                binding.seekBarPasswordsAmt.progress = binding.seekBarPasswordsAmt.max
+            } else {
+                binding.seekBarPasswordsAmt.progress = amountOfGeneratedPasswords
+            }
+            if (binding.dynamicPasswordsAmtEditText.text.toString() != amountOfGeneratedPasswords.toString()) {
+                binding.dynamicPasswordsAmtEditText.setText(amountOfGeneratedPasswords.toString())
+                binding.dynamicPasswordsAmtEditText.setSelection(binding.dynamicPasswordsAmtEditText.length())
+            }
+        }.launchOnStarted(lifecycleScope)
+        binding.seekBarPasswordsAmt.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar: SeekBar,
+                progress: Int,
+                wasChangeFromUser: Boolean
+            ) {
+                if (wasChangeFromUser) {
+                    viewModel.onChangeAmountOfGeneratedPasswords(progress)
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                /* do nothing */
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                /* do nothing */
+            }
+        })
+        binding.dynamicPasswordsAmtEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                /* do nothing */
+            }
+
+            override fun onTextChanged(newText: CharSequence, start: Int, before: Int, count: Int) {
+                if (newText.isEmpty()) {
+                    viewModel.onChangeAmountOfGeneratedPasswords(0)
+                    binding.dynamicPasswordsAmtEditText.setText(0.toString())
+                    binding.dynamicPasswordsAmtEditText.setSelection(binding.dynamicPasswordsAmtEditText.length())
+                } else {
+                    val newDynamicPasswordsAmt = newText.toString().safeCastToInt()
+                    newDynamicPasswordsAmt?.let {
+                        viewModel.onChangeAmountOfGeneratedPasswords(it)
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                /* do nothing */
+            }
+        })
+
 
         setViewsThatHideKeyboardOnClick(
             listOf(
@@ -173,9 +228,18 @@ class DynamicPasswordsListFragment : Fragment() {
         binding.newPlaceNameEditText.setText("")
     }
 
+    override fun onPause() {
+        makeViewAppear(binding.cover)
+        super.onPause()
+    }
+
     override fun onResume() {
         super.onResume()
         binding.root.requestLayout()
+        lifecycleScope.launch(Dispatchers.Main) {
+            delay(50)
+            fadeViewOut(binding.cover)
+        }
     }
 
     override fun onDestroy() {
@@ -183,27 +247,34 @@ class DynamicPasswordsListFragment : Fragment() {
         super.onDestroy()
     }
 
-    private fun setNumericInputFilter(editText: EditText) {
-        val filter = object : InputFilter {
-            override fun filter(
-                source: CharSequence?,
-                start: Int,
-                end: Int,
-                dest: Spanned?,
-                dstart: Int,
-                dend: Int
-            ): CharSequence? {
-                // Iterate through each character in the source text
-                for (i in start until end) {
-                    // Check if the character is not a digit
-                    if (!Character.isDigit(source!![i])) {
-                        return ""
-                    }
-                }
-                return null // Accept the input
-            }
-        }
-        editText.filters = arrayOf(filter)
+    private fun setEditTextFilters() {
+        setOnlyLettersInputFilter(binding.newNameEditText)
+        setOnlyLettersInputFilter(binding.newSecondNameEditText)
+        setOnlyLettersInputFilter(binding.newFatherOrMiddleNameEditText)
+        binding.newDayEditText.filters = arrayOf(
+            MinMaxEditTextInputFilter(
+                MinMaxEditTextValues.DAY_MIN,
+                MinMaxEditTextValues.DAY_MAX
+            )
+        )
+        binding.newMonthEditText.filters = arrayOf(
+            MinMaxEditTextInputFilter(
+                MinMaxEditTextValues.MONTH_MIN,
+                MinMaxEditTextValues.MONTH_MAX
+            )
+        )
+        binding.newYearEditText.filters = arrayOf(
+            MinMaxEditTextInputFilter(
+                MinMaxEditTextValues.YEAR_MIN,
+                MinMaxEditTextValues.YEAR_MAX
+            )
+        )
+        binding.dynamicPasswordsAmtEditText.filters = arrayOf(
+            MinMaxEditTextInputFilter(
+                MinMaxEditTextValues.PASSWORDS_AMT_MIN,
+                MinMaxEditTextValues.PASSWORDS_AMT_MAX
+            )
+        )
     }
 
     private fun setOnlyLettersInputFilter(editText: EditText) {

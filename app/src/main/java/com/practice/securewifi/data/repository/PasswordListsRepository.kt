@@ -21,6 +21,11 @@ class PasswordListsRepository(
         return passwordListDao.getPasswordList(listName)
     }
 
+    suspend fun getAmountOfGeneratedPasswords(listName: String): Int {
+        return passwordListDao.getPasswordList(listName)?.amountOfGeneratedPasswords
+            ?: DEFAULT_GENERATED_PASSWORDS_AMT
+    }
+
     fun getPasswordListsAsFlow(): Flow<List<PasswordList>> {
         return passwordListDao.getPasswordListsAsFlow()
     }
@@ -64,5 +69,9 @@ class PasswordListsRepository(
         personInfoDao.insertPersonInfo(personInfo)
         placeNameDao.deleteAllPlaceNamesForList(newList.listName)
         placeNameDao.insertPlacesNames(placesNames)
+    }
+
+    private companion object {
+        const val DEFAULT_GENERATED_PASSWORDS_AMT = 0
     }
 }

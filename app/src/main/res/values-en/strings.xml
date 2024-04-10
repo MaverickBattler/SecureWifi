@@ -96,7 +96,7 @@
     <string name="person_info_title">Info about the person related to the Wi-Fi and any dates (for example, date of birth). 1 or more fields may be filled.</string>
     <string name="place_name_title">Names of places, firms, establishments or other keywords.</string>
     <string name="no_dynamically_generated_passwords_for_this_list">No dynamically generated passwords for this list.</string>
-    <string name="fill_at_least_one_field">Fill one of the fields</string>
+    <string name="fill_at_least_one_field">Fill out one of the fields.</string>
     <string name="please_fill_this_field">Please, fill out this field</string>
-    <string name="amount_of_generated_passwords">Amount of generated passwords</string>
+    <string name="amount_of_generated_passwords">Amount of generated passwords.</string>
 </resources>

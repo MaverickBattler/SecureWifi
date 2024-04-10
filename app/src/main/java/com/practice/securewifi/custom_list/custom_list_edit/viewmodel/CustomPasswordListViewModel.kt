@@ -25,13 +25,16 @@ class CustomPasswordListViewModel(
                 val fixedPasswordsList = fixedPasswordsListInteractor.passwordList.value
                 val personInfoList = dynamicPasswordsInfoInteractor.personInfoList.value
                 val placesNamesList = dynamicPasswordsInfoInteractor.placesNamesList.value
+                val amountOfGeneratedPasswords =
+                    dynamicPasswordsInfoInteractor.amountOfGeneratedPasswords.value
                 fixedPasswordsList.let {
                     customPasswordListsInteractor.saveUserList(
                         listName,
                         newListName,
                         fixedPasswordsList,
                         personInfoList,
-                        placesNamesList
+                        placesNamesList,
+                        amountOfGeneratedPasswords
                     )
                 }
                 SaveResult.SUCCESS

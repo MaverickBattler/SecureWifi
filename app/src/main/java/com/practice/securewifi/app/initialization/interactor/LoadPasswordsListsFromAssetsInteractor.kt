@@ -32,7 +32,8 @@ class LoadPasswordsListsFromAssetsInteractor(
                     existingPasswordListWithName ?: PasswordList(
                         listName = listName,
                         deletable = false,
-                        selected = false
+                        selected = false,
+                        amountOfGeneratedPasswords = 0
                     ),
                     passwordsForListFromFile,
                     emptyList(),

@@ -41,17 +41,27 @@ class CustomPasswordListsInteractor(
         newListName: String,
         fixedPasswordsList: List<String>,
         personInfoList: List<PersonInfo>,
-        placesNamesList: List<PlaceName>
+        placesNamesList: List<PlaceName>,
+        amountOfGeneratedPasswords: Int
     ) {
-        val newPasswordList = PasswordList(newListName, deletable = true, selected = false)
+        val newPasswordList = PasswordList(
+            listName = newListName,
+            deletable = true,
+            selected = false,
+            amountOfGeneratedPasswords = amountOfGeneratedPasswords
+        )
         if (oldListName != newListName) {
             passwordListsRepository.deletePasswordList(oldListName)
         }
         passwordListsRepository.saveList(
             newPasswordList,
             fixedPasswordsList,
-            personInfoList,
-            placesNamesList
+            personInfoList.map {
+                it.copy(listName = newListName)
+            },
+            placesNamesList.map {
+                it.copy(listName = newListName)
+            }
         )
     }
 }

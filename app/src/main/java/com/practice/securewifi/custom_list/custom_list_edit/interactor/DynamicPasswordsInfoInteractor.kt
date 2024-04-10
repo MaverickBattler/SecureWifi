@@ -4,25 +4,25 @@ import com.practice.securewifi.custom_list.custom_list_edit.repository.DynamicPa
 import com.practice.securewifi.data.password_lists.entity.PersonInfo
 import com.practice.securewifi.data.password_lists.entity.PlaceName
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class DynamicPasswordsInfoInteractor(
     private val dynamicPasswordsInfoRepository: DynamicPasswordsInfoRepository
 ) {
 
-    val personInfoList: StateFlow<List<PersonInfo>> =
-        dynamicPasswordsInfoRepository.personInfoList.asStateFlow()
-    val placesNamesList: StateFlow<List<PlaceName>> =
-        dynamicPasswordsInfoRepository.placesNamesList.asStateFlow()
-
+    val personInfoList: StateFlow<List<PersonInfo>> = dynamicPasswordsInfoRepository.personInfoList
+    val placesNamesList: StateFlow<List<PlaceName>> = dynamicPasswordsInfoRepository.placesNamesList
+    val amountOfGeneratedPasswords: StateFlow<Int> =
+        dynamicPasswordsInfoRepository.amountOfGeneratedPasswords
 
     suspend fun updateDynamicPasswordsInfo(
         newPersonInfoList: List<PersonInfo>,
-        newPlacesNamesList: List<PlaceName>
+        newPlacesNamesList: List<PlaceName>,
+        newAmountOfGeneratedPasswords: Int
     ) {
         dynamicPasswordsInfoRepository.updateDynamicPasswordsInfo(
             newPersonInfoList,
-            newPlacesNamesList
+            newPlacesNamesList,
+            newAmountOfGeneratedPasswords
         )
     }
 
@@ -60,10 +60,16 @@ class DynamicPasswordsInfoInteractor(
 
     suspend fun addPlaceName(listName: String, placeName: String) {
         val maxId = personInfoList.value.maxByOrNull { it.id }?.id ?: 0
-        dynamicPasswordsInfoRepository.addPlaceName(PlaceName(
-            id = maxId,
-            listName = listName,
-            placeName = placeName
-        ))
+        dynamicPasswordsInfoRepository.addPlaceName(
+            PlaceName(
+                id = maxId,
+                listName = listName,
+                placeName = placeName
+            )
+        )
+    }
+
+    suspend fun setAmountOfGeneratedPasswords(amount: Int) {
+        dynamicPasswordsInfoRepository.setAmountOfGeneratedPasswords(amount)
     }
 }

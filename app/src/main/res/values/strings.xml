@@ -100,7 +100,7 @@
     <string name="person_info_title">Информация о людях, связанных с точкой доступа и любые даты (например, дата рождения). Можно заполнить 1 и больше полей.</string>
     <string name="place_name_title">Названия мест, фирм, учреждений и другие ключевые слова.</string>
     <string name="no_dynamically_generated_passwords_for_this_list">Для данного списка нет динамически генерируемых паролей.</string>
-    <string name="fill_at_least_one_field">Заполните одно из полей</string>
+    <string name="fill_at_least_one_field">Заполните одно из полей.</string>
     <string name="please_fill_this_field">Пожалуйста, заполните это поле</string>
-    <string name="amount_of_generated_passwords">Количество генерируемых паролей</string>
+    <string name="amount_of_generated_passwords">Количество генерируемых паролей.</string>
 </resources>
