@@ -114,10 +114,12 @@ class DynamicPasswordsListFragment : BaseViewPagerFragment() {
         }
 
 
-        viewModel.presenceOfInfo.onEach { pair ->
-            val isTherePersonInfo = pair.first
-            val isTherePlaceName = pair.second
-            if (!isTherePersonInfo && !isTherePlaceName && !listEditable) {
+        viewModel.presenceOfInfo.onEach { presenceOfInfo ->
+            val isTherePersonInfo = presenceOfInfo.isTherePersonInfo
+            val isTherePlaceName = presenceOfInfo.isTherePlaceName
+            val isAmountOfGeneratedPasswordsPositive = presenceOfInfo.isAmountOfGeneratedPasswordsPositive
+            if (!isAmountOfGeneratedPasswordsPositive && !listEditable) {
+                // List is not editable and there are no generated passwords amount set or set to 0
                 binding.addPlaceNameLayout.isVisible = false
                 binding.textviewAddPlaceNameLabel.isVisible = false
                 binding.separator.isVisible = false
@@ -127,14 +129,19 @@ class DynamicPasswordsListFragment : BaseViewPagerFragment() {
                 binding.dynamicPasswordsAmtEditText.isVisible = false
                 binding.seekBarPasswordsAmt.isVisible = false
                 binding.amountOfGeneratedPasswords.isVisible = false
-            } else if (!isTherePersonInfo && !listEditable) {
-                binding.separator.isVisible = false
-                binding.addPersonInfoLayout.isVisible = false
-                binding.textviewAddPersonInfoLabel.isVisible = false
-            } else if (!isTherePlaceName && !listEditable) {
-                binding.addPlaceNameLayout.isVisible = false
-                binding.textviewAddPlaceNameLabel.isVisible = false
-                binding.separator.isVisible = false
+            } else {
+                if (!isTherePersonInfo && !listEditable) {
+                    // Amount of generated passwords is >0, but no person info provided for a fixed list
+                    binding.separator.isVisible = false
+                    binding.addPersonInfoLayout.isVisible = false
+                    binding.textviewAddPersonInfoLabel.isVisible = false
+                }
+                if (!isTherePlaceName && !listEditable) {
+                    // Amount of generated passwords is >0, but no place names (keywords) provided for a fixed list
+                    binding.addPlaceNameLayout.isVisible = false
+                    binding.textviewAddPlaceNameLabel.isVisible = false
+                    binding.separator.isVisible = false
+                }
             }
         }.launchOnStarted(lifecycleScope)
 

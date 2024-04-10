@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practice.securewifi.custom_list.custom_list_edit.interactor.DynamicPasswordsInfoInteractor
 import com.practice.securewifi.custom_list.custom_list_edit.interactor.GetDynamicPasswordsInfoInteractor
+import com.practice.securewifi.custom_list.custom_list_edit.model.PresenceOfInfo
 import com.practice.securewifi.data.password_lists.entity.PersonInfo
 import com.practice.securewifi.data.password_lists.entity.PlaceName
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +23,16 @@ class DynamicPasswordsListViewModel(
     val amountOfGeneratedPasswords: StateFlow<Int> =
         dynamicPasswordsInfoInteractor.amountOfGeneratedPasswords
 
-    val presenceOfInfo = personInfoList.combine(placesNamesList) { personInfoList, placeNameList ->
-        return@combine Pair(personInfoList.isNotEmpty(), placeNameList.isNotEmpty())
+    val presenceOfInfo = combine(
+        personInfoList,
+        placesNamesList,
+        amountOfGeneratedPasswords
+    ) { personInfoList, placeNameList, amountOfGeneratedPasswords ->
+        return@combine PresenceOfInfo(
+            isTherePersonInfo = personInfoList.isNotEmpty(),
+            isTherePlaceName = placeNameList.isNotEmpty(),
+            isAmountOfGeneratedPasswordsPositive = amountOfGeneratedPasswords > 0
+        )
     }
 
     init {
