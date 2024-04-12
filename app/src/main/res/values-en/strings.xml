@@ -99,4 +99,5 @@
     <string name="fill_at_least_one_field">Fill out one of the fields.</string>
     <string name="please_fill_this_field">Please, fill out this field</string>
     <string name="amount_of_generated_passwords">Amount of generated passwords.</string>
+    <string name="amount_of_fixed_passwords">"Amount of passwords: "</string>
 </resources>

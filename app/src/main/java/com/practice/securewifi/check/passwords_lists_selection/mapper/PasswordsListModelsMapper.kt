@@ -9,8 +9,8 @@ class PasswordsListModelsMapper(
     private val application: Application
 ) {
 
-    fun map(passwordList: PasswordList, passwordsForList: List<String>): PasswordListModel {
-        val passwordsAmt = passwordsForList.size
+    fun map(passwordList: PasswordList, fixedPasswordsForList: List<String>): PasswordListModel {
+        val passwordsAmt = fixedPasswordsForList.size + passwordList.amountOfGeneratedPasswords
         val passwordsAmtString = application.getString(R.string.passwords_amt, passwordsAmt)
         return PasswordListModel(
             listName = passwordList.listName,

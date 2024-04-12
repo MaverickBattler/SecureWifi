@@ -9,9 +9,9 @@ class CustomPasswordListsMapper(
     private val application: Application
 ) {
 
-    fun map(passwordList: PasswordList, passwordsForlist: List<String>): CustomPasswordList {
-        val passwordsAmt = passwordsForlist.size
-        val passwordsAmtString = application.getString(R.string.passwords_amt, passwordsAmt)
+    fun map(passwordList: PasswordList, fixedPasswordsForList: List<String>): CustomPasswordList {
+        val fixedPasswordsAmt = fixedPasswordsForList.size + passwordList.amountOfGeneratedPasswords
+        val passwordsAmtString = application.getString(R.string.passwords_amt, fixedPasswordsAmt)
         return CustomPasswordList(passwordList.listName, passwordsAmtString, passwordList.deletable)
     }
 }
