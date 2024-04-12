@@ -66,10 +66,14 @@ class DynamicPasswordsListFragment : BaseViewPagerFragment() {
 
         binding.buttonAddPersonInfo.setOnClickListener {
             hideKeyboardIfOpened()
+            val newName = binding.newNameEditText.text.toString().ifEmpty { null }
+            val newSecondName = binding.newSecondNameEditText.text.toString().ifEmpty { null }
+            val newFatherOrMiddleName =
+                binding.newFatherOrMiddleNameEditText.text.toString().ifEmpty { null }
             val result = viewModel.onAddNewPersonInfoToList(
-                name = binding.newNameEditText.text.toString(),
-                secondName = binding.newSecondNameEditText.text.toString(),
-                fatherOrMiddleName = binding.newFatherOrMiddleNameEditText.text.toString(),
+                name = newName,
+                secondName = newSecondName,
+                fatherOrMiddleName = newFatherOrMiddleName,
                 day = binding.newDayEditText.text.toString().safeCastToInt(),
                 month = binding.newMonthEditText.text.toString().safeCastToInt(),
                 year = binding.newYearEditText.text.toString().safeCastToInt()
@@ -117,7 +121,8 @@ class DynamicPasswordsListFragment : BaseViewPagerFragment() {
         viewModel.presenceOfInfo.onEach { presenceOfInfo ->
             val isTherePersonInfo = presenceOfInfo.isTherePersonInfo
             val isTherePlaceName = presenceOfInfo.isTherePlaceName
-            val isAmountOfGeneratedPasswordsPositive = presenceOfInfo.isAmountOfGeneratedPasswordsPositive
+            val isAmountOfGeneratedPasswordsPositive =
+                presenceOfInfo.isAmountOfGeneratedPasswordsPositive
             if (!isAmountOfGeneratedPasswordsPositive && !listEditable) {
                 // List is not editable and there are no generated passwords amount set or set to 0
                 binding.addPlaceNameLayout.isVisible = false
