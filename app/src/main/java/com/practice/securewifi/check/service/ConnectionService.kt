@@ -464,7 +464,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
 
         private const val DISMISSABLE_NOTIFICATION_ID = 1235
 
-        private const val INTERVAL = 3000L
+        private const val INTERVAL = 1000L
 
         private const val START_CONNECTIONS_TIMEOUT = 5000L
 

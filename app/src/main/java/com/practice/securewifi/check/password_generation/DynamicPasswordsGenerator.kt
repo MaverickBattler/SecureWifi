@@ -72,13 +72,14 @@ class DynamicPasswordsGenerator(
         passwordsAmount: Int
     ): List<String> {
         val passwordsAmtForEveryInfo = splitNumber(passwordsAmount, personInfo.size)
+        val generatedPasswords: MutableList<String> = mutableListOf()
         passwordsAmtForEveryInfo.forEachIndexed { index, passwordsAmt ->
-            passwordGeneratorFromPersonInfo.generatePasswordsFromPersonInfo(
+            generatedPasswords += passwordGeneratorFromPersonInfo.generatePasswordsFromPersonInfo(
                 personInfo = personInfo[index],
                 passwordsAmount = passwordsAmt
             )
         }
-        return emptyList()
+        return generatedPasswords
     }
 
     private fun generatePasswordsFromPlaceNames(
@@ -86,13 +87,14 @@ class DynamicPasswordsGenerator(
         passwordsAmount: Int
     ): List<String> {
         val passwordsAmtForEveryPlaceName = splitNumber(passwordsAmount, placesNames.size)
+        val generatedPasswords: MutableList<String> = mutableListOf()
         passwordsAmtForEveryPlaceName.forEachIndexed { index, passwordsAmt ->
-            passwordGeneratorFromPlaceName.generatePasswordsFromPlaceName(
+            generatedPasswords += passwordGeneratorFromPlaceName.generatePasswordsFromPlaceName(
                 placeName = placesNames[index],
                 passwordsAmount = passwordsAmt
             )
         }
-        return emptyList()
+        return generatedPasswords
     }
 
     private fun generateRestOfPasswords(amount: Int): List<String> {
