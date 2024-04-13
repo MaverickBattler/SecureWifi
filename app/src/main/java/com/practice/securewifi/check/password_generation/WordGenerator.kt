@@ -10,8 +10,8 @@ interface WordGenerator {
         if (wordLength < 8) {
             generatedPasswords.add(word + generateWordFromRepeatingDigit('1', 8 - wordLength))
             generatedPasswords.add(word + generateWordFromRepeatingDigit('7', 8 - wordLength))
-            generatedPasswords.add(word + "12345678".substring(0, 8 - wordLength - 1))
-            generatedPasswords.add(word + "12345678".substring(0, 8 - wordLength - 1).reversed())
+            generatedPasswords.add(word + "12345678".substring(0, 8 - wordLength))
+            generatedPasswords.add(word + "12345678".substring(0, 8 - wordLength).reversed())
         }
         if (wordLength >= 6) {
             generatedPasswords.add(word + "69")
@@ -45,7 +45,7 @@ interface WordGenerator {
         val generatedPasswords: MutableList<String> = mutableListOf()
 
         for (i in 0..9) {
-            generatedPasswords.add(generateWordFromRepeatingDigit(i.toChar(), amountToFill))
+            generatedPasswords.add(generateWordFromRepeatingDigit((i + '0'.code).toChar(), amountToFill))
             if (generatedPasswords.size == amount) {
                 return generatedPasswords
             }
