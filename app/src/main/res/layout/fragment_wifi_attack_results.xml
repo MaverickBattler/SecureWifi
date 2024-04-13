@@ -51,13 +51,17 @@
             android:layout_marginTop="5dp"
             android:background="?attr/controlColor" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tried_passwords_list"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
-            android:nestedScrollingEnabled="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/tried_password_item" />
+            android:layout_height="wrap_content">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tried_passwords_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/tried_password_item" />
+        </RelativeLayout>
     </LinearLayout>
 </ScrollView>
