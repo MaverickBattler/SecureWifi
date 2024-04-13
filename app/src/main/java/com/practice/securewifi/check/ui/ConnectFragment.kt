@@ -19,14 +19,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.core.extensions.checkForAccessFineLocationPermission
-import com.practice.securewifi.core.extensions.launchOnStarted
+import com.practice.securewifi.core.extensions.collectOnStarted
 import com.practice.securewifi.core.util.Colors
 import com.practice.securewifi.check.service.ConnectionService
 import com.practice.securewifi.check.passwords_lists_selection.ui.PasswordsListsSelectionDialog
 import com.practice.securewifi.check.viewmodel.ConnectViewModel
 import com.practice.securewifi.check.wifi_points_selection.ui.WifiPointsSelectionDialog
 import com.practice.securewifi.databinding.FragmentConnectBinding
-import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ConnectFragment : Fragment() {
@@ -85,7 +84,10 @@ class ConnectFragment : Fragment() {
     }
 
     private fun initObservers() {
-        viewModel.selectedWifiesPreviewUiState.onEach { selectedWifiesPreviewUiState ->
+        viewModel.selectedWifiesPreviewUiState.collectOnStarted(
+            lifecycleScope,
+            lifecycle
+        ) { selectedWifiesPreviewUiState ->
             binding.selectedWifiesTextview.text = selectedWifiesPreviewUiState.text
             val textColor = Colors.getThemeColorFromAttr(
                 selectedWifiesPreviewUiState.textColor,
@@ -94,8 +96,11 @@ class ConnectFragment : Fragment() {
             textColor?.let {
                 binding.selectedWifiesTextview.setTextColor(textColor)
             }
-        }.launchOnStarted(lifecycleScope)
-        viewModel.selectedPasswordListsPreviewUiState.onEach { selectedPasswordListsPreviewUiState ->
+        }
+        viewModel.selectedPasswordListsPreviewUiState.collectOnStarted(
+            lifecycleScope,
+            lifecycle
+        ) { selectedPasswordListsPreviewUiState ->
             binding.selectedPasswordsListsTextview.text =
                 selectedPasswordListsPreviewUiState.listsText
             val textColor = Colors.getThemeColorFromAttr(
@@ -112,13 +117,16 @@ class ConnectFragment : Fragment() {
             textColor?.let {
                 binding.selectedPasswordsListsTextview.setTextColor(textColor)
             }
-        }.launchOnStarted(lifecycleScope)
-        viewModel.securityCheckButtonState.onEach { securityCheckButtonState ->
+        }
+        viewModel.securityCheckButtonState.collectOnStarted(
+            lifecycleScope,
+            lifecycle
+        ) { securityCheckButtonState ->
             binding.securityCheckButton.setState(securityCheckButtonState)
-        }.launchOnStarted(lifecycleScope)
-        viewModel.attackInfoText.onEach { attackInfoText ->
+        }
+        viewModel.attackInfoText.collectOnStarted(lifecycleScope, lifecycle) { attackInfoText ->
             binding.attackInfo.text = attackInfoText
-        }.launchOnStarted(lifecycleScope)
+        }
     }
 
     private fun setClickListeners() {

@@ -1,16 +1,24 @@
 package com.practice.securewifi.core.extensions
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.flowWithLifecycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 
 /**
  * For collecting flows on UI (Main)
  */
-fun <T> Flow<T>.launchOnStarted(lifecycleScope: LifecycleCoroutineScope) {
-    lifecycleScope.launchWhenStarted {
-        this@launchOnStarted.flowOn(Dispatchers.Main).collect()
+fun <T> Flow<T>.collectOnStarted(
+    lifecycleScope: LifecycleCoroutineScope,
+    lifecycle: Lifecycle,
+    doOnEach: (T) -> Unit
+) {
+    lifecycleScope.launch {
+        this@collectOnStarted.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+            .flowOn(Dispatchers.Main)
+            .collect(doOnEach)
     }
 }

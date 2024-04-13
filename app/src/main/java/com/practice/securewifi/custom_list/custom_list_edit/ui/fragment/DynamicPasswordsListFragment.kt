@@ -14,7 +14,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.practice.securewifi.R
 import com.practice.securewifi.core.extensions.hideKeyboardIfOpened
-import com.practice.securewifi.core.extensions.launchOnStarted
+import com.practice.securewifi.core.extensions.collectOnStarted
 import com.practice.securewifi.core.extensions.safeCastToInt
 import com.practice.securewifi.core.extensions.setViewsThatHideKeyboardOnClick
 import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.PasswordTypesPagerAdapter
@@ -26,7 +26,6 @@ import com.practice.securewifi.custom_list.custom_list_edit.viewmodel.DynamicPas
 import com.practice.securewifi.databinding.FragmentDynamicPasswordsListBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -118,7 +117,7 @@ class DynamicPasswordsListFragment : BaseViewPagerFragment() {
         }
 
 
-        viewModel.presenceOfInfo.onEach { presenceOfInfo ->
+        viewModel.presenceOfInfo.collectOnStarted(lifecycleScope, lifecycle) { presenceOfInfo ->
             val isTherePersonInfo = presenceOfInfo.isTherePersonInfo
             val isTherePlaceName = presenceOfInfo.isTherePlaceName
             val isAmountOfGeneratedPasswordsPositive =
@@ -148,15 +147,15 @@ class DynamicPasswordsListFragment : BaseViewPagerFragment() {
                     binding.separator.isVisible = false
                 }
             }
-        }.launchOnStarted(lifecycleScope)
+        }
 
-        viewModel.personInfoList.onEach { personInfoList ->
+        viewModel.personInfoList.collectOnStarted(lifecycleScope, lifecycle) { personInfoList ->
             personInfoListAdapter.submitList(personInfoList)
-        }.launchOnStarted(lifecycleScope)
-        viewModel.placesNamesList.onEach { placesNamesList ->
+        }
+        viewModel.placesNamesList.collectOnStarted(lifecycleScope, lifecycle) { placesNamesList ->
             placesNamesAdapter.submitList(placesNamesList)
-        }.launchOnStarted(lifecycleScope)
-        viewModel.amountOfGeneratedPasswords.onEach { amountOfGeneratedPasswords ->
+        }
+        viewModel.amountOfGeneratedPasswords.collectOnStarted(lifecycleScope, lifecycle) { amountOfGeneratedPasswords ->
             if (amountOfGeneratedPasswords > binding.seekBarPasswordsAmt.max) {
                 binding.seekBarPasswordsAmt.progress = binding.seekBarPasswordsAmt.max
             } else {
@@ -166,7 +165,7 @@ class DynamicPasswordsListFragment : BaseViewPagerFragment() {
                 binding.dynamicPasswordsAmtEditText.setText(amountOfGeneratedPasswords.toString())
                 binding.dynamicPasswordsAmtEditText.setSelection(binding.dynamicPasswordsAmtEditText.length())
             }
-        }.launchOnStarted(lifecycleScope)
+        }
         binding.seekBarPasswordsAmt.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(

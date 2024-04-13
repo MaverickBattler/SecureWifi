@@ -11,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.practice.securewifi.R
-import com.practice.securewifi.core.extensions.launchOnStarted
+import com.practice.securewifi.core.extensions.collectOnStarted
 import com.practice.securewifi.core.extensions.setViewsThatHideKeyboardOnClick
 import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.FixedPasswordsAdapter
 import com.practice.securewifi.custom_list.custom_list_edit.ui.adapter.PasswordTypesPagerAdapter
@@ -19,7 +19,6 @@ import com.practice.securewifi.custom_list.custom_list_edit.viewmodel.FixedPassw
 import com.practice.securewifi.databinding.FragmentFixedPasswordsListBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -55,13 +54,13 @@ class FixedPasswordsListFragment : BaseViewPagerFragment() {
                     DividerItemDecoration.VERTICAL
                 )
             )
-            viewModel.fixedPasswordsList.onEach { passwordList ->
+            viewModel.fixedPasswordsList.collectOnStarted(lifecycleScope, lifecycle) { passwordList ->
                 val s = SpannableStringBuilder()
                     .append(getString(R.string.amount_of_fixed_passwords))
                     .bold { append(passwordList.size.toString()) }
                 binding.amountOfFixedPasswords.text = s
                 adapter.submitList(passwordList)
-            }.launchOnStarted(lifecycleScope)
+            }
             binding.buttonAdd.setOnClickListener {
                 viewModel.onAddNewPasswordToList(binding.newPasswordEditText.text.toString())
                 clearNewPasswordEditText()

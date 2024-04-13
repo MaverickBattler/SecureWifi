@@ -8,11 +8,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.practice.securewifi.core.extensions.launchOnStarted
+import com.practice.securewifi.core.extensions.collectOnStarted
 import com.practice.securewifi.check_results.adapter.CheckResultAdapter
 import com.practice.securewifi.check_results.viewmodel.ResultsViewModel
 import com.practice.securewifi.databinding.FragmentResultsBinding
-import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ResultsFragment : Fragment() {
@@ -40,10 +39,13 @@ class ResultsFragment : Fragment() {
         }
         val adapter = CheckResultAdapter(onItemClickListener)
         binding.recyclerviewResults.adapter = adapter
-        viewModel.displayWifiCheckResults.onEach {  listToDisplay ->
+        viewModel.displayWifiCheckResults.collectOnStarted(
+            lifecycleScope,
+            lifecycle
+        ) { listToDisplay ->
             binding.noResultsTextview.isVisible = listToDisplay.isEmpty()
             adapter.submitList(listToDisplay)
-        }.launchOnStarted(lifecycleScope)
+        }
         super.onViewCreated(view, savedInstanceState)
     }
 }

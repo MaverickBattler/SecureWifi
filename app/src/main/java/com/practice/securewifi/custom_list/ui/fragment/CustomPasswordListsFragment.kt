@@ -9,12 +9,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.practice.securewifi.R
-import com.practice.securewifi.core.extensions.launchOnStarted
+import com.practice.securewifi.core.extensions.collectOnStarted
 import com.practice.securewifi.custom_list.ui.adapter.CustomPasswordListsAdapter
 import com.practice.securewifi.custom_list.model.CustomPasswordList
 import com.practice.securewifi.custom_list.viewmodel.CustomPasswordListsViewModel
 import com.practice.securewifi.databinding.FragmentPasswordListsBinding
-import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CustomPasswordListsFragment : Fragment() {
@@ -53,9 +52,12 @@ class CustomPasswordListsFragment : Fragment() {
         binding.addListFab.setOnClickListener {
             findNavController().navigate(R.id.action_customLists_to_edit_customList)
         }
-        viewModel.customPasswordLists.onEach { allPasswordLists ->
+        viewModel.customPasswordLists.collectOnStarted(
+            lifecycleScope,
+            lifecycle
+        ) { allPasswordLists ->
             adapter.submitList(allPasswordLists)
-        }.launchOnStarted(lifecycleScope)
+        }
         super.onViewCreated(view, savedInstanceState)
     }
 
