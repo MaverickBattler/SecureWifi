@@ -16,20 +16,23 @@ class SelectedPasswordListsPreviewInteractor(
 
     fun getSelectedPasswordListsPreview(): Flow<SelectedPasswordListsPreviewUiState> {
         return passwordListsRepository.getPasswordListsAsFlow().map { passwordLists ->
-            val passwordListsNames = getSelectedPasswordListsNames(passwordLists)
+            val selectedPasswordLists = getSelectedPasswordLists(passwordLists)
             var totalPasswordsAmt = 0
-            passwordListsNames.forEach { passwordListName ->
-                totalPasswordsAmt += passwordListFixedPasswordsRepository.getFixedPasswordsForList(passwordListName).size
+            selectedPasswordLists.forEach { selectedPasswordList ->
+                totalPasswordsAmt += passwordListFixedPasswordsRepository.getFixedPasswordsForList(
+                    selectedPasswordList.listName
+                ).size + selectedPasswordList.amountOfGeneratedPasswords
             }
-            selectedPasswordListsPreviewUiStateMapper.map(passwordListsNames, totalPasswordsAmt)
+            selectedPasswordListsPreviewUiStateMapper.map(
+                selectedPasswordLists.map { it.listName },
+                totalPasswordsAmt
+            )
         }
     }
 
-    private fun getSelectedPasswordListsNames(passwordLists: List<PasswordList>): List<String> {
+    private fun getSelectedPasswordLists(passwordLists: List<PasswordList>): List<PasswordList> {
         return passwordLists.filter { passwordList ->
             passwordList.selected
-        }.map { passwordList ->
-            passwordList.listName
         }
     }
 }
