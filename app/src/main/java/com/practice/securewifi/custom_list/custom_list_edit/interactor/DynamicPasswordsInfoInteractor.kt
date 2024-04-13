@@ -59,7 +59,7 @@ class DynamicPasswordsInfoInteractor(
     }
 
     suspend fun addPlaceName(listName: String, placeName: String) {
-        val maxId = personInfoList.value.maxByOrNull { it.id }?.id ?: 0
+        val maxId = placesNamesList.value.maxByOrNull { it.id }?.id ?: 0
         dynamicPasswordsInfoRepository.addPlaceName(
             PlaceName(
                 id = maxId + 1,
