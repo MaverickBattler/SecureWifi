@@ -1,11 +1,8 @@
 package com.practice.securewifi.app
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -51,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         checkAccessFineLocationPermission()
 
         // At this point it might be a good idea to ask the user to enable his wi-fi
-        askForWifiEnabled()
+        //askForWifiEnabled()
     }
 
     private fun setUpBottomNavigation() {
@@ -100,11 +97,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun askForWifiEnabled() {
+    /*private fun askForWifiEnabled() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val panelIntent = Intent(Settings.Panel.ACTION_WIFI)
             ActivityCompat.startActivityForResult(this, panelIntent, 0, null)
         }
-    }
+    }*/
 }
 
