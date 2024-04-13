@@ -30,7 +30,7 @@ class PasswordGeneratorFromPersonInfo : WordGenerator {
                 generatedPasswords.add(date)
                 if (personInfo.name != null) {
                     generatedPasswords.add(personInfo.name + date)
-                    generatedPasswords.add(personInfo.name.replaceFirstChar { it.uppercase() } + date)
+                    generatedPasswords.add(personInfo.name.revertCaseOfFirstChar() + date)
                     generatedPasswords.add(date + personInfo.name)
                 }
                 if (personInfo.name != null && personInfo.secondName != null && personInfo.fatherOrMiddleName != null) {
@@ -58,7 +58,7 @@ class PasswordGeneratorFromPersonInfo : WordGenerator {
 
         if (personInfo.name != null) {
             generatedPasswords += generateFromWordAndPopularNumbers(personInfo.name)
-            generatedPasswords += generateFromWordAndPopularNumbers(personInfo.name.replaceFirstChar { it.uppercase() })
+            generatedPasswords += generateFromWordAndPopularNumbers(personInfo.name.revertCaseOfFirstChar())
         }
         /*if (personInfo.secondName != null) {
             generatedPasswords += generateFromWordAndPopularNumbers(personInfo.secondName)
@@ -79,6 +79,14 @@ class PasswordGeneratorFromPersonInfo : WordGenerator {
             distinctPasswords.subList(0, passwordsAmount)
         } else {
             distinctPasswords
+        }
+    }
+
+    private fun String.revertCaseOfFirstChar(): String {
+        return if (this.first().isUpperCase()) {
+            this.replaceFirstChar { it.lowercase() }
+        } else {
+            this.replaceFirstChar { it.uppercase() }
         }
     }
 }
