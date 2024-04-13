@@ -16,10 +16,10 @@ class DynamicPasswordsGenerator(
         personInfoList: List<PersonInfo>,
         placesNames: List<PlaceName>
     ): List<String> {
-        val providedInfoSources =
-            if (ssid.isNotEmpty()) 1 else 0 +
-                    if (personInfoList.isNotEmpty()) 1 else 0 +
-                            if (placesNames.isNotEmpty()) 1 else 0
+        val ssidTerm = if (ssid.isNotEmpty()) 1 else 0
+        val personInfoTerm = if (personInfoList.isNotEmpty()) 1 else 0
+        val placesNamesTerm = if (placesNames.isNotEmpty()) 1 else 0
+        val providedInfoSources = ssidTerm + personInfoTerm + placesNamesTerm
         if (providedInfoSources == 0 // no info == no generated passwords
             || amountOfGeneratedPasswords == 0 // or amount of generated passwords is zero == no generated passwords
         ) return emptyList()
