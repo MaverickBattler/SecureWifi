@@ -1,7 +1,6 @@
 package com.practice.securewifi.check.di
 
 import com.practice.securewifi.check.interactor.PasswordListsInteractor
-import com.practice.securewifi.check.interactor.SelectedPasswordListsInteractor
 import com.practice.securewifi.check.interactor.SelectedPasswordListsPreviewInteractor
 import com.practice.securewifi.check.interactor.SelectedWifiesInteractor
 import com.practice.securewifi.check.interactor.SelectedWifiesPreviewInteractor
@@ -9,6 +8,10 @@ import com.practice.securewifi.check.interactor.TriedPasswordsInteractor
 import com.practice.securewifi.check.interactor.WifiCheckResultInteractor
 import com.practice.securewifi.check.mapper.SelectedPasswordListsPreviewUiStateMapper
 import com.practice.securewifi.check.mapper.SelectedWifiesPreviewUiStateMapper
+import com.practice.securewifi.check.password_generation.DynamicPasswordsGenerator
+import com.practice.securewifi.check.password_generation.PasswordGeneratorFromPersonInfo
+import com.practice.securewifi.check.password_generation.PasswordGeneratorFromPlaceName
+import com.practice.securewifi.check.password_generation.PasswordGeneratorFromSsid
 import com.practice.securewifi.check.passwords_lists_selection.interactor.PasswordsListsInteractor
 import com.practice.securewifi.check.passwords_lists_selection.mapper.PasswordsListModelsMapper
 import com.practice.securewifi.check.passwords_lists_selection.viewmodel.PasswordsListSelectionViewModel
@@ -53,7 +56,10 @@ val connectModule = module {
 
     factory {
         PasswordListsInteractor(
-            passwordListFixedPasswordsRepository = get()
+            passwordListFixedPasswordsRepository = get(),
+            dynamicPasswordsGenerator = get(),
+            passwordListsRepository = get(),
+            passwordListDynamicPasswordsInfoRepository = get()
         )
     }
 
@@ -93,12 +99,6 @@ val connectModule = module {
     }
 
     factory {
-        SelectedPasswordListsInteractor(
-            passwordListsRepository = get()
-        )
-    }
-
-    factory {
         SelectedPasswordListsPreviewInteractor(
             passwordListsRepository = get(),
             passwordListFixedPasswordsRepository = get(),
@@ -131,5 +131,25 @@ val connectModule = module {
         SelectedWifiesPreviewUiStateMapper(
             application = androidApplication()
         )
+    }
+
+    factory {
+        DynamicPasswordsGenerator(
+            passwordGeneratorFromPersonInfo = get(),
+            passwordGeneratorFromPlaceName = get(),
+            passwordGeneratorFromSsid = get()
+        )
+    }
+
+    factory {
+        PasswordGeneratorFromSsid()
+    }
+
+    factory {
+        PasswordGeneratorFromPlaceName()
+    }
+
+    factory {
+        PasswordGeneratorFromPersonInfo()
     }
 }

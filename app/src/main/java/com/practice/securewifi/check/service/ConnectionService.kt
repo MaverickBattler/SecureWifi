@@ -25,7 +25,6 @@ import com.practice.securewifi.check.interactor.WifiCheckResultInteractor
 import com.practice.securewifi.data.entity.WifiCheckResult
 import com.practice.securewifi.core.util.WifiManagerProvider
 import com.practice.securewifi.check.interactor.PasswordListsInteractor
-import com.practice.securewifi.check.interactor.SelectedPasswordListsInteractor
 import com.practice.securewifi.check.interactor.SelectedWifiesInteractor
 import com.practice.securewifi.scan_feature.WifiScanManager
 import kotlinx.coroutines.*
@@ -49,8 +48,6 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
     private val wifiCheckResultInteractor: WifiCheckResultInteractor by inject()
 
     private val selectedWifiesInteractor: SelectedWifiesInteractor by inject()
-
-    private val selectedPasswordListsInteractor: SelectedPasswordListsInteractor by inject()
 
     private lateinit var binder: LocalBinder
 
@@ -305,7 +302,7 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
             val conf = WifiConfiguration()
             conf.SSID = "\"" + networkSSID + "\"" // String should contain ssid in quotes
 
-            val networkPasswords = getPasswordsList(networkSSID)
+            val networkPasswords = passwordListsInteractor.getPasswordsForSsid(networkSSID)
             var passwordCount = 0
 
             for (networkPass in networkPasswords) {
@@ -446,17 +443,6 @@ class ConnectionService : Service(), ConnectivityActionReceiver.OnSampleReadyLis
             stopForeground(STOP_FOREGROUND_REMOVE)
         }
         stopSelf()
-    }
-
-    private suspend fun getPasswordsList(ssid: String): List<String> {
-        val selectedPasswordLists = selectedPasswordListsInteractor.getSelectedPasswordLists()
-        val allPasswords = mutableListOf<String>()
-        selectedPasswordLists.forEach { passwordListName ->
-            val passwordList =
-                passwordListsInteractor.getPasswordsForChosenListAndWifi(passwordListName, ssid)
-            allPasswords += passwordList
-        }
-        return allPasswords
     }
 
     private fun update(command: Command) {
