@@ -11,5 +11,6 @@ data class PasswordList(
     val listName: String,
     val deletable: Boolean,
     val selected: Boolean,
+    @ColumnInfo(name = "amount_of_generated_passwords")
     val amountOfGeneratedPasswords: Int
 )

@@ -30,7 +30,7 @@ import com.practice.securewifi.data.password_lists.entity.PlaceName
         PersonInfo::class,
         PlaceName::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class WifiSafetyDatabase : RoomDatabase() {
