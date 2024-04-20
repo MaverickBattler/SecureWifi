@@ -7,6 +7,9 @@ interface WordGenerator {
     fun generateFromWordAndPopularNumbers(word: String): List<String> {
         val generatedPasswords: MutableList<String> = mutableListOf()
         val wordLength = word.length
+        if (wordLength >= 8) {
+            generatedPasswords.add(word)
+        }
         if (wordLength < 8) {
             generatedPasswords.add(word + generateWordFromRepeatingDigit('1', 8 - wordLength))
             generatedPasswords.add(word + generateWordFromRepeatingDigit('7', 8 - wordLength))
