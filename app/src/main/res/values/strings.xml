@@ -104,4 +104,5 @@
     <string name="please_fill_this_field">Пожалуйста, заполните это поле</string>
     <string name="amount_of_generated_passwords">Количество генерируемых паролей.</string>
     <string name="amount_of_fixed_passwords">"Количество заданных паролей: "</string>
+    <string name="delete_all_results">Удалить все результаты</string>
 </resources>

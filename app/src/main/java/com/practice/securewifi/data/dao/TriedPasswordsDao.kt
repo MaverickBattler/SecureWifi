@@ -24,4 +24,7 @@ interface TriedPasswordsDao {
 
     @Query("SELECT password FROM tried_passwords WHERE ssid = :ssid")
     suspend fun getTriedPasswordsForWifi(ssid: String): List<String>
+
+    @Query("DELETE FROM tried_passwords")
+    suspend fun deleteAllTriedPasswords()
 }

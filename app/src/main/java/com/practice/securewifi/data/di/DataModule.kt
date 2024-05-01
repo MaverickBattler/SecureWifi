@@ -35,7 +35,10 @@ val dataModule = module {
     }
 
     factory {
-        WifiCheckResultRepository(wifiCheckResultDao = get())
+        WifiCheckResultRepository(
+            wifiCheckResultDao = get(),
+            triedPasswordsDao = get()
+        )
     }
 
     factory {

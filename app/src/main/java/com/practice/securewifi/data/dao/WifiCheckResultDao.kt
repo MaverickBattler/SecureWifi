@@ -21,4 +21,7 @@ interface WifiCheckResultDao {
 
     @Query("SELECT * FROM wifi_check_result WHERE ssid = :ssid")
     suspend fun getWifiCheckResult(ssid: String): WifiCheckResult?
+
+    @Query("DELETE FROM wifi_check_result")
+    suspend fun deleteAllWifiCheckResults()
 }

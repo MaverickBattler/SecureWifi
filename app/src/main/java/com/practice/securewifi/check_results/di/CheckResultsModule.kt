@@ -1,6 +1,7 @@
 package com.practice.securewifi.check_results.di
 
 import com.practice.securewifi.check_results.interactor.CheckResultsInteractor
+import com.practice.securewifi.check_results.interactor.DeleteAllResultsInteractor
 import com.practice.securewifi.check_results.interactor.TriedPasswordsInteractor
 import com.practice.securewifi.check_results.viewmodel.ResultsViewModel
 import com.practice.securewifi.check_results.viewmodel.WifiAttackResultsViewModel
@@ -30,6 +31,15 @@ val checkResultsModule = module {
     }
 
     viewModel {
-        ResultsViewModel(checkResultsInteractor = get())
+        ResultsViewModel(
+            checkResultsInteractor = get(),
+            deleteAllResultsInteractor = get()
+        )
+    }
+
+    factory {
+        DeleteAllResultsInteractor(
+            wifiCheckResultRepository = get()
+        )
     }
 }
