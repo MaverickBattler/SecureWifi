@@ -54,7 +54,9 @@ abstract class WifiSafetyDatabase : RoomDatabase() {
                         context.applicationContext,
                         WifiSafetyDatabase::class.java,
                         "wifi_safety_database"
-                    ).build()
+                    )
+                        .fallbackToDestructiveMigration()
+                        .build()
                     INSTANCE = instance
                 }
                 return instance

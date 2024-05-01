@@ -39,7 +39,7 @@ class WifiListStateMapper {
                 selected = selected
             )
         }
-        val wifiPointItems = nearbyWifies + selectedWifiesNotInScanResults
+        val wifiPointItems = selectedWifiesNotInScanResults + nearbyWifies
         return if (wifiPointItems.isEmpty()) {
             WifiListState.Loading
         } else {
