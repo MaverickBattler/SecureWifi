@@ -1,8 +1,23 @@
 # SecureWifi
-Master's thesis on "Mobile Application for Automated Security Testing of Wireless Access Points".
+Mobile Application for Automated Security Testing of Wireless Access Points
+
+## Short overview
+
+The developed application allows an information security specialist to:
+• scan Wi-Fi points nearby and view their list;
+• view the properties of each scanned point, such as WPS support, security protocol used, etc.;
+• for each of the properties of the scanned points, view their short description and the known vulnerabilities associated with them;
+• carry out attacks on one or more wireless access points by guessing passwords for them from one or more lists;
+• use to attack password lists predefined in the application, which are various lists of the most popular passwords;
+• set your own password lists, consisting of a fixed list and dynamic passwords generated from user-specified information;
+• set the number of dynamically generated passwords, information about people, places and keywords, that is, the data that could be used when setting a password for a point;
+• view information about the ongoing attack both in the application itself and in the notification that appears during the attack;
+• at any time view information about previous attacks, including the number of passwords tried, a list of such passwords, and whether the correct password for the point was found.
+
+
 ## Functionality
-The application is designed to check the complexity of passwords of wireless access points by sequentially connecting to them with a set of passwords generated for each point. The application also saves statistics about connection attempts. In addition, the application allows you to scan nearby Wi-Fi points and get information about their capabilities. 
-The application is divided into 3 screens, each of which is responsible for its functionality.
+The application is designed to check the password security of wireless access points by sequentially connecting to them with sets of passwords. Sets of passwords may consist of fixed and dynamic part. Dynamic part consists of passwords generated from the info given by the user. The application also saves statistics about connection attempts. In addition, the application allows a specialist to scan nearby Wi-Fi points and get information about their capabilities. 
+The application is divided into 4 screens, each of which is responsible for its functionality.
 
 ### 1.	Screen for connecting to nearby Wi-Fi hotspots.
 On the Connect to Nearby Wi-Fi Points screen, the user can see a button that initiates a password security check for nearby Wi-Fi points. The security check includes scanning nearby Wi-Fi points, filtering the results, generating a set of passwords for each of the points, and then connecting to each of the points with the generated set of passwords. During the connection, the user can see the information about which point the device is trying to connect to, how many passwords have already been tried, how many are left to try and the speed of trying passwords. During connection attempts, data about them is stored in the application's memory, so the same password will not be tried twice to the same point. The point will also be skipped if a valid password has already been found for it. At the moment, the passwords that are generated for each Wi-Fi point consist of a fixed set of passwords, including some of the most popular Wi-Fi passwords, as well as a set consisting of passwords generated specifically for this point according to the information about it. At the moment, these are passwords obtained by manipulating the name of the access point.
