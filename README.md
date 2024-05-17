@@ -24,7 +24,19 @@ The application is divided into 4 menu items, each of which is responsible for i
 
 ## Application screens diagram
 
-![Диаграмма окон drawio (1)](https://github.com/MaverickBattler/SecureWifi/assets/73700612/ddd79a59-77c6-444f-bda6-eb47c0b3437d)
+![Диаграмма окон drawio (2)](https://github.com/MaverickBattler/SecureWifi/assets/73700612/bf86ed97-c8f3-4fbc-9e2a-746434079a06)
+
+## Screenshots
+
+App supports English and Russian languages, light and dark themes.
+
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/3d5d3989-6738-4e76-8943-8fd51bb472e0)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/6d10a11f-6fa0-43e6-8116-204fc1511a3c)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/f5930919-f550-4289-88ae-4584cc03bfd9)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/4883aa64-6cfa-4f9e-b911-628f579de5a9)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/db5dcb0d-4ef4-4fb9-85c9-99b9bff6f2a5)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/0cb02eb0-e28e-400a-a726-11f7715f26ce)
+![image](https://github.com/MaverickBattler/SecureWifi/assets/73700612/b218bff6-48e6-42d6-9e1e-e8b7dfc40e8c)
 
 ## Requirements to run the application
 For the application to work properly, the user must allow the application to access the device's precise location data, which is necessary to scan nearby wireless access points. Application will only perform connection attempts to Wi-Fi points on <b>Android 9</b> (inclusive) or lower. Lowest supported version is Android 6. On Android versions higher than 9, device must have <b>Root</b>.
