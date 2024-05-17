@@ -2,7 +2,6 @@
 Mobile Application for Automated Security Testing of Wireless Access Points
 
 ## Short overview
-
 The developed application allows an information security specialist to:
 * scan Wi-Fi points nearby and view their list;
 * view the properties of each scanned point, such as WPS support, security protocol used, etc.;
@@ -25,5 +24,7 @@ The application is divided into 4 menu items, each of which is responsible for i
 
 ## Application screens diagram
 
+![Диаграмма окон drawio (1)](https://github.com/MaverickBattler/SecureWifi/assets/73700612/ddd79a59-77c6-444f-bda6-eb47c0b3437d)
+
 ## Requirements to run the application
-For the application to work properly, the user must allow the application to access the device's precise location data, which is necessary to scan nearby wireless access points. At the moment, for the correct operation of the application, if the check is carried out near the wireless access point with the correct password that was remembered by the device, the user is recommended to forget the password for this point manually in the application Wi-Fi settings. In the current version, the application will definitely work for Android versions up to 8.1 (API level 27). No functionality has been tested for newer versions.
+For the application to work properly, the user must allow the application to access the device's precise location data, which is necessary to scan nearby wireless access points. Application will only perform connection attempts to Wi-Fi points on <b>Android 9</b> (inclusive) or lower. Lowest supported version is Android 6. On Android versions higher than 9, device must have <b>Root</b>.
