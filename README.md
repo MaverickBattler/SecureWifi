@@ -44,12 +44,3 @@ App supports English and Russian languages, light and dark themes.
 ### Editing password lists
 
 <img src="https://github.com/MaverickBattler/SecureWifi/assets/73700612/7a8509b3-ab1c-4189-9db0-ff26806190e3" height="800">
-
-### Other screenshots
-<img src="https://github.com/MaverickBattler/SecureWifi/assets/73700612/3d5d3989-6738-4e76-8943-8fd51bb472e0" height="800">
-<img src="https://github.com/MaverickBattler/SecureWifi/assets/73700612/6d10a11f-6fa0-43e6-8116-204fc1511a3c" height="800">
-<img src="https://github.com/MaverickBattler/SecureWifi/assets/73700612/f5930919-f550-4289-88ae-4584cc03bfd9" height="800">
-<img src="https://github.com/MaverickBattler/SecureWifi/assets/73700612/4883aa64-6cfa-4f9e-b911-628f579de5a9" height="800">
-<img src="https://github.com/MaverickBattler/SecureWifi/assets/73700612/db5dcb0d-4ef4-4fb9-85c9-99b9bff6f2a5" height="800">
-<img src="https://github.com/MaverickBattler/SecureWifi/assets/73700612/0cb02eb0-e28e-400a-a726-11f7715f26ce" height="800">
-<img src="https://github.com/MaverickBattler/SecureWifi/assets/73700612/b218bff6-48e6-42d6-9e1e-e8b7dfc40e8c" height="800">
